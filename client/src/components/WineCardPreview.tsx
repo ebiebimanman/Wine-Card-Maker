@@ -51,7 +51,8 @@ export function WineCardPreview({ data, theme }: WineCardPreviewProps) {
         <div className="text-center mb-6 pb-6 border-b border-gray-200">
           <h2 className={cn(
             "font-display text-2xl md:text-3xl leading-tight tracking-wide break-words mb-3",
-            cardStyles.text
+            cardStyles.text,
+            !data.wineName && "opacity-40"
           )}>
             {data.wineName || "ワイン名未入力"}
           </h2>
@@ -77,7 +78,7 @@ export function WineCardPreview({ data, theme }: WineCardPreviewProps) {
             <h3 className={cn("font-display text-sm uppercase tracking-widest mb-2 opacity-60", cardStyles.text)}>
               私の感想
             </h3>
-            <p className={cn("font-body text-base leading-relaxed italic opacity-90 min-h-[3rem]", cardStyles.text)}>
+            <p className={cn("font-body text-base leading-relaxed italic min-h-[3rem]", cardStyles.text, !data.myComment && "opacity-40")}>
               {data.myComment || "香りはどう？口当たりは？後味は？"}
             </p>
           </div>
@@ -88,7 +89,7 @@ export function WineCardPreview({ data, theme }: WineCardPreviewProps) {
             <h3 className={cn("font-display text-sm uppercase tracking-widest mb-2 opacity-60", cardStyles.text)}>
               パートナーの感想
             </h3>
-            <p className={cn("font-body text-base leading-relaxed italic opacity-90 min-h-[3rem]", cardStyles.text)}>
+            <p className={cn("font-body text-base leading-relaxed italic min-h-[3rem]", cardStyles.text, !data.partnerComment && "opacity-40")}>
               {data.partnerComment || "相手は甘い？辛い？心に残った？"}
             </p>
           </div>
