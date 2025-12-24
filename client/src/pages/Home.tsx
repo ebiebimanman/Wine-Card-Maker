@@ -51,7 +51,7 @@ export default function Home() {
             animate={{ opacity: 1, y: 0 }}
             className="font-display text-4xl md:text-6xl text-[#2D2424] mb-3"
           >
-            Wine Journal
+            ワインジャーナル
           </motion.h1>
           <motion.p 
             initial={{ opacity: 0 }}
@@ -59,7 +59,7 @@ export default function Home() {
             transition={{ delay: 0.2 }}
             className="font-body text-[#2D2424]/60 italic"
           >
-            Capture the essence of your shared moments
+            二人で共有した素敵な時間を記録しよう
           </motion.p>
         </header>
 
@@ -77,7 +77,7 @@ export default function Home() {
                 
                 {/* Theme Selection */}
                 <div className="space-y-3">
-                  <Label className="font-display text-lg">Wine Type</Label>
+                  <Label className="font-display text-lg">ワインの種類</Label>
                   <ThemeToggle theme={theme} onThemeChange={(t) => {
                     setTheme(t);
                     form.setValue("themeColor", t);
@@ -86,10 +86,10 @@ export default function Home() {
 
                 {/* Wine Name */}
                 <div className="space-y-2">
-                  <Label htmlFor="wineName" className="font-display text-lg">Wine Name</Label>
+                  <Label htmlFor="wineName" className="font-display text-lg">ワイン名</Label>
                   <Input
                     id="wineName"
-                    placeholder="e.g. Château Margaux 2015"
+                    placeholder="例）シャトー・マルゴー 2015"
                     className="h-12 text-lg font-body bg-transparent border-b-2 border-t-0 border-x-0 border-gray-200 rounded-none px-0 focus-visible:ring-0 focus-visible:border-primary transition-colors placeholder:text-gray-300"
                     {...form.register("wineName")}
                   />
@@ -100,7 +100,7 @@ export default function Home() {
 
                 {/* Rating */}
                 <div className="space-y-2">
-                  <Label className="font-display text-lg">Rating</Label>
+                  <Label className="font-display text-lg">評価</Label>
                   <div className="p-4 bg-gray-50/50 rounded-lg border border-gray-100 flex justify-center">
                     <RatingInput
                       value={watchedValues.rating}
@@ -114,10 +114,10 @@ export default function Home() {
 
                 {/* My Comment */}
                 <div className="space-y-2">
-                  <Label htmlFor="myComment" className="font-display text-lg">My Impressions</Label>
+                  <Label htmlFor="myComment" className="font-display text-lg">私の感想</Label>
                   <Textarea
                     id="myComment"
-                    placeholder="Describe the aroma, taste, and feeling..."
+                    placeholder="香りや味わい、そして感じたことを記してください..."
                     className="min-h-[100px] resize-none font-body bg-gray-50/30 border-gray-200 focus-visible:ring-1 focus-visible:ring-primary/20"
                     {...form.register("myComment")}
                   />
@@ -128,10 +128,10 @@ export default function Home() {
 
                 {/* Partner Comment */}
                 <div className="space-y-2">
-                  <Label htmlFor="partnerComment" className="font-display text-lg">Partner's Impressions</Label>
+                  <Label htmlFor="partnerComment" className="font-display text-lg">パートナーの感想</Label>
                   <Textarea
                     id="partnerComment"
-                    placeholder="What did they say?"
+                    placeholder="相手はどう感じた？"
                     className="min-h-[100px] resize-none font-body bg-gray-50/30 border-gray-200 focus-visible:ring-1 focus-visible:ring-primary/20"
                     {...form.register("partnerComment")}
                   />
@@ -148,10 +148,10 @@ export default function Home() {
                   >
                     {createMutation.isPending ? (
                       <span className="flex items-center gap-2">
-                        <Loader2 className="w-5 h-5 animate-spin" /> Saving Memory...
+                        <Loader2 className="w-5 h-5 animate-spin" /> 保存中...
                       </span>
                     ) : (
-                      "Save Memory Card"
+                      "カードを保存"
                     )}
                   </Button>
                 </div>
@@ -168,7 +168,7 @@ export default function Home() {
             className="order-1 lg:order-2 sticky top-8"
           >
             <div className="space-y-4 text-center">
-              <h3 className="font-display text-xl text-[#2D2424]/40 uppercase tracking-widest">Live Preview</h3>
+              <h3 className="font-display text-xl text-[#2D2424]/40 uppercase tracking-widest">プレビュー</h3>
               <div className="perspective-1000">
                 <AnimatePresence mode="wait">
                   <motion.div
@@ -186,7 +186,7 @@ export default function Home() {
                 </AnimatePresence>
               </div>
               <p className="text-xs text-[#2D2424]/30 font-sans mt-4">
-                * Design updates automatically as you type
+                * 入力と同時にプレビューが更新されます
               </p>
             </div>
           </motion.div>

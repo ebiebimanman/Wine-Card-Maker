@@ -20,7 +20,7 @@ export function ThemeToggle({ theme, onThemeChange }: ThemeToggleProps) {
         )}
       >
         <Wine className={cn("w-6 h-6", theme === "red" ? "text-white" : "text-[#722F37]")} />
-        <span className="text-xs font-semibold uppercase tracking-widest">Red</span>
+        <span className="text-xs font-semibold uppercase tracking-widest">赤ワイン</span>
         {theme === "red" && (
           <motion.div
             layoutId="active-indicator"
@@ -41,7 +41,7 @@ export function ThemeToggle({ theme, onThemeChange }: ThemeToggleProps) {
         <div className="relative">
           <Wine className={cn("w-6 h-6", theme === "white" ? "text-[#E6DB74]" : "text-[#E6DB74]/50")} />
         </div>
-        <span className="text-xs font-semibold uppercase tracking-widest text-slate-600">White</span>
+        <span className="text-xs font-semibold uppercase tracking-widest text-slate-600">白ワイン</span>
         {theme === "white" && (
           <motion.div
             layoutId="active-indicator"

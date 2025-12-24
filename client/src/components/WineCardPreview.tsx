@@ -85,10 +85,10 @@ export function WineCardPreview({ data, theme }: WineCardPreviewProps) {
           <div className="relative group">
             <Quote className={cn("absolute -top-3 -left-2 w-8 h-8 rotate-180", cardStyles.quote)} />
             <h3 className={cn("font-display text-sm uppercase tracking-widest mb-2 opacity-60", cardStyles.text)}>
-              My Thoughts
+              私の感想
             </h3>
             <p className={cn("font-body text-base leading-relaxed italic opacity-90 min-h-[3rem]", cardStyles.text)}>
-              {data.myComment || "What did you think of the aroma? The texture? The finish?"}
+              {data.myComment || "香りはどう？口当たりは？後味は？"}
             </p>
           </div>
 
@@ -96,10 +96,10 @@ export function WineCardPreview({ data, theme }: WineCardPreviewProps) {
           <div className="relative group text-right">
             <Quote className={cn("absolute -top-3 -right-2 w-8 h-8", cardStyles.quote)} />
             <h3 className={cn("font-display text-sm uppercase tracking-widest mb-2 opacity-60", cardStyles.text)}>
-              Partner's Thoughts
+              パートナーの感想
             </h3>
             <p className={cn("font-body text-base leading-relaxed italic opacity-90 min-h-[3rem]", cardStyles.text)}>
-              {data.partnerComment || "And what did they say? Sweet? Dry? Memorable?"}
+              {data.partnerComment || "相手は甘い？辛い？心に残った？"}
             </p>
           </div>
         </div>
@@ -107,10 +107,10 @@ export function WineCardPreview({ data, theme }: WineCardPreviewProps) {
         {/* Footer */}
         <div className="mt-auto pt-8 text-center">
           <p className={cn("font-script text-2xl opacity-40", cardStyles.accent)}>
-            Bon Appétit
+            乾杯
           </p>
           <div className="text-[10px] uppercase tracking-[0.2em] mt-2 opacity-30 font-sans">
-            Tasting Notes • {new Date().toLocaleDateString()}
+            テイスティングノート • {new Date().toLocaleDateString('ja-JP')}
           </div>
         </div>
       </div>
