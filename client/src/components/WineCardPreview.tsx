@@ -47,36 +47,6 @@ export function WineCardPreview({ data, theme }: WineCardPreviewProps) {
       {/* Content Container */}
       <div className="relative h-full flex flex-col p-8 md:p-12">
         
-        {/* Header Section */}
-        <div className="text-center space-y-4 mb-8">
-          <div className="flex justify-center mb-4 opacity-80">
-            {/* Decorative flourish or simple line */}
-            <div className={cn("w-16 h-[1px]", cardStyles.accent, "bg-current opacity-40")} />
-          </div>
-          
-          <h2 className={cn(
-            "font-display text-3xl md:text-4xl italic leading-tight tracking-wide break-words",
-            cardStyles.accent
-          )}>
-            {data.wineName || "Le Vin Mystère"}
-          </h2>
-          
-          <div className="flex justify-center gap-1 pt-2">
-            {[1, 2, 3, 4, 5].map((i) => (
-              <Star
-                key={i}
-                className={cn(
-                  "w-4 h-4",
-                  i <= data.rating ? "fill-[#C5A059] text-[#C5A059]" : "text-gray-200"
-                )}
-              />
-            ))}
-          </div>
-        </div>
-
-        {/* Divider */}
-        <div className={cn("w-full h-px mb-8", cardStyles.divider)} />
-
         {/* Comments Section */}
         <div className="flex-1 space-y-8">
           {/* My Comment */}
