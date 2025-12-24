@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { Star, Quote } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Badge } from "@/components/ui/badge";
 import type { InsertWineCard } from "@shared/schema";
 
 interface WineCardPreviewProps {
@@ -100,9 +101,17 @@ export function WineCardPreview({ data, theme }: WineCardPreviewProps) {
             <h3 className={cn("font-display text-sm uppercase tracking-widest mb-2 opacity-60", cardStyles.text)}>
               わたしの感想
             </h3>
-            <p className={cn("font-body text-base leading-relaxed min-h-[3rem]", cardStyles.text, !data.myComment && "opacity-40")}>
-              {data.myComment || "香りはどう？口当たりは？後味は？"}
-            </p>
+            <div className={cn("flex flex-wrap gap-1", (!data.myComment || data.myComment.length === 0) && "opacity-40 min-h-[3rem] flex items-center")}>
+              {data.myComment && data.myComment.length > 0 ? (
+                data.myComment.map((comment) => (
+                  <Badge key={comment} variant="outline" className="text-xs bg-gray-50 text-gray-700 border-gray-300">
+                    {comment}
+                  </Badge>
+                ))
+              ) : (
+                <span className="text-sm text-gray-400">何か選んでね</span>
+              )}
+            </div>
           </div>
 
           {/* Partner's Comment */}
@@ -111,9 +120,17 @@ export function WineCardPreview({ data, theme }: WineCardPreviewProps) {
             <h3 className={cn("font-display text-sm uppercase tracking-widest mb-2 opacity-60", cardStyles.text)}>
               あなたの感想
             </h3>
-            <p className={cn("font-body text-base leading-relaxed min-h-[3rem]", cardStyles.text, !data.partnerComment && "opacity-40")}>
-              {data.partnerComment || "相手は甘い？辛い？心に残った？"}
-            </p>
+            <div className={cn("flex flex-wrap gap-1 justify-end", (!data.partnerComment || data.partnerComment.length === 0) && "opacity-40 min-h-[3rem] flex items-center")}>
+              {data.partnerComment && data.partnerComment.length > 0 ? (
+                data.partnerComment.map((comment) => (
+                  <Badge key={comment} variant="outline" className="text-xs bg-gray-50 text-gray-700 border-gray-300">
+                    {comment}
+                  </Badge>
+                ))
+              ) : (
+                <span className="text-sm text-gray-400">何か選んでね</span>
+              )}
+            </div>
           </div>
         </div>
 

@@ -4,7 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { motion, AnimatePresence } from "framer-motion";
 import { Loader2 } from "lucide-react";
 
-import { insertWineCardSchema, type InsertWineCard } from "@shared/schema";
+import { insertWineCardSchema, type InsertWineCard, COMMENT_OPTIONS } from "@shared/schema";
 import { useCreateWineCard } from "@/hooks/use-wine-cards";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { RatingInput } from "@/components/RatingInput";
@@ -25,8 +25,8 @@ export default function Home() {
     resolver: zodResolver(insertWineCardSchema),
     defaultValues: {
       wineName: "",
-      myComment: "",
-      partnerComment: "",
+      myComment: [],
+      partnerComment: [],
       myRating: 0,
       partnerRating: 0,
       themeColor: "red",
@@ -111,30 +111,54 @@ export default function Home() {
 
                 {/* My Comment */}
                 <div className="space-y-2">
-                  <Label htmlFor="myComment" className="font-display text-lg">わたしの感想</Label>
-                  <Textarea
-                    id="myComment"
-                    placeholder="香りや味わい、そして感じたことを記してください..."
-                    className="min-h-[100px] resize-none font-body bg-gray-50/30 border-gray-200 focus-visible:ring-1 focus-visible:ring-primary/20"
-                    {...form.register("myComment")}
-                  />
-                  {form.formState.errors.myComment && (
-                    <p className="text-sm text-destructive font-body">{form.formState.errors.myComment.message}</p>
-                  )}
+                  <Label className="font-display text-lg">わたしの感想</Label>
+                  <div className="grid grid-cols-2 gap-2">
+                    {COMMENT_OPTIONS.map((option) => (
+                      <label key={option} className="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-50/50 cursor-pointer transition-colors">
+                        <input
+                          type="checkbox"
+                          value={option}
+                          checked={watchedValues.myComment?.includes(option) ?? false}
+                          onChange={(e) => {
+                            const current = watchedValues.myComment ?? [];
+                            if (e.target.checked) {
+                              form.setValue("myComment", [...current, option]);
+                            } else {
+                              form.setValue("myComment", current.filter((c) => c !== option));
+                            }
+                          }}
+                          className="w-4 h-4 rounded cursor-pointer"
+                        />
+                        <span className="text-sm font-body">{option}</span>
+                      </label>
+                    ))}
+                  </div>
                 </div>
 
                 {/* Partner Comment */}
                 <div className="space-y-2">
-                  <Label htmlFor="partnerComment" className="font-display text-lg">パートナーの感想</Label>
-                  <Textarea
-                    id="partnerComment"
-                    placeholder="相手はどう感じた？"
-                    className="min-h-[100px] resize-none font-body bg-gray-50/30 border-gray-200 focus-visible:ring-1 focus-visible:ring-primary/20"
-                    {...form.register("partnerComment")}
-                  />
-                  {form.formState.errors.partnerComment && (
-                    <p className="text-sm text-destructive font-body">{form.formState.errors.partnerComment.message}</p>
-                  )}
+                  <Label className="font-display text-lg">あなたの感想</Label>
+                  <div className="grid grid-cols-2 gap-2">
+                    {COMMENT_OPTIONS.map((option) => (
+                      <label key={option} className="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-50/50 cursor-pointer transition-colors">
+                        <input
+                          type="checkbox"
+                          value={option}
+                          checked={watchedValues.partnerComment?.includes(option) ?? false}
+                          onChange={(e) => {
+                            const current = watchedValues.partnerComment ?? [];
+                            if (e.target.checked) {
+                              form.setValue("partnerComment", [...current, option]);
+                            } else {
+                              form.setValue("partnerComment", current.filter((c) => c !== option));
+                            }
+                          }}
+                          className="w-4 h-4 rounded cursor-pointer"
+                        />
+                        <span className="text-sm font-body">{option}</span>
+                      </label>
+                    ))}
+                  </div>
                 </div>
 
                 <div className="pt-4">
