@@ -36,7 +36,7 @@ export function WineCardPreview({ data, theme }: WineCardPreviewProps) {
     <motion.div
       layout
       className={cn(
-        "relative w-full max-w-md mx-auto aspect-[3/5] rounded-[16px] overflow-hidden transition-all duration-500",
+        "relative w-full max-w-md mx-auto h-auto rounded-[16px] overflow-hidden transition-all duration-500",
         "bg-[#FFFFFF]",
         cardStyles.shadow
       )}
@@ -45,7 +45,7 @@ export function WineCardPreview({ data, theme }: WineCardPreviewProps) {
       <div className="absolute inset-0 bg-texture-paper opacity-50 pointer-events-none" />
 
       {/* Content Container */}
-      <div className="relative h-full flex flex-col p-8 md:p-12">
+      <div className="relative flex flex-col p-8 md:p-12">
         
         {/* Wine Name and Rating */}
         <div className="text-center mb-6 pb-6 border-b border-gray-200">
