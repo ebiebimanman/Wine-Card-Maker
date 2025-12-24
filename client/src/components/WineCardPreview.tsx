@@ -94,15 +94,6 @@ export function WineCardPreview({ data, theme }: WineCardPreviewProps) {
           </div>
         </div>
 
-        {/* Footer */}
-        <div className="mt-auto pt-8 text-center">
-          <p className={cn("font-script text-2xl opacity-40", cardStyles.accent)}>
-            乾杯
-          </p>
-          <div className="text-[10px] uppercase tracking-[0.2em] mt-2 opacity-30 font-sans">
-            テイスティングノート • {new Date().toLocaleDateString('ja-JP')}
-          </div>
-        </div>
       </div>
     </motion.div>
   );

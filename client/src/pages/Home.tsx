@@ -44,24 +44,6 @@ export default function Home() {
     <div className="min-h-screen bg-[#F5F5F0] overflow-x-hidden selection:bg-rose-200 selection:text-rose-900">
       <div className="max-w-7xl mx-auto px-4 py-8 md:py-12 lg:px-8">
         
-        {/* Header */}
-        <header className="text-center mb-12 md:mb-16">
-          <motion.h1 
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="font-display text-4xl md:text-6xl text-[#2D2424] mb-3"
-          >
-            ワインジャーナル
-          </motion.h1>
-          <motion.p 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.2 }}
-            className="font-body text-[#2D2424]/60 italic"
-          >
-            二人で共有した素敵な時間を記録しよう
-          </motion.p>
-        </header>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-start">
           
