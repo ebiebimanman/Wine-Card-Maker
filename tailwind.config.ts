@@ -86,8 +86,8 @@ export default {
         sans: ["var(--font-sans)"],
         serif: ["var(--font-serif)"],
         mono: ["var(--font-mono)"],
-        display: ["'Playfair Display'", "serif"],
-        body: ["'Shippori Mincho'", "serif"],
+        display: ["'Outfit'", "sans-serif"],
+        body: ["'Noto Sans JP'", "sans-serif"],
         script: ["'Great Vibes'", "cursive"],
       },
       keyframes: {
