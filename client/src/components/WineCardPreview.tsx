@@ -36,11 +36,9 @@ export function WineCardPreview({ data, theme }: WineCardPreviewProps) {
     <motion.div
       layout
       className={cn(
-        "relative w-full max-w-md mx-auto aspect-[3/5] rounded-sm overflow-hidden transition-all duration-500",
-        cardStyles.background,
-        cardStyles.shadow,
-        "border-[12px] border-double", // Menu-style double border
-        cardStyles.border
+        "relative w-full max-w-md mx-auto aspect-[3/5] rounded-[16px] overflow-hidden transition-all duration-500",
+        "bg-[#FFFFFF]",
+        cardStyles.shadow
       )}
     >
       {/* Paper Texture Overlay */}

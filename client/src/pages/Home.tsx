@@ -168,7 +168,6 @@ export default function Home() {
             className="order-1 lg:order-2 sticky top-8"
           >
             <div className="space-y-4 text-center">
-              <h3 className="font-display text-xl text-[#2D2424]/40 uppercase tracking-widest">プレビュー</h3>
               <div className="perspective-1000">
                 <AnimatePresence mode="wait">
                   <motion.div
