@@ -47,6 +47,28 @@ export function WineCardPreview({ data, theme }: WineCardPreviewProps) {
       {/* Content Container */}
       <div className="relative h-full flex flex-col p-8 md:p-12">
         
+        {/* Wine Name and Rating */}
+        <div className="text-center mb-6 pb-6 border-b border-gray-200">
+          <h2 className={cn(
+            "font-display text-2xl md:text-3xl leading-tight tracking-wide break-words mb-3",
+            cardStyles.text
+          )}>
+            {data.wineName || "ワイン名未入力"}
+          </h2>
+          
+          <div className="flex justify-center gap-1">
+            {[1, 2, 3, 4, 5].map((i) => (
+              <Star
+                key={i}
+                className={cn(
+                  "w-5 h-5",
+                  i <= data.rating ? "fill-[#C5A059] text-[#C5A059]" : "text-gray-300"
+                )}
+              />
+            ))}
+          </div>
+        </div>
+
         {/* Comments Section */}
         <div className="flex-1 space-y-8">
           {/* My Comment */}
