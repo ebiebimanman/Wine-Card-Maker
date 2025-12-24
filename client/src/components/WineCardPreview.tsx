@@ -47,7 +47,7 @@ export function WineCardPreview({ data, theme }: WineCardPreviewProps) {
       {/* Content Container */}
       <div className="relative flex flex-col p-8 md:p-12">
         
-        {/* Wine Name and Rating */}
+        {/* Wine Name and Ratings */}
         <div className="text-center mb-6 pb-6 border-b border-gray-200">
           <h2 className={cn(
             "font-display text-2xl md:text-3xl leading-tight tracking-wide break-words mb-3",
@@ -57,16 +57,38 @@ export function WineCardPreview({ data, theme }: WineCardPreviewProps) {
             {data.wineName || "ワイン名未入力"}
           </h2>
           
-          <div className="flex justify-center gap-1">
-            {[1, 2, 3, 4, 5].map((i) => (
-              <Star
-                key={i}
-                className={cn(
-                  "w-5 h-5",
-                  i <= data.rating ? "fill-[#C5A059] text-[#C5A059]" : "text-gray-300"
-                )}
-              />
-            ))}
+          <div className="space-y-3">
+            {/* My Rating */}
+            <div>
+              <p className={cn("text-xs uppercase tracking-widest mb-1 opacity-60", cardStyles.text)}>わたし</p>
+              <div className="flex justify-center gap-1">
+                {[1, 2, 3, 4, 5].map((i) => (
+                  <Star
+                    key={i}
+                    className={cn(
+                      "w-4 h-4",
+                      i <= data.myRating ? "fill-[#C5A059] text-[#C5A059]" : "text-gray-300"
+                    )}
+                  />
+                ))}
+              </div>
+            </div>
+
+            {/* Partner Rating */}
+            <div>
+              <p className={cn("text-xs uppercase tracking-widest mb-1 opacity-60", cardStyles.text)}>あなた</p>
+              <div className="flex justify-center gap-1">
+                {[1, 2, 3, 4, 5].map((i) => (
+                  <Star
+                    key={i}
+                    className={cn(
+                      "w-4 h-4",
+                      i <= data.partnerRating ? "fill-[#C5A059] text-[#C5A059]" : "text-gray-300"
+                    )}
+                  />
+                ))}
+              </div>
+            </div>
           </div>
         </div>
 
@@ -76,7 +98,7 @@ export function WineCardPreview({ data, theme }: WineCardPreviewProps) {
           <div className="relative group">
             <Quote className={cn("absolute -top-3 -left-2 w-8 h-8 rotate-180", cardStyles.quote)} />
             <h3 className={cn("font-display text-sm uppercase tracking-widest mb-2 opacity-60", cardStyles.text)}>
-              私の感想
+              わたしの感想
             </h3>
             <p className={cn("font-body text-base leading-relaxed min-h-[3rem]", cardStyles.text, !data.myComment && "opacity-40")}>
               {data.myComment || "香りはどう？口当たりは？後味は？"}

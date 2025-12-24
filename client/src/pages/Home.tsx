@@ -27,7 +27,8 @@ export default function Home() {
       wineName: "",
       myComment: "",
       partnerComment: "",
-      rating: 0,
+      myRating: 0,
+      partnerRating: 0,
       themeColor: "red",
     },
     mode: "onChange"
@@ -80,23 +81,37 @@ export default function Home() {
                   )}
                 </div>
 
-                {/* Rating */}
+                {/* My Rating */}
                 <div className="space-y-2">
-                  <Label className="font-display text-lg">評価</Label>
+                  <Label className="font-display text-lg">わたしの評価</Label>
                   <div className="p-4 bg-gray-50/50 rounded-lg border border-gray-100 flex justify-center">
                     <RatingInput
-                      value={watchedValues.rating}
-                      onChange={(val) => form.setValue("rating", val)}
+                      value={watchedValues.myRating}
+                      onChange={(val) => form.setValue("myRating", val)}
                     />
                   </div>
-                  {form.formState.errors.rating && (
-                    <p className="text-sm text-destructive font-body">{form.formState.errors.rating.message}</p>
+                  {form.formState.errors.myRating && (
+                    <p className="text-sm text-destructive font-body">{form.formState.errors.myRating.message}</p>
+                  )}
+                </div>
+
+                {/* Partner Rating */}
+                <div className="space-y-2">
+                  <Label className="font-display text-lg">あなたの評価</Label>
+                  <div className="p-4 bg-gray-50/50 rounded-lg border border-gray-100 flex justify-center">
+                    <RatingInput
+                      value={watchedValues.partnerRating}
+                      onChange={(val) => form.setValue("partnerRating", val)}
+                    />
+                  </div>
+                  {form.formState.errors.partnerRating && (
+                    <p className="text-sm text-destructive font-body">{form.formState.errors.partnerRating.message}</p>
                   )}
                 </div>
 
                 {/* My Comment */}
                 <div className="space-y-2">
-                  <Label htmlFor="myComment" className="font-display text-lg">私の感想</Label>
+                  <Label htmlFor="myComment" className="font-display text-lg">わたしの感想</Label>
                   <Textarea
                     id="myComment"
                     placeholder="香りや味わい、そして感じたことを記してください..."

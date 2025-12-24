@@ -7,7 +7,8 @@ export const wineCards = pgTable("wine_cards", {
   wineName: text("wine_name").notNull(),
   myComment: text("my_comment").notNull(),
   partnerComment: text("partner_comment").notNull(),
-  rating: integer("rating").notNull(),
+  myRating: integer("my_rating").notNull(),
+  partnerRating: integer("partner_rating").notNull(),
   themeColor: text("theme_color").notNull(), // 'red' | 'white'
 });
 
@@ -15,7 +16,8 @@ export const insertWineCardSchema = createInsertSchema(wineCards).pick({
   wineName: true,
   myComment: true,
   partnerComment: true,
-  rating: true,
+  myRating: true,
+  partnerRating: true,
   themeColor: true,
 });
 
