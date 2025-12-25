@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { Star, Quote } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
@@ -74,23 +74,64 @@ export function WineCardPreview({ data, theme }: WineCardPreviewProps) {
           </div>
 
           {/* Wine Information */}
-          <div className="text-sm">
-            <p className={cn("font-body", cardStyles.text)}>
-              {data.location && (
-                <>
-                  <span className="opacity-60">場所: </span>
-                  <span>{data.location}</span>
-                  {data.price && <span className="mx-2">|</span>}
-                </>
+          <motion.div 
+            className="text-sm overflow-hidden min-h-[1.5rem]"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.3 }}
+          >
+            <AnimatePresence mode="wait">
+              {data.location || data.price ? (
+                <motion.p 
+                  key="info"
+                  className={cn("font-body", cardStyles.text)}
+                  initial={{ opacity: 0, y: 4 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -4 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  {data.location && (
+                    <>
+                      <span className="opacity-60">場所: </span>
+                      <motion.span
+                        key={`location-${data.location}`}
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ duration: 0.3 }}
+                      >
+                        {data.location}
+                      </motion.span>
+                      {data.price && <span className="mx-2">|</span>}
+                    </>
+                  )}
+                  {data.price && (
+                    <>
+                      <span className="opacity-60">価格: </span>
+                      <motion.span
+                        key={`price-${data.price}`}
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ duration: 0.3 }}
+                      >
+                        ¥{data.price.toLocaleString()}
+                      </motion.span>
+                    </>
+                  )}
+                </motion.p>
+              ) : (
+                <motion.p 
+                  key="placeholder"
+                  className={cn("font-body text-gray-300 italic", cardStyles.text)}
+                  initial={{ opacity: 0, y: 4 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -4 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  場所と価格をまだ入力していません
+                </motion.p>
               )}
-              {data.price && (
-                <>
-                  <span className="opacity-60">価格: </span>
-                  <span>¥{data.price.toLocaleString()}</span>
-                </>
-              )}
-            </p>
-          </div>
+            </AnimatePresence>
+          </motion.div>
         </div>
 
         {/* Comments Section */}

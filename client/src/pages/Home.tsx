@@ -104,16 +104,39 @@ export default function Home() {
 
                   {/* Price Slider */}
                   <div className="space-y-2">
-                    <Label htmlFor="price" className="text-sm font-body">価格: ¥{watchedValues.price?.toLocaleString() || 5000}</Label>
-                    <Slider
-                      id="price"
-                      min={500}
-                      max={10000}
-                      step={500}
-                      value={[watchedValues.price ?? 5000]}
-                      onValueChange={(value) => form.setValue("price", value[0])}
-                      className="w-full"
-                    />
+                    <motion.div
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ duration: 0.2 }}
+                    >
+                      <Label htmlFor="price" className="text-sm font-body">
+                        価格: 
+                        <motion.span
+                          key={watchedValues.price}
+                          initial={{ scale: 1.1, opacity: 0 }}
+                          animate={{ scale: 1, opacity: 1 }}
+                          transition={{ duration: 0.3, type: "spring", stiffness: 100 }}
+                          className="ml-1 inline-block"
+                        >
+                          ¥{(watchedValues.price ?? 5000).toLocaleString()}
+                        </motion.span>
+                      </Label>
+                    </motion.div>
+                    <motion.div
+                      initial={{ opacity: 0, y: 4 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.3, delay: 0.1 }}
+                    >
+                      <Slider
+                        id="price"
+                        min={500}
+                        max={10000}
+                        step={500}
+                        value={[watchedValues.price ?? 5000]}
+                        onValueChange={(value) => form.setValue("price", value[0])}
+                        className="w-full"
+                      />
+                    </motion.div>
                   </div>
                 </div>
 
