@@ -49,10 +49,11 @@ export default function Home() {
     try {
       if (cardRef.current) {
         const canvas = await html2canvas(cardRef.current, {
-          backgroundColor: null,
+          backgroundColor: "transparent",
           scale: 2,
           useCORS: true,
-          logging: false,
+          logging: true,
+          allowTaint: true,
         });
         
         const link = document.createElement("a");
@@ -68,8 +69,12 @@ export default function Home() {
             description: "ワインカードがダウンロードフォルダに保存されました。",
           });
         }, 300);
+      } else {
+        console.error("cardRef.current is null");
+        throw new Error("Card element not found");
       }
     } catch (error) {
+      console.error("Canvas capture error:", error);
       toast({
         title: "保存に失敗しました",
         description: "カードの保存に失敗しました。もう一度お試しください。",
@@ -319,7 +324,7 @@ export default function Home() {
             className="order-1 lg:order-2 sticky top-8"
           >
             <div className="space-y-4 text-center">
-              <div className="perspective-1000">
+              <div className="perspective-1000" ref={cardRef}>
                 <AnimatePresence mode="wait">
                   <motion.div
                     key={theme}
@@ -327,7 +332,6 @@ export default function Home() {
                     animate={{ rotateY: 0, opacity: 1 }}
                     exit={{ rotateY: -90, opacity: 0 }}
                     transition={{ duration: 0.5, type: "spring" }}
-                    ref={cardRef}
                   >
                     <WineCardPreview 
                       data={{ ...watchedValues, themeColor: theme }} 
