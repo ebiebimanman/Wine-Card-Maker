@@ -1,12 +1,14 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { motion, AnimatePresence } from "framer-motion";
 import { Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import html2canvas from "html2canvas";
 
 import { insertWineCardSchema, type InsertWineCard, COMMENT_OPTIONS, PAIRED_FOOD_OPTIONS } from "@shared/schema";
 import { useCreateWineCard } from "@/hooks/use-wine-cards";
+import { useToast } from "@/hooks/use-toast";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { RatingInput } from "@/components/RatingInput";
 import { WineCardPreview } from "@/components/WineCardPreview";
@@ -21,6 +23,8 @@ import { Slider } from "@/components/ui/slider";
 export default function Home() {
   const [theme, setTheme] = useState<"red" | "white">("red");
   const createMutation = useCreateWineCard();
+  const { toast } = useToast();
+  const cardRef = useRef<HTMLDivElement>(null);
 
   const form = useForm<InsertWineCard>({
     resolver: zodResolver(insertWineCardSchema),
@@ -41,7 +45,38 @@ export default function Home() {
   // Watch values for real-time preview
   const watchedValues = form.watch();
 
-  const onSubmit = (data: InsertWineCard) => {
+  const onSubmit = async (data: InsertWineCard) => {
+    try {
+      if (cardRef.current) {
+        const canvas = await html2canvas(cardRef.current, {
+          backgroundColor: null,
+          scale: 2,
+          useCORS: true,
+          logging: false,
+        });
+        
+        const link = document.createElement("a");
+        link.href = canvas.toDataURL("image/png");
+        link.download = `wine-card-${data.wineName || "untitled"}.png`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+        setTimeout(() => {
+          toast({
+            title: "カメラロールに保存しました",
+            description: "ワインカードがダウンロードフォルダに保存されました。",
+          });
+        }, 300);
+      }
+    } catch (error) {
+      toast({
+        title: "保存に失敗しました",
+        description: "カードの保存に失敗しました。もう一度お試しください。",
+        variant: "destructive",
+      });
+    }
+    
     createMutation.mutate({ ...data, themeColor: theme });
   };
 
@@ -292,6 +327,7 @@ export default function Home() {
                     animate={{ rotateY: 0, opacity: 1 }}
                     exit={{ rotateY: -90, opacity: 0 }}
                     transition={{ duration: 0.5, type: "spring" }}
+                    ref={cardRef}
                   >
                     <WineCardPreview 
                       data={{ ...watchedValues, themeColor: theme }} 
