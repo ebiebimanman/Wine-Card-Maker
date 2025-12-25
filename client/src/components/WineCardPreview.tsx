@@ -15,7 +15,7 @@ export function WineCardPreview({ data, theme }: WineCardPreviewProps) {
   // Dynamic styles based on theme
   const cardStyles = isRed
     ? {
-        background: "bg-[#FDFBF7]",
+        background: "bg-[#F9F3F0]",
         border: "border-[#722F37]",
         text: "text-[#2D2424]",
         accent: "text-[#722F37]",
@@ -38,7 +38,7 @@ export function WineCardPreview({ data, theme }: WineCardPreviewProps) {
       layout
       className={cn(
         "relative w-full max-w-md mx-auto h-auto rounded-[16px] overflow-hidden transition-all duration-500",
-        "bg-[#FFFFFF]",
+        cardStyles.background,
         cardStyles.shadow
       )}
     >

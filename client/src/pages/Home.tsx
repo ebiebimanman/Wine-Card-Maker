@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { motion, AnimatePresence } from "framer-motion";
 import { Loader2 } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 import { insertWineCardSchema, type InsertWineCard, COMMENT_OPTIONS } from "@shared/schema";
 import { useCreateWineCard } from "@/hooks/use-wine-cards";
@@ -12,7 +13,6 @@ import { WineCardPreview } from "@/components/WineCardPreview";
 
 // UI Components
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -95,6 +95,35 @@ export default function Home() {
                   )}
                 </div>
 
+                {/* My Comment */}
+                <div className="space-y-2">
+                  <Label className="font-display text-lg">わたしの感想</Label>
+                  <div className="flex flex-wrap gap-2">
+                    {COMMENT_OPTIONS.map((option) => (
+                      <button
+                        key={option}
+                        type="button"
+                        onClick={() => {
+                          const current = watchedValues.myComment ?? [];
+                          if (current.includes(option)) {
+                            form.setValue("myComment", current.filter((c) => c !== option));
+                          } else {
+                            form.setValue("myComment", [...current, option]);
+                          }
+                        }}
+                        className={cn(
+                          "px-3 py-1.5 rounded-full text-sm font-body transition-all",
+                          (watchedValues.myComment?.includes(option) ?? false)
+                            ? "bg-[#722F37] text-white"
+                            : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                        )}
+                      >
+                        {option}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
                 {/* Partner Rating */}
                 <div className="space-y-2">
                   <Label className="font-display text-lg">あなたの評価</Label>
@@ -109,54 +138,31 @@ export default function Home() {
                   )}
                 </div>
 
-                {/* My Comment */}
-                <div className="space-y-2">
-                  <Label className="font-display text-lg">わたしの感想</Label>
-                  <div className="grid grid-cols-2 gap-2">
-                    {COMMENT_OPTIONS.map((option) => (
-                      <label key={option} className="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-50/50 cursor-pointer transition-colors">
-                        <input
-                          type="checkbox"
-                          value={option}
-                          checked={watchedValues.myComment?.includes(option) ?? false}
-                          onChange={(e) => {
-                            const current = watchedValues.myComment ?? [];
-                            if (e.target.checked) {
-                              form.setValue("myComment", [...current, option]);
-                            } else {
-                              form.setValue("myComment", current.filter((c) => c !== option));
-                            }
-                          }}
-                          className="w-4 h-4 rounded cursor-pointer"
-                        />
-                        <span className="text-sm font-body">{option}</span>
-                      </label>
-                    ))}
-                  </div>
-                </div>
-
                 {/* Partner Comment */}
                 <div className="space-y-2">
                   <Label className="font-display text-lg">あなたの感想</Label>
-                  <div className="grid grid-cols-2 gap-2">
+                  <div className="flex flex-wrap gap-2">
                     {COMMENT_OPTIONS.map((option) => (
-                      <label key={option} className="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-50/50 cursor-pointer transition-colors">
-                        <input
-                          type="checkbox"
-                          value={option}
-                          checked={watchedValues.partnerComment?.includes(option) ?? false}
-                          onChange={(e) => {
-                            const current = watchedValues.partnerComment ?? [];
-                            if (e.target.checked) {
-                              form.setValue("partnerComment", [...current, option]);
-                            } else {
-                              form.setValue("partnerComment", current.filter((c) => c !== option));
-                            }
-                          }}
-                          className="w-4 h-4 rounded cursor-pointer"
-                        />
-                        <span className="text-sm font-body">{option}</span>
-                      </label>
+                      <button
+                        key={option}
+                        type="button"
+                        onClick={() => {
+                          const current = watchedValues.partnerComment ?? [];
+                          if (current.includes(option)) {
+                            form.setValue("partnerComment", current.filter((c) => c !== option));
+                          } else {
+                            form.setValue("partnerComment", [...current, option]);
+                          }
+                        }}
+                        className={cn(
+                          "px-3 py-1.5 rounded-full text-sm font-body transition-all",
+                          (watchedValues.partnerComment?.includes(option) ?? false)
+                            ? "bg-[#722F37] text-white"
+                            : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                        )}
+                      >
+                        {option}
+                      </button>
                     ))}
                   </div>
                 </div>
