@@ -1,3 +1,4 @@
+import { motion } from "framer-motion";
 import { Star } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -12,25 +13,37 @@ export function RatingInput({ value, onChange, className, readOnly = false }: Ra
   return (
     <div className={cn("flex gap-1", className)}>
       {[1, 2, 3, 4, 5].map((star) => (
-        <button
+        <motion.button
           key={star}
           type="button"
           disabled={readOnly}
           onClick={() => onChange(star)}
+          initial={{ scale: 1 }}
+          whileHover={!readOnly ? { scale: 1.1 } : { scale: 1 }}
+          whileTap={!readOnly ? { scale: 0.95 } : {}}
           className={cn(
-            "relative p-1 transition-all duration-200 hover:scale-110 focus:outline-none",
-            readOnly ? "cursor-default hover:scale-100" : "cursor-pointer"
+            "relative p-1 focus:outline-none",
+            readOnly ? "cursor-default" : "cursor-pointer"
           )}
         >
-          <Star
-            className={cn(
-              "w-6 h-6 transition-colors duration-200",
-              star <= value
-                ? "fill-accent text-accent"
-                : "fill-transparent text-muted-foreground/30 hover:text-accent/50"
-            )}
-          />
-        </button>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: star <= value ? 1 : 0 }}
+            transition={{
+              duration: 0.2,
+              delay: star <= value ? (star - 1) * 0.1 : 0
+            }}
+          >
+            <Star
+              className={cn(
+                "w-6 h-6",
+                star <= value
+                  ? "fill-accent text-accent"
+                  : "fill-transparent text-muted-foreground/30 hover:text-accent/50"
+              )}
+            />
+          </motion.div>
+        </motion.button>
       ))}
     </div>
   );

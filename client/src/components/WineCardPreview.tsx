@@ -81,7 +81,7 @@ export function WineCardPreview({ data, theme }: WineCardPreviewProps) {
             transition={{ duration: 0.3 }}
           >
             <AnimatePresence mode="wait">
-              {data.location || data.price ? (
+              {data.location ? (
                 <motion.p 
                   key="info"
                   className={cn("font-body", cardStyles.text)}
