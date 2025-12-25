@@ -134,25 +134,25 @@ export function WineCardPreview({ data, theme }: WineCardPreviewProps) {
 
             {/* Paired Food */}
             <AnimatePresence mode="wait">
-              {data.pairedFood ? (
-                <motion.p 
+              {data.pairedFood && data.pairedFood.length > 0 ? (
+                <motion.div 
                   key="food"
-                  className={cn("font-body", cardStyles.text)}
                   initial={{ opacity: 0, y: 4 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -4 }}
                   transition={{ duration: 0.2 }}
                 >
-                  <span className="opacity-60">ペアリング: </span>
-                  <motion.span
-                    key={`food-${data.pairedFood}`}
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ duration: 0.3 }}
-                  >
-                    {data.pairedFood}
-                  </motion.span>
-                </motion.p>
+                  <h4 className={cn("font-display text-xs uppercase tracking-widest mb-1 opacity-60", cardStyles.text)}>
+                    ペアリング
+                  </h4>
+                  <div className="flex flex-wrap gap-1">
+                    {data.pairedFood.map((food) => (
+                      <Badge key={food} variant="outline" className="text-xs bg-gray-50 text-gray-700 border-gray-300">
+                        {food}
+                      </Badge>
+                    ))}
+                  </div>
+                </motion.div>
               ) : (
                 <motion.p 
                   key="food-placeholder"
@@ -162,7 +162,7 @@ export function WineCardPreview({ data, theme }: WineCardPreviewProps) {
                   exit={{ opacity: 0, y: -4 }}
                   transition={{ duration: 0.2 }}
                 >
-                  料理をまだ入力していません
+                  料理をまだ選んでいません
                 </motion.p>
               )}
             </AnimatePresence>

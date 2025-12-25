@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-import { insertWineCardSchema, type InsertWineCard, COMMENT_OPTIONS } from "@shared/schema";
+import { insertWineCardSchema, type InsertWineCard, COMMENT_OPTIONS, PAIRED_FOOD_OPTIONS } from "@shared/schema";
 import { useCreateWineCard } from "@/hooks/use-wine-cards";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { RatingInput } from "@/components/RatingInput";
@@ -28,7 +28,7 @@ export default function Home() {
       wineName: "",
       location: "",
       price: 5000,
-      pairedFood: "",
+      pairedFood: [],
       myComment: [],
       partnerComment: [],
       myRating: 0,
@@ -142,16 +142,31 @@ export default function Home() {
 
                   {/* Paired Food */}
                   <div className="space-y-2">
-                    <Label htmlFor="pairedFood" className="text-sm font-body">このワインに合う料理</Label>
-                    <Input
-                      id="pairedFood"
-                      placeholder="例）チーズ、ステーキ、和食"
-                      className="h-10 text-sm font-body bg-gray-50/30 border-gray-200 focus-visible:ring-1 focus-visible:ring-primary/20"
-                      {...form.register("pairedFood")}
-                    />
-                    {form.formState.errors.pairedFood && (
-                      <p className="text-sm text-destructive font-body">{form.formState.errors.pairedFood.message}</p>
-                    )}
+                    <Label className="text-sm font-body">このワインに合う料理</Label>
+                    <div className="flex flex-wrap gap-2">
+                      {PAIRED_FOOD_OPTIONS.map((option) => (
+                        <button
+                          key={option}
+                          type="button"
+                          onClick={() => {
+                            const current = watchedValues.pairedFood ?? [];
+                            if (current.includes(option)) {
+                              form.setValue("pairedFood", current.filter((c) => c !== option));
+                            } else {
+                              form.setValue("pairedFood", [...current, option]);
+                            }
+                          }}
+                          className={cn(
+                            "px-3 py-1.5 rounded-full text-sm font-body transition-all",
+                            (watchedValues.pairedFood?.includes(option) ?? false)
+                              ? "bg-[#722F37] text-white"
+                              : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                          )}
+                        >
+                          {option}
+                        </button>
+                      ))}
+                    </div>
                   </div>
                 </div>
 

@@ -7,7 +7,7 @@ export const wineCards = pgTable("wine_cards", {
   wineName: text("wine_name").notNull(),
   location: text("location").notNull(),
   price: integer("price").notNull(),
-  pairedFood: text("paired_food").notNull(),
+  pairedFood: text("paired_food").array().notNull(),
   myComment: text("my_comment").array().notNull(),
   partnerComment: text("partner_comment").array().notNull(),
   myRating: integer("my_rating").notNull(),
@@ -38,6 +38,19 @@ export const COMMENT_OPTIONS = [
   "爽やか",
   "上品",
   "クリーミー",
+] as const;
+
+export const PAIRED_FOOD_OPTIONS = [
+  "チーズ",
+  "ステーキ",
+  "魚料理",
+  "和食",
+  "パスタ",
+  "チョコレート",
+  "デザート",
+  "海鮮",
+  "フルーツ",
+  "前菜",
 ] as const;
 
 export type InsertWineCard = z.infer<typeof insertWineCardSchema>;
