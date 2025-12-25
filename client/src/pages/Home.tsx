@@ -28,6 +28,7 @@ export default function Home() {
       wineName: "",
       location: "",
       price: 5000,
+      pairedFood: "",
       myComment: [],
       partnerComment: [],
       myRating: 0,
@@ -137,6 +138,20 @@ export default function Home() {
                         className="w-full"
                       />
                     </motion.div>
+                  </div>
+
+                  {/* Paired Food */}
+                  <div className="space-y-2">
+                    <Label htmlFor="pairedFood" className="text-sm font-body">このワインに合う料理</Label>
+                    <Input
+                      id="pairedFood"
+                      placeholder="例）チーズ、ステーキ、和食"
+                      className="h-10 text-sm font-body bg-gray-50/30 border-gray-200 focus-visible:ring-1 focus-visible:ring-primary/20"
+                      {...form.register("pairedFood")}
+                    />
+                    {form.formState.errors.pairedFood && (
+                      <p className="text-sm text-destructive font-body">{form.formState.errors.pairedFood.message}</p>
+                    )}
                   </div>
                 </div>
 

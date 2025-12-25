@@ -75,7 +75,7 @@ export function WineCardPreview({ data, theme }: WineCardPreviewProps) {
 
           {/* Wine Information */}
           <motion.div 
-            className="text-sm overflow-hidden min-h-[1.5rem]"
+            className="text-sm overflow-hidden space-y-2"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.3 }}
@@ -128,6 +128,41 @@ export function WineCardPreview({ data, theme }: WineCardPreviewProps) {
                   transition={{ duration: 0.2 }}
                 >
                   場所と価格をまだ入力していません
+                </motion.p>
+              )}
+            </AnimatePresence>
+
+            {/* Paired Food */}
+            <AnimatePresence mode="wait">
+              {data.pairedFood ? (
+                <motion.p 
+                  key="food"
+                  className={cn("font-body", cardStyles.text)}
+                  initial={{ opacity: 0, y: 4 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -4 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <span className="opacity-60">ペアリング: </span>
+                  <motion.span
+                    key={`food-${data.pairedFood}`}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    {data.pairedFood}
+                  </motion.span>
+                </motion.p>
+              ) : (
+                <motion.p 
+                  key="food-placeholder"
+                  className={cn("font-body text-gray-300 italic", cardStyles.text)}
+                  initial={{ opacity: 0, y: 4 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -4 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  料理をまだ入力していません
                 </motion.p>
               )}
             </AnimatePresence>
