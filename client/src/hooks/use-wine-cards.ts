@@ -26,10 +26,6 @@ export function useCreateWineCard() {
       return data;
     },
     onSuccess: () => {
-      toast({
-        title: "Card Generated",
-        description: "Your wine memory has been beautifully captured.",
-      });
       // In a real app with a list:
       // queryClient.invalidateQueries({ queryKey: ['/api/wine-cards'] });
     },

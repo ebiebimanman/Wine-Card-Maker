@@ -74,19 +74,22 @@ export function WineCardPreview({ data, theme }: WineCardPreviewProps) {
           </div>
 
           {/* Wine Information */}
-          <div className="space-y-1 text-sm">
-            {data.location && (
-              <p className={cn("font-body", cardStyles.text)}>
-                <span className="opacity-60">場所: </span>
-                {data.location}
-              </p>
-            )}
-            {data.price && (
-              <p className={cn("font-body", cardStyles.text)}>
-                <span className="opacity-60">価格: </span>
-                ¥{data.price.toLocaleString()}
-              </p>
-            )}
+          <div className="text-sm">
+            <p className={cn("font-body", cardStyles.text)}>
+              {data.location && (
+                <>
+                  <span className="opacity-60">場所: </span>
+                  <span>{data.location}</span>
+                  {data.price && <span className="mx-2">|</span>}
+                </>
+              )}
+              {data.price && (
+                <>
+                  <span className="opacity-60">価格: </span>
+                  <span>¥{data.price.toLocaleString()}</span>
+                </>
+              )}
+            </p>
           </div>
         </div>
 

@@ -109,7 +109,7 @@ export default function Home() {
                       id="price"
                       min={500}
                       max={10000}
-                      step={100}
+                      step={500}
                       value={[watchedValues.price ?? 5000]}
                       onValueChange={(value) => form.setValue("price", value[0])}
                       className="w-full"
