@@ -5,6 +5,8 @@ import { z } from "zod";
 export const wineCards = pgTable("wine_cards", {
   id: serial("id").primaryKey(),
   wineName: text("wine_name").notNull(),
+  location: text("location").notNull(),
+  price: integer("price").notNull(),
   myComment: text("my_comment").array().notNull(),
   partnerComment: text("partner_comment").array().notNull(),
   myRating: integer("my_rating").notNull(),
@@ -14,6 +16,8 @@ export const wineCards = pgTable("wine_cards", {
 
 export const insertWineCardSchema = createInsertSchema(wineCards).pick({
   wineName: true,
+  location: true,
+  price: true,
   myComment: true,
   partnerComment: true,
   myRating: true,

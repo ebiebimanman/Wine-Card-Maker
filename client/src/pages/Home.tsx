@@ -16,6 +16,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { Slider } from "@/components/ui/slider";
 
 export default function Home() {
   const [theme, setTheme] = useState<"red" | "white">("red");
@@ -25,6 +26,8 @@ export default function Home() {
     resolver: zodResolver(insertWineCardSchema),
     defaultValues: {
       wineName: "",
+      location: "",
+      price: 5000,
       myComment: [],
       partnerComment: [],
       myRating: 0,
@@ -79,6 +82,39 @@ export default function Home() {
                   {form.formState.errors.wineName && (
                     <p className="text-sm text-destructive font-body">{form.formState.errors.wineName.message}</p>
                   )}
+                </div>
+
+                {/* Wine Information */}
+                <div className="space-y-4">
+                  <Label className="font-display text-lg">ワイン情報</Label>
+                  
+                  {/* Location */}
+                  <div className="space-y-2">
+                    <Label htmlFor="location" className="text-sm font-body">購入した場所</Label>
+                    <Input
+                      id="location"
+                      placeholder="例）新宿の酒屋、オンラインストア"
+                      className="h-10 text-sm font-body bg-gray-50/30 border-gray-200 focus-visible:ring-1 focus-visible:ring-primary/20"
+                      {...form.register("location")}
+                    />
+                    {form.formState.errors.location && (
+                      <p className="text-sm text-destructive font-body">{form.formState.errors.location.message}</p>
+                    )}
+                  </div>
+
+                  {/* Price Slider */}
+                  <div className="space-y-2">
+                    <Label htmlFor="price" className="text-sm font-body">価格: ¥{watchedValues.price?.toLocaleString() || 5000}</Label>
+                    <Slider
+                      id="price"
+                      min={500}
+                      max={10000}
+                      step={100}
+                      value={[watchedValues.price ?? 5000]}
+                      onValueChange={(value) => form.setValue("price", value[0])}
+                      className="w-full"
+                    />
+                  </div>
                 </div>
 
                 {/* My Rating */}

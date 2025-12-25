@@ -58,7 +58,7 @@ export function WineCardPreview({ data, theme }: WineCardPreviewProps) {
             {data.wineName || "ワイン名未入力"}
           </h2>
           
-          <div className="flex justify-center gap-1">
+          <div className="flex justify-center gap-1 mb-4">
             {[1, 2, 3, 4, 5].map((i) => {
               const averageRating = (data.myRating + data.partnerRating) / 2;
               return (
@@ -71,6 +71,22 @@ export function WineCardPreview({ data, theme }: WineCardPreviewProps) {
                 />
               );
             })}
+          </div>
+
+          {/* Wine Information */}
+          <div className="space-y-1 text-sm">
+            {data.location && (
+              <p className={cn("font-body", cardStyles.text)}>
+                <span className="opacity-60">場所: </span>
+                {data.location}
+              </p>
+            )}
+            {data.price && (
+              <p className={cn("font-body", cardStyles.text)}>
+                <span className="opacity-60">価格: </span>
+                ¥{data.price.toLocaleString()}
+              </p>
+            )}
           </div>
         </div>
 
