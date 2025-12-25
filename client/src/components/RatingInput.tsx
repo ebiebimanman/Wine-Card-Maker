@@ -27,16 +27,16 @@ export function RatingInput({ value, onChange, className, readOnly = false }: Ra
           )}
         >
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: star <= value ? 1 : 0 }}
+            initial={star <= value ? { scale: 1.05, opacity: 1 } : { scale: 1, opacity: 1 }}
+            animate={{ scale: 1, opacity: 1 }}
             transition={{
-              duration: 0.2,
-              delay: star <= value ? (star - 1) * 0.1 : 0
+              duration: 0.1,
+              delay: star <= value ? (star - 1) * 0.05 : 0
             }}
           >
             <Star
               className={cn(
-                "w-6 h-6",
+                "w-6 h-6 transition-colors duration-200",
                 star <= value
                   ? "fill-accent text-accent"
                   : "fill-transparent text-muted-foreground/30 hover:text-accent/50"
