@@ -32,7 +32,7 @@ export function RatingInput({ value, onChange, className, readOnly = false }: Ra
               animate={{ scale: 1 }}
               transition={{
                 duration: 0.1,
-                delay: (star - 1) * 0.05
+                delay: (star - 1) * 0.1
               }}
             >
               <Star className="w-6 h-6 fill-accent text-accent transition-colors duration-200" />
