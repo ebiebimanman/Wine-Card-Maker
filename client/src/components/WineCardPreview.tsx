@@ -48,7 +48,7 @@ export function WineCardPreview({ data, theme }: WineCardPreviewProps) {
       {/* Content Container */}
       <div className="relative flex flex-col p-8 md:p-12">
         
-        {/* Wine Name and Ratings */}
+        {/* Wine Name and Average Rating */}
         <div className="text-center mb-6 pb-6 border-b border-gray-200">
           <h2 className={cn(
             "font-display text-2xl md:text-3xl leading-tight tracking-wide break-words mb-3",
@@ -58,38 +58,19 @@ export function WineCardPreview({ data, theme }: WineCardPreviewProps) {
             {data.wineName || "ワイン名未入力"}
           </h2>
           
-          <div className="space-y-3">
-            {/* My Rating */}
-            <div>
-              <p className={cn("text-xs uppercase tracking-widest mb-1 opacity-60", cardStyles.text)}>わたし</p>
-              <div className="flex justify-center gap-1">
-                {[1, 2, 3, 4, 5].map((i) => (
-                  <Star
-                    key={i}
-                    className={cn(
-                      "w-4 h-4",
-                      i <= data.myRating ? "fill-[#C5A059] text-[#C5A059]" : "text-gray-300"
-                    )}
-                  />
-                ))}
-              </div>
-            </div>
-
-            {/* Partner Rating */}
-            <div>
-              <p className={cn("text-xs uppercase tracking-widest mb-1 opacity-60", cardStyles.text)}>あなた</p>
-              <div className="flex justify-center gap-1">
-                {[1, 2, 3, 4, 5].map((i) => (
-                  <Star
-                    key={i}
-                    className={cn(
-                      "w-4 h-4",
-                      i <= data.partnerRating ? "fill-[#C5A059] text-[#C5A059]" : "text-gray-300"
-                    )}
-                  />
-                ))}
-              </div>
-            </div>
+          <div className="flex justify-center gap-1">
+            {[1, 2, 3, 4, 5].map((i) => {
+              const averageRating = (data.myRating + data.partnerRating) / 2;
+              return (
+                <Star
+                  key={i}
+                  className={cn(
+                    "w-5 h-5",
+                    i <= averageRating ? "fill-[#C5A059] text-[#C5A059]" : "text-gray-300"
+                  )}
+                />
+              );
+            })}
           </div>
         </div>
 
