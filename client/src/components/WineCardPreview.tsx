@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Star, Quote } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -11,6 +12,20 @@ interface WineCardPreviewProps {
 
 export function WineCardPreview({ data, theme }: WineCardPreviewProps) {
   const isRed = theme === "red";
+  const [imageSize, setImageSize] = useState<{ width: number; height: number } | null>(null);
+  const maxHeight = 320; // max-h-80 = 320px
+
+  useEffect(() => {
+    if (data.wineImage) {
+      const img = new Image();
+      img.onload = () => {
+        setImageSize({ width: img.naturalWidth, height: img.naturalHeight });
+      };
+      img.src = data.wineImage;
+    } else {
+      setImageSize(null);
+    }
+  }, [data.wineImage]);
 
   // Dynamic styles based on theme
   const cardStyles = isRed
@@ -47,6 +62,43 @@ export function WineCardPreview({ data, theme }: WineCardPreviewProps) {
 
       {/* Content Container */}
       <div className="relative flex flex-col p-8 md:p-12">
+        
+        {/* Wine Image */}
+        {data.wineImage && (
+          <div className="mb-6 -mt-4 -mx-4 md:-mx-8 flex items-center justify-center bg-gray-50/50 rounded-lg overflow-hidden">
+            {imageSize ? (
+              <motion.img
+                src={data.wineImage}
+                alt={data.wineName || "ワイン画像"}
+                className="object-contain"
+                style={{
+                  width: '100%',
+                  height: imageSize.height > maxHeight 
+                    ? `${maxHeight}px`
+                    : 'auto',
+                  maxHeight: `${maxHeight}px`,
+                  aspectRatio: `${imageSize.width} / ${imageSize.height}`,
+                }}
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.3 }}
+              />
+            ) : (
+              <motion.img
+                src={data.wineImage}
+                alt={data.wineName || "ワイン画像"}
+                className="w-full max-h-64 md:max-h-80 object-contain"
+                onLoad={(e) => {
+                  const img = e.currentTarget;
+                  setImageSize({ width: img.naturalWidth, height: img.naturalHeight });
+                }}
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.3 }}
+              />
+            )}
+          </div>
+        )}
         
         {/* Wine Name and Average Rating */}
         <div className="text-center mb-6 pb-6 border-b border-gray-200">

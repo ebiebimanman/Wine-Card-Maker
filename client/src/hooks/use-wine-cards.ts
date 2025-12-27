@@ -1,6 +1,8 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { api, type InsertWineCard } from "@shared/routes";
+import { api } from "@shared/routes";
+import { type InsertWineCard } from "@shared/schema";
 import { useToast } from "@/hooks/use-toast";
+import { apiRequest } from "@/lib/queryClient";
 
 // Although the prompt says "Database is not required", we will implement 
 // the hook to match the schema for form validation and potential future connection.
@@ -13,12 +15,11 @@ export function useCreateWineCard() {
   return useMutation({
     mutationFn: async (data: InsertWineCard) => {
       // In a real app, this would hit the API
-      // const res = await fetch(api.wineCards.create.path, {
-      //   method: api.wineCards.create.method,
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify(data),
-      // });
-      // if (!res.ok) throw new Error('Failed to create card');
+      // const res = await apiRequest(
+      //   api.wineCards.create.method,
+      //   api.wineCards.create.path,
+      //   data
+      // );
       // return await res.json();
 
       // MOCK implementation for the "Generator" feel (instant success)

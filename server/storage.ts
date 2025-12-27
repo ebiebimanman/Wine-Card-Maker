@@ -19,7 +19,11 @@ export class MemStorage implements IStorage {
 
   async createWineCard(insertCard: InsertWineCard): Promise<WineCard> {
     const id = this.currentId++;
-    const card: WineCard = { ...insertCard, id };
+    const card: WineCard = { 
+      ...insertCard, 
+      id,
+      wineImage: insertCard.wineImage ?? null
+    };
     this.cards.set(id, card);
     return card;
   }

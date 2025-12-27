@@ -13,6 +13,7 @@ export const wineCards = pgTable("wine_cards", {
   myRating: integer("my_rating").notNull(),
   partnerRating: integer("partner_rating").notNull(),
   themeColor: text("theme_color").notNull(), // 'red' | 'white'
+  wineImage: text("wine_image"), // Base64 encoded image or URL
 });
 
 export const insertWineCardSchema = createInsertSchema(wineCards).pick({
@@ -25,6 +26,9 @@ export const insertWineCardSchema = createInsertSchema(wineCards).pick({
   myRating: true,
   partnerRating: true,
   themeColor: true,
+  wineImage: true,
+}).extend({
+  wineImage: z.string().optional(),
 });
 
 export const COMMENT_OPTIONS = [
