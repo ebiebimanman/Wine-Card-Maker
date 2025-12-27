@@ -63,12 +63,16 @@ export default function Home() {
           })
         );
 
+        // iPhone Safari用の設定調整
+        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+        const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+        
         const canvas = await html2canvas(cardRef.current, {
           backgroundColor: "transparent",
           scale: 2,
-          useCORS: true,
+          useCORS: !isIOS, // iOSではuseCORSを無効化
           logging: false,
-          allowTaint: true,
+          allowTaint: isIOS, // iOSではallowTaintを有効化
           onclone: (clonedDoc) => {
             // クローンされたドキュメント内の画像要素を修正
             const clonedImages = clonedDoc.querySelectorAll('img');
@@ -106,19 +110,73 @@ export default function Home() {
           },
         });
         
-        const link = document.createElement("a");
-        link.href = canvas.toDataURL("image/png");
-        link.download = `wine-card-${data.wineName || "untitled"}.png`;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+        // 画像データを取得
+        const dataUrl = canvas.toDataURL("image/png", 1.0);
         
-        setTimeout(() => {
-          toast({
-            title: "カメラロールに保存しました",
-            description: "ワインカードがダウンロードフォルダに保存されました。",
+        // iPhone Safariの場合はWeb Share APIを使用
+        if (isIOS && navigator.share) {
+          try {
+            // Blobに変換
+            const blob = await (await fetch(dataUrl)).blob();
+            const file = new File([blob], `wine-card-${data.wineName || "untitled"}.png`, {
+              type: "image/png",
+            });
+            
+            if (navigator.canShare && navigator.canShare({ files: [file] })) {
+              await navigator.share({
+                files: [file],
+                title: `ワインカード: ${data.wineName || "untitled"}`,
+              });
+              
+              toast({
+                title: "画像を共有しました",
+                description: "画像を保存または共有してください。",
+              });
+            } else {
+              // Web Share APIが使えない場合はフォールバック
+              throw new Error("Web Share API not available");
+            }
+          } catch (shareError) {
+            // Web Share APIが失敗した場合は通常のダウンロードを試みる
+            console.log("Web Share API failed, falling back to download:", shareError);
+            const link = document.createElement("a");
+            link.href = dataUrl;
+            link.download = `wine-card-${data.wineName || "untitled"}.png`;
+            link.style.display = "none";
+            document.body.appendChild(link);
+            
+            // ユーザーインタラクションのコンテキスト内で実行
+            requestAnimationFrame(() => {
+              link.click();
+              setTimeout(() => {
+                document.body.removeChild(link);
+                toast({
+                  title: "画像を保存しました",
+                  description: "画像のダウンロードを開始しました。",
+                });
+              }, 100);
+            });
+          }
+        } else {
+          // 通常のダウンロード方法
+          const link = document.createElement("a");
+          link.href = dataUrl;
+          link.download = `wine-card-${data.wineName || "untitled"}.png`;
+          link.style.display = "none";
+          document.body.appendChild(link);
+          
+          // ユーザーインタラクションのコンテキスト内で実行
+          requestAnimationFrame(() => {
+            link.click();
+            setTimeout(() => {
+              document.body.removeChild(link);
+              toast({
+                title: "カメラロールに保存しました",
+                description: "ワインカードがダウンロードフォルダに保存されました。",
+              });
+            }, 100);
           });
-        }, 300);
+        }
       } else {
         console.error("cardRef.current is null");
         throw new Error("Card element not found");
