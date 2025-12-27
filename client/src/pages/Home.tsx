@@ -113,52 +113,98 @@ export default function Home() {
         // 画像データを取得
         const dataUrl = canvas.toDataURL("image/png", 1.0);
         
-        // iPhone Safariの場合はWeb Share APIを使用
-        if (isIOS && navigator.share) {
+        // iPhone Safariの場合は、画像を新しいウィンドウで開いて長押しで保存できるようにする
+        if (isIOS) {
           try {
-            // Blobに変換
-            const blob = await (await fetch(dataUrl)).blob();
-            const file = new File([blob], `wine-card-${data.wineName || "untitled"}.png`, {
-              type: "image/png",
-            });
-            
-            if (navigator.canShare && navigator.canShare({ files: [file] })) {
-              await navigator.share({
-                files: [file],
-                title: `ワインカード: ${data.wineName || "untitled"}`,
+            // まずWeb Share APIを試す
+            if (navigator.share) {
+              // Base64をBlobに変換
+              const response = await fetch(dataUrl);
+              const blob = await response.blob();
+              const file = new File([blob], `wine-card-${data.wineName || "untitled"}.png`, {
+                type: "image/png",
               });
               
+              // ファイル共有がサポートされているか確認
+              if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                await navigator.share({
+                  files: [file],
+                  title: `ワインカード: ${data.wineName || "untitled"}`,
+                });
+                
+                toast({
+                  title: "画像を共有しました",
+                  description: "「写真に保存」を選択してカメラロールに保存できます。",
+                });
+                return; // 成功したら終了
+              }
+            }
+            
+            // Web Share APIが使えない場合は、画像を新しいウィンドウで開く
+            const newWindow = window.open();
+            if (newWindow) {
+              newWindow.document.write(`
+                <!DOCTYPE html>
+                <html>
+                  <head>
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    <title>ワインカード</title>
+                    <style>
+                      body {
+                        margin: 0;
+                        padding: 20px;
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                        justify-content: center;
+                        min-height: 100vh;
+                        background: #f5f5f0;
+                      }
+                      img {
+                        max-width: 100%;
+                        height: auto;
+                        border-radius: 8px;
+                        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+                      }
+                      p {
+                        margin-top: 20px;
+                        color: #666;
+                        text-align: center;
+                        font-size: 14px;
+                      }
+                    </style>
+                  </head>
+                  <body>
+                    <img src="${dataUrl}" alt="ワインカード" />
+                    <p>画像を長押しして「写真に保存」を選択してください</p>
+                  </body>
+                </html>
+              `);
+              newWindow.document.close();
+              
               toast({
-                title: "画像を共有しました",
-                description: "画像を保存または共有してください。",
+                title: "画像を表示しました",
+                description: "画像を長押しして「写真に保存」を選択してください。",
               });
             } else {
-              // Web Share APIが使えない場合はフォールバック
-              throw new Error("Web Share API not available");
+              throw new Error("ポップアップがブロックされました");
             }
-          } catch (shareError) {
-            // Web Share APIが失敗した場合は通常のダウンロードを試みる
-            console.log("Web Share API failed, falling back to download:", shareError);
-            const link = document.createElement("a");
-            link.href = dataUrl;
-            link.download = `wine-card-${data.wineName || "untitled"}.png`;
-            link.style.display = "none";
-            document.body.appendChild(link);
+          } catch (error) {
+            console.error("iOS保存エラー:", error);
+            // 最後の手段：画像を直接表示
+            const img = document.createElement("img");
+            img.src = dataUrl;
+            img.style.cssText = "position: fixed; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; background: #000; z-index: 9999;";
+            img.onclick = () => document.body.removeChild(img);
+            document.body.appendChild(img);
             
-            // ユーザーインタラクションのコンテキスト内で実行
-            requestAnimationFrame(() => {
-              link.click();
-              setTimeout(() => {
-                document.body.removeChild(link);
-                toast({
-                  title: "画像を保存しました",
-                  description: "画像のダウンロードを開始しました。",
-                });
-              }, 100);
+            toast({
+              title: "画像を表示しました",
+              description: "画像を長押しして「写真に保存」を選択してください。",
             });
           }
         } else {
-          // 通常のダウンロード方法
+          // 通常のダウンロード方法（PC/Android）
           const link = document.createElement("a");
           link.href = dataUrl;
           link.download = `wine-card-${data.wineName || "untitled"}.png`;
