@@ -22,6 +22,26 @@ app.use(
 
 app.use(express.urlencoded({ extended: false }));
 
+// CORS設定
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
+  // 同じオリジンからのリクエスト、またはVercel環境ではすべてのオリジンからのリクエストを許可
+  if (origin || process.env.VERCEL) {
+    res.setHeader("Access-Control-Allow-Origin", origin || "*");
+    res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS, PATCH");
+    res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Requested-With");
+    res.setHeader("Access-Control-Allow-Credentials", "true");
+    res.setHeader("Access-Control-Max-Age", "86400"); // 24時間
+  }
+  
+  // OPTIONSリクエストの処理（プリフライトリクエスト）
+  if (req.method === "OPTIONS") {
+    return res.sendStatus(200);
+  }
+  
+  next();
+});
+
 export function log(message: string, source = "express") {
   const formattedTime = new Date().toLocaleTimeString("en-US", {
     hour: "numeric",
