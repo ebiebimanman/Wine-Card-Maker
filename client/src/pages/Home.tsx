@@ -46,6 +46,9 @@ export default function Home() {
   const watchedValues = form.watch();
 
   const onSubmit = async (data: InsertWineCard) => {
+    // #region agent log
+    fetch('http://127.0.0.1:7242/ingest/707c110a-8138-4312-88af-89e602fc9763',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'Home.tsx:48',message:'onSubmit呼び出し',data:{wineName:data.wineName,themeColor:data.themeColor},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'C'})}).catch(()=>{});
+    // #endregion
     try {
       if (cardRef.current) {
         const canvas = await html2canvas(cardRef.current, {
