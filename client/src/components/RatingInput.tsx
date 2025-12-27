@@ -53,7 +53,6 @@ export function RatingInput({ value, onChange, className, readOnly = false }: Ra
             type="button"
             disabled={readOnly || isAnimating}
             onClick={() => onChange(star)}
-            whileHover={!readOnly && !isAnimating ? { scale: 1.1 } : {}}
             whileTap={!readOnly && !isAnimating ? { scale: 0.95 } : {}}
             className={cn(
               "relative p-1 focus:outline-none",
@@ -61,7 +60,7 @@ export function RatingInput({ value, onChange, className, readOnly = false }: Ra
             )}
           >
             {/* 背景の星（常に表示） */}
-            <Star className="w-6 h-6 fill-transparent text-muted-foreground/30 hover:text-accent/50 transition-colors duration-200" />
+            <Star className="w-6 h-6 fill-transparent text-muted-foreground/30" />
             
             {/* 色付きの星（オーバーレイ） */}
             {isFilled && (

@@ -19,12 +19,22 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Slider } from "@/components/ui/slider";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 export default function Home() {
   const [theme, setTheme] = useState<"red" | "white">("red");
   const createMutation = useCreateWineCard();
   const { toast } = useToast();
   const cardRef = useRef<HTMLDivElement>(null);
+  const [savedImageUrl, setSavedImageUrl] = useState<string | null>(null);
+  const [isImageModalOpen, setIsImageModalOpen] = useState(false);
+  const [animatingButtons, setAnimatingButtons] = useState<Set<string>>(new Set());
 
   const form = useForm<InsertWineCard>({
     resolver: zodResolver(insertWineCardSchema),
@@ -54,7 +64,7 @@ export default function Home() {
         await Promise.all(
           Array.from(images).map((img) => {
             if (img.complete) return Promise.resolve();
-            return new Promise<void>((resolve, reject) => {
+            return new Promise<void>((resolve) => {
               img.onload = () => resolve();
               img.onerror = () => resolve(); // エラーでも続行
               // タイムアウト設定（5秒）
@@ -63,155 +73,38 @@ export default function Home() {
           })
         );
 
-        // iPhone Safari用の設定調整
-        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-        const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+        // タッチデバイスかどうかを判定
+        const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
         
-        const canvas = await html2canvas(cardRef.current, {
-          backgroundColor: "transparent",
-          scale: 2,
-          useCORS: !isIOS, // iOSではuseCORSを無効化
-          logging: false,
-          allowTaint: isIOS, // iOSではallowTaintを有効化
-          onclone: (clonedDoc) => {
-            // クローンされたドキュメント内の画像要素を修正
-            const clonedImages = clonedDoc.querySelectorAll('img');
-            clonedImages.forEach((img) => {
-              const originalImg = Array.from(images).find(
-                (orig) => orig.src === (img as HTMLImageElement).src
-              );
-              if (originalImg && originalImg.parentElement) {
-                // 元の画像の実際のサイズを取得
-                const naturalWidth = originalImg.naturalWidth;
-                const naturalHeight = originalImg.naturalHeight;
-                const maxHeight = 320; // max-h-80
-                
-                // コンテナの幅を取得（親要素の幅）
-                const containerWidth = originalImg.parentElement.clientWidth || cardRef.current?.clientWidth || 400;
-                
-                // 比率を維持しながら、最大高さを考慮してサイズを計算
-                const aspectRatio = naturalWidth / naturalHeight;
-                let displayWidth = containerWidth;
-                let displayHeight = containerWidth / aspectRatio;
-                
-                // 最大高さを超える場合は、高さを制限して幅を調整
-                if (displayHeight > maxHeight) {
-                  displayHeight = maxHeight;
-                  displayWidth = maxHeight * aspectRatio;
-                }
-                
-                // 明示的なサイズを設定
-                (img as HTMLImageElement).style.width = `${displayWidth}px`;
-                (img as HTMLImageElement).style.height = `${displayHeight}px`;
-                (img as HTMLImageElement).style.objectFit = 'contain';
-                (img as HTMLImageElement).style.maxHeight = `${maxHeight}px`;
-              }
-            });
+        // html-to-imageで画像を生成
+        const dataUrl = await toPng(cardRef.current, {
+          backgroundColor: "#F5F5F0",
+          quality: 1.0,
+          pixelRatio: 2,
+          cacheBust: true, // CORS問題を回避
+          filter: (node) => {
+            // 不要な要素を除外
+            return !(node as HTMLElement).classList?.contains('hidden');
           },
         });
         
-        // 画像データを取得
-        const dataUrl = canvas.toDataURL("image/png", 1.0);
-        
-        // iPhone Safariの場合は、画像を新しいウィンドウで開いて長押しで保存できるようにする
-        if (isIOS) {
-          try {
-            // まずWeb Share APIを試す
-            if (navigator.share) {
-              // Base64をBlobに変換
-              const response = await fetch(dataUrl);
-              const blob = await response.blob();
-              const file = new File([blob], `wine-card-${data.wineName || "untitled"}.png`, {
-                type: "image/png",
-              });
-              
-              // ファイル共有がサポートされているか確認
-              if (navigator.canShare && navigator.canShare({ files: [file] })) {
-                await navigator.share({
-                  files: [file],
-                  title: `ワインカード: ${data.wineName || "untitled"}`,
-                });
-                
-                toast({
-                  title: "画像を共有しました",
-                  description: "「写真に保存」を選択してカメラロールに保存できます。",
-                });
-                return; // 成功したら終了
-              }
-            }
-            
-            // Web Share APIが使えない場合は、画像を新しいウィンドウで開く
-            const newWindow = window.open();
-            if (newWindow) {
-              newWindow.document.write(`
-                <!DOCTYPE html>
-                <html>
-                  <head>
-                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                    <title>ワインカード</title>
-                    <style>
-                      body {
-                        margin: 0;
-                        padding: 20px;
-                        display: flex;
-                        flex-direction: column;
-                        align-items: center;
-                        justify-content: center;
-                        min-height: 100vh;
-                        background: #f5f5f0;
-                      }
-                      img {
-                        max-width: 100%;
-                        height: auto;
-                        border-radius: 8px;
-                        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-                      }
-                      p {
-                        margin-top: 20px;
-                        color: #666;
-                        text-align: center;
-                        font-size: 14px;
-                      }
-                    </style>
-                  </head>
-                  <body>
-                    <img src="${dataUrl}" alt="ワインカード" />
-                    <p>画像を長押しして「写真に保存」を選択してください</p>
-                  </body>
-                </html>
-              `);
-              newWindow.document.close();
-              
-              toast({
-                title: "画像を表示しました",
-                description: "画像を長押しして「写真に保存」を選択してください。",
-              });
-            } else {
-              throw new Error("ポップアップがブロックされました");
-            }
-          } catch (error) {
-            console.error("iOS保存エラー:", error);
-            // 最後の手段：画像を直接表示
-            const img = document.createElement("img");
-            img.src = dataUrl;
-            img.style.cssText = "position: fixed; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; background: #000; z-index: 9999;";
-            img.onclick = () => document.body.removeChild(img);
-            document.body.appendChild(img);
-            
-            toast({
-              title: "画像を表示しました",
-              description: "画像を長押しして「写真に保存」を選択してください。",
-            });
-          }
+        if (isTouchDevice) {
+          // スマホ（タッチデバイス）の場合はモーダルで表示
+          setSavedImageUrl(dataUrl);
+          setIsImageModalOpen(true);
+          
+          toast({
+            title: "画像を生成しました",
+            description: "画像を長押しして「写真に保存」を選択してください。",
+          });
         } else {
-          // 通常のダウンロード方法（PC/Android）
+          // PCの場合はダウンロード
           const link = document.createElement("a");
           link.href = dataUrl;
           link.download = `wine-card-${data.wineName || "untitled"}.png`;
           link.style.display = "none";
           document.body.appendChild(link);
           
-          // ユーザーインタラクションのコンテキスト内で実行
           requestAnimationFrame(() => {
             link.click();
             setTimeout(() => {
@@ -447,28 +340,56 @@ export default function Home() {
                   <div className="space-y-2">
                     <Label className="text-sm font-body">このワインに合う料理</Label>
                     <div className="flex flex-wrap gap-2">
-                      {PAIRED_FOOD_OPTIONS.map((option) => (
-                        <button
-                          key={option}
-                          type="button"
-                          onClick={() => {
-                            const current = watchedValues.pairedFood ?? [];
-                            if (current.includes(option)) {
-                              form.setValue("pairedFood", current.filter((c) => c !== option));
-                            } else {
-                              form.setValue("pairedFood", [...current, option]);
-                            }
-                          }}
-                          className={cn(
-                            "px-3 py-1.5 rounded-full text-sm font-body transition-all",
-                            (watchedValues.pairedFood?.includes(option) ?? false)
-                              ? "bg-[#722F37] text-white"
-                              : "bg-gray-200 text-gray-700 hover:bg-gray-300"
-                          )}
-                        >
-                          {option}
-                        </button>
-                      ))}
+                      {PAIRED_FOOD_OPTIONS.map((option) => {
+                        const isSelected = (watchedValues.pairedFood?.includes(option) ?? false);
+                        const buttonKey = `pairedFood-${option}`;
+                        const isAnimating = animatingButtons.has(buttonKey);
+                        // 各ボタンに固定のランダムな回転角度を割り当て（optionのハッシュから生成）
+                        const randomRotate = ((option.charCodeAt(0) + option.length) % 8) - 4; // -4度から4度
+                        
+                        return (
+                          <motion.button
+                            key={option}
+                            type="button"
+                            onTap={() => {
+                              setAnimatingButtons(prev => new Set(prev).add(buttonKey));
+                              // アニメーション完了後に色を変更
+                              setTimeout(() => {
+                                const current = watchedValues.pairedFood ?? [];
+                                if (current.includes(option)) {
+                                  form.setValue("pairedFood", current.filter((c) => c !== option));
+                                } else {
+                                  form.setValue("pairedFood", [...current, option]);
+                                }
+                                setAnimatingButtons(prev => {
+                                  const next = new Set(prev);
+                                  next.delete(buttonKey);
+                                  return next;
+                                });
+                              }, 300); // アニメーションの長さに合わせる
+                            }}
+                            animate={isAnimating ? {
+                              scale: [1, 1.1, 1],
+                              rotate: [0, randomRotate, 0],
+                            } : {
+                              scale: 1,
+                              rotate: 0,
+                            }}
+                            transition={{
+                              duration: 0.3,
+                              ease: "easeOut",
+                            }}
+                            className={cn(
+                              "px-3 py-1.5 rounded-full text-sm font-body transition-colors duration-300",
+                              isSelected && !isAnimating
+                                ? "bg-[#722F37] text-white"
+                                : "bg-gray-200 text-gray-700"
+                            )}
+                          >
+                            {option}
+                          </motion.button>
+                        );
+                      })}
                     </div>
                   </div>
                 </div>
@@ -491,28 +412,56 @@ export default function Home() {
                 <div className="space-y-2">
                   <Label className="font-display text-lg">わたしの感想</Label>
                   <div className="flex flex-wrap gap-2">
-                    {COMMENT_OPTIONS.map((option) => (
-                      <button
-                        key={option}
-                        type="button"
-                        onClick={() => {
-                          const current = watchedValues.myComment ?? [];
-                          if (current.includes(option)) {
-                            form.setValue("myComment", current.filter((c) => c !== option));
-                          } else {
-                            form.setValue("myComment", [...current, option]);
-                          }
-                        }}
-                        className={cn(
-                          "px-3 py-1.5 rounded-full text-sm font-body transition-all",
-                          (watchedValues.myComment?.includes(option) ?? false)
-                            ? "bg-[#722F37] text-white"
-                            : "bg-gray-200 text-gray-700 hover:bg-gray-300"
-                        )}
-                      >
-                        {option}
-                      </button>
-                    ))}
+                    {COMMENT_OPTIONS.map((option) => {
+                      const isSelected = (watchedValues.myComment?.includes(option) ?? false);
+                      const buttonKey = `myComment-${option}`;
+                      const isAnimating = animatingButtons.has(buttonKey);
+                      // 各ボタンに固定のランダムな回転角度を割り当て（optionのハッシュから生成）
+                      const randomRotate = ((option.charCodeAt(0) + option.length) % 8) - 4; // -4度から4度
+                      
+                      return (
+                        <motion.button
+                          key={option}
+                          type="button"
+                          onTap={() => {
+                            setAnimatingButtons(prev => new Set(prev).add(buttonKey));
+                            // アニメーション完了後に色を変更
+                            setTimeout(() => {
+                              const current = watchedValues.myComment ?? [];
+                              if (current.includes(option)) {
+                                form.setValue("myComment", current.filter((c) => c !== option));
+                              } else {
+                                form.setValue("myComment", [...current, option]);
+                              }
+                              setAnimatingButtons(prev => {
+                                const next = new Set(prev);
+                                next.delete(buttonKey);
+                                return next;
+                              });
+                            }, 300); // アニメーションの長さに合わせる
+                          }}
+                          animate={isAnimating ? {
+                            scale: [1, 1.1, 1],
+                            rotate: [0, randomRotate, 0],
+                          } : {
+                            scale: 1,
+                            rotate: 0,
+                          }}
+                            transition={{
+                              duration: 0.3,
+                              ease: "easeOut",
+                            }}
+                            className={cn(
+                              "px-3 py-1.5 rounded-full text-sm font-body transition-colors duration-300",
+                              isSelected && !isAnimating
+                                ? "bg-[#722F37] text-white"
+                                : "bg-gray-200 text-gray-700"
+                            )}
+                        >
+                          {option}
+                        </motion.button>
+                      );
+                    })}
                   </div>
                 </div>
 
@@ -534,28 +483,56 @@ export default function Home() {
                 <div className="space-y-2">
                   <Label className="font-display text-lg">あなたの感想</Label>
                   <div className="flex flex-wrap gap-2">
-                    {COMMENT_OPTIONS.map((option) => (
-                      <button
-                        key={option}
-                        type="button"
-                        onClick={() => {
-                          const current = watchedValues.partnerComment ?? [];
-                          if (current.includes(option)) {
-                            form.setValue("partnerComment", current.filter((c) => c !== option));
-                          } else {
-                            form.setValue("partnerComment", [...current, option]);
-                          }
-                        }}
-                        className={cn(
-                          "px-3 py-1.5 rounded-full text-sm font-body transition-all",
-                          (watchedValues.partnerComment?.includes(option) ?? false)
-                            ? "bg-[#722F37] text-white"
-                            : "bg-gray-200 text-gray-700 hover:bg-gray-300"
-                        )}
-                      >
-                        {option}
-                      </button>
-                    ))}
+                    {COMMENT_OPTIONS.map((option) => {
+                      const isSelected = (watchedValues.partnerComment?.includes(option) ?? false);
+                      const buttonKey = `partnerComment-${option}`;
+                      const isAnimating = animatingButtons.has(buttonKey);
+                      // 各ボタンに固定のランダムな回転角度を割り当て（optionのハッシュから生成）
+                      const randomRotate = ((option.charCodeAt(0) + option.length) % 8) - 4; // -4度から4度
+                      
+                      return (
+                        <motion.button
+                          key={option}
+                          type="button"
+                          onTap={() => {
+                            setAnimatingButtons(prev => new Set(prev).add(buttonKey));
+                            // アニメーション完了後に色を変更
+                            setTimeout(() => {
+                              const current = watchedValues.partnerComment ?? [];
+                              if (current.includes(option)) {
+                                form.setValue("partnerComment", current.filter((c) => c !== option));
+                              } else {
+                                form.setValue("partnerComment", [...current, option]);
+                              }
+                              setAnimatingButtons(prev => {
+                                const next = new Set(prev);
+                                next.delete(buttonKey);
+                                return next;
+                              });
+                            }, 300); // アニメーションの長さに合わせる
+                          }}
+                          animate={isAnimating ? {
+                            scale: [1, 1.1, 1],
+                            rotate: [0, randomRotate, 0],
+                          } : {
+                            scale: 1,
+                            rotate: 0,
+                          }}
+                            transition={{
+                              duration: 0.3,
+                              ease: "easeOut",
+                            }}
+                            className={cn(
+                              "px-3 py-1.5 rounded-full text-sm font-body transition-colors duration-300",
+                              isSelected && !isAnimating
+                                ? "bg-[#722F37] text-white"
+                                : "bg-gray-200 text-gray-700"
+                            )}
+                        >
+                          {option}
+                        </motion.button>
+                      );
+                    })}
                   </div>
                 </div>
 
@@ -611,6 +588,31 @@ export default function Home() {
 
         </div>
       </div>
+
+      {/* 画像保存モーダル（スマホ用） */}
+      <Dialog open={isImageModalOpen} onOpenChange={setIsImageModalOpen}>
+        <DialogContent className="max-w-[95vw] max-h-[95vh] p-4">
+          <DialogHeader>
+            <DialogTitle>ワインカード</DialogTitle>
+            <DialogDescription>
+              画像を長押しして「写真に保存」を選択してください
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex flex-col items-center justify-center space-y-4">
+            {savedImageUrl && (
+              <img
+                src={savedImageUrl}
+                alt="ワインカード"
+                className="max-w-full max-h-[70vh] object-contain rounded-lg"
+                style={{ userSelect: 'none', WebkitUserSelect: 'none' }}
+              />
+            )}
+            <p className="text-sm text-muted-foreground text-center">
+              ※ 画像を長押し（タップしてホールド）して「写真に保存」を選択してください
+            </p>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
