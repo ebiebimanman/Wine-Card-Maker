@@ -2,7 +2,7 @@ import { useState, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { motion, AnimatePresence } from "framer-motion";
-import { Loader2 } from "lucide-react";
+import { Loader2, Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toPng } from "html-to-image";
 
@@ -99,20 +99,20 @@ export default function Home() {
           });
         } else {
           // PCの場合はダウンロード
-          const link = document.createElement("a");
+        const link = document.createElement("a");
           link.href = dataUrl;
-          link.download = `wine-card-${data.wineName || "untitled"}.png`;
+        link.download = `wine-card-${data.wineName || "untitled"}.png`;
           link.style.display = "none";
-          document.body.appendChild(link);
+        document.body.appendChild(link);
           
           requestAnimationFrame(() => {
-            link.click();
+        link.click();
             setTimeout(() => {
-              document.body.removeChild(link);
-              toast({
-                title: "カメラロールに保存しました",
-                description: "ワインカードがダウンロードフォルダに保存されました。",
-              });
+        document.body.removeChild(link);
+          toast({
+            title: "カメラロールに保存しました",
+            description: "ワインカードがダウンロードフォルダに保存されました。",
+          });
             }, 100);
           });
         }
@@ -342,51 +342,78 @@ export default function Home() {
                     <div className="flex flex-wrap gap-2">
                       {PAIRED_FOOD_OPTIONS.map((option) => {
                         const isSelected = (watchedValues.pairedFood?.includes(option) ?? false);
-                        const buttonKey = `pairedFood-${option}`;
-                        const isAnimating = animatingButtons.has(buttonKey);
-                        // 各ボタンに固定のランダムな回転角度を割り当て（optionのハッシュから生成）
-                        const randomRotate = ((option.charCodeAt(0) + option.length) % 8) - 4; // -4度から4度
                         
                         return (
                           <motion.button
-                            key={option}
-                            type="button"
-                            onTap={() => {
-                              setAnimatingButtons(prev => new Set(prev).add(buttonKey));
-                              // アニメーション完了後に色を変更
-                              setTimeout(() => {
-                                const current = watchedValues.pairedFood ?? [];
-                                if (current.includes(option)) {
-                                  form.setValue("pairedFood", current.filter((c) => c !== option));
-                                } else {
-                                  form.setValue("pairedFood", [...current, option]);
-                                }
-                                setAnimatingButtons(prev => {
-                                  const next = new Set(prev);
-                                  next.delete(buttonKey);
-                                  return next;
-                                });
-                              }, 300); // アニメーションの長さに合わせる
-                            }}
-                            animate={isAnimating ? {
-                              scale: [1, 1.1, 1],
-                              rotate: [0, randomRotate, 0],
-                            } : {
-                              scale: 1,
-                              rotate: 0,
-                            }}
-                            transition={{
-                              duration: 0.3,
-                              ease: "easeOut",
-                            }}
-                            className={cn(
-                              "px-3 py-1.5 rounded-full text-sm font-body transition-colors duration-300",
-                              isSelected && !isAnimating
-                                ? "bg-[#722F37] text-white"
+                          key={option}
+                          type="button"
+                            layout
+                          onClick={() => {
+                            const current = watchedValues.pairedFood ?? [];
+                            if (current.includes(option)) {
+                              form.setValue("pairedFood", current.filter((c) => c !== option));
+                            } else {
+                              form.setValue("pairedFood", [...current, option]);
+                            }
+                          }}
+                            whileTap={{ scale: 0.95 }}
+                          className={cn(
+                              "relative px-3 py-1.5 rounded-full text-sm font-body overflow-hidden flex items-center gap-1.5",
+                              isSelected
+                              ? "bg-[#722F37] text-white"
                                 : "bg-gray-200 text-gray-700"
                             )}
+                            transition={{
+                              layout: { duration: 0.3, ease: "easeOut" },
+                              scale: { duration: 0.15, ease: "easeOut" },
+                            }}
                           >
-                            {option}
+                            <AnimatePresence mode="popLayout">
+                              {isSelected && (
+                                <motion.span
+                                  key="check"
+                                  initial={{ scale: 0, opacity: 0, x: -4 }}
+                                  animate={{ scale: 1, opacity: 1, x: 0 }}
+                                  exit={{ scale: 0, opacity: 0, x: -4 }}
+                                  transition={{ duration: 0.2, ease: "easeOut" }}
+                                  className="flex-shrink-0"
+                                >
+                                  <Check className="w-3.5 h-3.5" />
+                                </motion.span>
+                              )}
+                            </AnimatePresence>
+                            <motion.span
+                              key={option}
+                              layout="position"
+                              className="whitespace-nowrap inline-flex"
+                              initial="hidden"
+                              animate="visible"
+                              variants={{
+                                visible: {
+                                  transition: {
+                                    staggerChildren: 0.05,
+                                  },
+                                },
+                              }}
+                              aria-label={option}
+                            >
+                              {option.split("").map((char, index) => (
+                                <motion.span
+                                  key={`${option}-${index}`}
+                                  aria-hidden="true"
+                                  variants={{
+                                    hidden: { opacity: 0, y: 10 },
+                                    visible: { opacity: 1, y: 0 },
+                                  }}
+                                  transition={{
+                                    duration: 0.3,
+                                    ease: "easeOut",
+                                  }}
+                                >
+                                  {char === " " ? "\u00A0" : char}
+                                </motion.span>
+                              ))}
+                            </motion.span>
                           </motion.button>
                         );
                       })}
@@ -414,51 +441,77 @@ export default function Home() {
                   <div className="flex flex-wrap gap-2">
                     {COMMENT_OPTIONS.map((option) => {
                       const isSelected = (watchedValues.myComment?.includes(option) ?? false);
-                      const buttonKey = `myComment-${option}`;
-                      const isAnimating = animatingButtons.has(buttonKey);
-                      // 各ボタンに固定のランダムな回転角度を割り当て（optionのハッシュから生成）
-                      const randomRotate = ((option.charCodeAt(0) + option.length) % 8) - 4; // -4度から4度
                       
                       return (
                         <motion.button
-                          key={option}
-                          type="button"
-                          onTap={() => {
-                            setAnimatingButtons(prev => new Set(prev).add(buttonKey));
-                            // アニメーション完了後に色を変更
-                            setTimeout(() => {
-                              const current = watchedValues.myComment ?? [];
-                              if (current.includes(option)) {
-                                form.setValue("myComment", current.filter((c) => c !== option));
-                              } else {
-                                form.setValue("myComment", [...current, option]);
-                              }
-                              setAnimatingButtons(prev => {
-                                const next = new Set(prev);
-                                next.delete(buttonKey);
-                                return next;
-                              });
-                            }, 300); // アニメーションの長さに合わせる
+                        key={option}
+                        type="button"
+                          layout
+                        onClick={() => {
+                          const current = watchedValues.myComment ?? [];
+                          if (current.includes(option)) {
+                            form.setValue("myComment", current.filter((c) => c !== option));
+                          } else {
+                            form.setValue("myComment", [...current, option]);
+                          }
+                        }}
+                          whileTap={{ scale: 0.95 }}
+                        className={cn(
+                            "relative px-3 py-1.5 rounded-full text-sm font-body overflow-hidden flex items-center gap-1.5",
+                            isSelected
+                            ? "bg-[#722F37] text-white"
+                              : "bg-gray-200 text-gray-700"
+                          )}
+                          transition={{
+                            layout: { duration: 0.3, ease: "easeOut" },
                           }}
-                          animate={isAnimating ? {
-                            scale: [1, 1.1, 1],
-                            rotate: [0, randomRotate, 0],
-                          } : {
-                            scale: 1,
-                            rotate: 0,
-                          }}
-                            transition={{
-                              duration: 0.3,
-                              ease: "easeOut",
-                            }}
-                            className={cn(
-                              "px-3 py-1.5 rounded-full text-sm font-body transition-colors duration-300",
-                              isSelected && !isAnimating
-                                ? "bg-[#722F37] text-white"
-                                : "bg-gray-200 text-gray-700"
-                            )}
                         >
-                          {option}
+                          <AnimatePresence mode="popLayout">
+                            {isSelected && (
+                              <motion.span
+                                key="check"
+                                initial={{ scale: 0, opacity: 0, x: -4 }}
+                                animate={{ scale: 1, opacity: 1, x: 0 }}
+                                exit={{ scale: 0, opacity: 0, x: -4 }}
+                                transition={{ duration: 0.2, ease: "easeOut" }}
+                                className="flex-shrink-0"
+                              >
+                                <Check className="w-3.5 h-3.5" />
+                              </motion.span>
+                            )}
+                          </AnimatePresence>
+                          <motion.span
+                            key={option}
+                            layout="position"
+                            className="whitespace-nowrap inline-flex"
+                            initial="hidden"
+                            animate="visible"
+                            variants={{
+                              visible: {
+                                transition: {
+                                  staggerChildren: 0.05,
+                                },
+                              },
+                            }}
+                            aria-label={option}
+                          >
+                            {option.split("").map((char, index) => (
+                              <motion.span
+                                key={`${option}-${index}`}
+                                aria-hidden="true"
+                                variants={{
+                                  hidden: { opacity: 0, y: 10 },
+                                  visible: { opacity: 1, y: 0 },
+                                }}
+                                transition={{
+                                  duration: 0.3,
+                                  ease: "easeOut",
+                                }}
+                              >
+                                {char === " " ? "\u00A0" : char}
+                              </motion.span>
+                            ))}
+                          </motion.span>
                         </motion.button>
                       );
                     })}
@@ -485,51 +538,77 @@ export default function Home() {
                   <div className="flex flex-wrap gap-2">
                     {COMMENT_OPTIONS.map((option) => {
                       const isSelected = (watchedValues.partnerComment?.includes(option) ?? false);
-                      const buttonKey = `partnerComment-${option}`;
-                      const isAnimating = animatingButtons.has(buttonKey);
-                      // 各ボタンに固定のランダムな回転角度を割り当て（optionのハッシュから生成）
-                      const randomRotate = ((option.charCodeAt(0) + option.length) % 8) - 4; // -4度から4度
                       
                       return (
                         <motion.button
-                          key={option}
-                          type="button"
-                          onTap={() => {
-                            setAnimatingButtons(prev => new Set(prev).add(buttonKey));
-                            // アニメーション完了後に色を変更
-                            setTimeout(() => {
-                              const current = watchedValues.partnerComment ?? [];
-                              if (current.includes(option)) {
-                                form.setValue("partnerComment", current.filter((c) => c !== option));
-                              } else {
-                                form.setValue("partnerComment", [...current, option]);
-                              }
-                              setAnimatingButtons(prev => {
-                                const next = new Set(prev);
-                                next.delete(buttonKey);
-                                return next;
-                              });
-                            }, 300); // アニメーションの長さに合わせる
+                        key={option}
+                        type="button"
+                          layout
+                        onClick={() => {
+                          const current = watchedValues.partnerComment ?? [];
+                          if (current.includes(option)) {
+                            form.setValue("partnerComment", current.filter((c) => c !== option));
+                          } else {
+                            form.setValue("partnerComment", [...current, option]);
+                          }
+                        }}
+                          whileTap={{ scale: 0.95 }}
+                        className={cn(
+                            "relative px-3 py-1.5 rounded-full text-sm font-body overflow-hidden flex items-center gap-1.5",
+                            isSelected
+                            ? "bg-[#722F37] text-white"
+                              : "bg-gray-200 text-gray-700"
+                          )}
+                          transition={{
+                            layout: { duration: 0.3, ease: "easeOut" },
                           }}
-                          animate={isAnimating ? {
-                            scale: [1, 1.1, 1],
-                            rotate: [0, randomRotate, 0],
-                          } : {
-                            scale: 1,
-                            rotate: 0,
-                          }}
-                            transition={{
-                              duration: 0.3,
-                              ease: "easeOut",
-                            }}
-                            className={cn(
-                              "px-3 py-1.5 rounded-full text-sm font-body transition-colors duration-300",
-                              isSelected && !isAnimating
-                                ? "bg-[#722F37] text-white"
-                                : "bg-gray-200 text-gray-700"
-                            )}
                         >
-                          {option}
+                          <AnimatePresence mode="popLayout">
+                            {isSelected && (
+                              <motion.span
+                                key="check"
+                                initial={{ scale: 0, opacity: 0, x: -4 }}
+                                animate={{ scale: 1, opacity: 1, x: 0 }}
+                                exit={{ scale: 0, opacity: 0, x: -4 }}
+                                transition={{ duration: 0.2, ease: "easeOut" }}
+                                className="flex-shrink-0"
+                              >
+                                <Check className="w-3.5 h-3.5" />
+                              </motion.span>
+                            )}
+                          </AnimatePresence>
+                          <motion.span
+                            key={option}
+                            layout="position"
+                            className="whitespace-nowrap inline-flex"
+                            initial="hidden"
+                            animate="visible"
+                            variants={{
+                              visible: {
+                                transition: {
+                                  staggerChildren: 0.05,
+                                },
+                              },
+                            }}
+                            aria-label={option}
+                          >
+                            {option.split("").map((char, index) => (
+                              <motion.span
+                                key={`${option}-${index}`}
+                                aria-hidden="true"
+                                variants={{
+                                  hidden: { opacity: 0, y: 10 },
+                                  visible: { opacity: 1, y: 0 },
+                                }}
+                                transition={{
+                                  duration: 0.3,
+                                  ease: "easeOut",
+                                }}
+                              >
+                                {char === " " ? "\u00A0" : char}
+                              </motion.span>
+                            ))}
+                          </motion.span>
                         </motion.button>
                       );
                     })}
