@@ -13,6 +13,141 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 import { RatingInput } from "@/components/RatingInput";
 import { WineCardPreview } from "@/components/WineCardPreview";
 
+// ユニオン型の生成
+type FoodOption = typeof PAIRED_FOOD_OPTIONS[number];
+type CommentOption = typeof COMMENT_OPTIONS[number];
+
+// アイコンマッピング
+const PAIRED_FOOD_ICONS: Record<FoodOption, string> = {
+  "チーズ": "🧀",
+  "ステーキ": "🥩",
+  "魚料理": "🐟",
+  "和食": "🍣",
+  "パスタ": "🍝",
+  "チョコレート": "🍫",
+  "デザート": "🍰",
+  "海鮮": "🦐",
+  "フルーツ": "🍇",
+  "前菜": "🥗",
+};
+
+const COMMENT_ICONS: Record<CommentOption, string> = {
+  "香りが良い": "🌹",
+  "飲みやすい": "💧",
+  "後味が良い": "✨",
+  "深い味わい": "🌙",
+  "フルーティー": "🍎",
+  "華やか": "🎆",
+  "しっかりした味": "💪",
+  "爽やか": "🌿",
+  "上品": "👑",
+  "クリーミー": "☁️",
+};
+
+// マルチセレクトボタンコンポーネント
+interface MultiSelectButtonProps {
+  option: FoodOption | CommentOption;
+  isSelected: boolean;
+  icon: string;
+  onClick: () => void;
+  droplets: Array<{ id: string; angle: number; distance: number; startX: number }>;
+}
+
+function MultiSelectButton({ option, isSelected, icon, onClick, droplets }: MultiSelectButtonProps) {
+  return (
+    <motion.button
+      type="button"
+      layout
+      onClick={onClick}
+      whileTap={{ scale: 0.85, y: 4 }}
+      className={cn(
+        "relative px-3 py-1.5 rounded-full text-sm font-body flex items-center gap-1.5",
+        isSelected ? "bg-[#722F37] text-white" : "bg-gray-200 text-gray-700"
+      )}
+      transition={{
+        layout: { duration: 0.3, ease: "easeOut" },
+        scale: { type: "spring", stiffness: 400, damping: 15 },
+        y: { type: "spring", stiffness: 400, damping: 15 },
+      }}
+    >
+      <AnimatePresence>
+        {droplets.map((droplet) => (
+          <motion.div
+            key={droplet.id}
+            className="absolute w-1 h-1 rounded-full bg-[#722F37] pointer-events-none z-0"
+            style={{ left: `${droplet.startX}%`, top: "50%" }}
+            initial={{ scale: 0, opacity: 1, x: 0, y: 0 }}
+            animate={{
+              scale: [0, 1, 0.8],
+              opacity: 1,
+              x: Math.cos(droplet.angle) * droplet.distance,
+              y: Math.sin(droplet.angle) * droplet.distance,
+            }}
+            exit={{ opacity: 1, scale: 0 }}
+            transition={{ duration: 1.2, ease: [0.34, 1.56, 0.64, 1] }}
+          />
+        ))}
+      </AnimatePresence>
+      <span className="flex-shrink-0 inline-flex items-center justify-center w-5 h-5 relative z-10">
+        <AnimatePresence mode="wait" initial={false}>
+          {isSelected ? (
+            <motion.span
+              key="check"
+              className="inline-flex items-center justify-center"
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.8 }}
+              transition={{ duration: 0.2, ease: "easeOut" }}
+            >
+              <Check className="w-3.5 h-3.5" />
+            </motion.span>
+          ) : (
+            <motion.span
+              key="icon"
+              className="inline-flex items-center justify-center text-lg leading-none"
+              initial={{ opacity: 1, scale: 1 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.8 }}
+              transition={{ duration: 0.2, ease: "easeOut" }}
+            >
+              {icon}
+            </motion.span>
+          )}
+        </AnimatePresence>
+      </span>
+      <motion.span
+        key={option}
+        layout="position"
+        className="whitespace-nowrap relative z-10"
+        initial="hidden"
+        animate="visible"
+        variants={{
+          visible: {
+            transition: {
+              staggerChildren: 0.05,
+            },
+          },
+        }}
+        aria-label={option}
+      >
+        {option.split("").map((char, index) => (
+          <motion.span
+            key={`${option}-${index}`}
+            aria-hidden="true"
+            variants={{
+              hidden: { opacity: 0, y: 10 },
+              visible: { opacity: 1, y: 0 },
+            }}
+            transition={{ duration: 0.3, ease: "easeOut" }}
+          >
+            {char === " " ? "\u00A0" : char}
+          </motion.span>
+        ))}
+      </motion.span>
+    </motion.button>
+  );
+}
+
 // UI Components
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -34,12 +169,14 @@ export default function Home() {
   const cardRef = useRef<HTMLDivElement>(null);
   const [savedImageUrl, setSavedImageUrl] = useState<string | null>(null);
   const [isImageModalOpen, setIsImageModalOpen] = useState(false);
-  const [animatingButtons, setAnimatingButtons] = useState<Set<string>>(new Set());
+  const [buttonDroplets, setButtonDroplets] = useState<Map<string, Array<{ id: string; angle: number; distance: number; startX: number }>>>(new Map());
 
   const form = useForm<InsertWineCard>({
     resolver: zodResolver(insertWineCardSchema),
     defaultValues: {
       wineName: "",
+      origin: "",
+      variety: "",
       location: "",
       price: 5000,
       pairedFood: [],
@@ -170,6 +307,34 @@ export default function Home() {
                   {form.formState.errors.wineName && (
                     <p className="text-sm text-destructive font-body">{form.formState.errors.wineName.message}</p>
                   )}
+                </div>
+
+                {/* Origin and Variety */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="origin" className="font-display text-lg">産地</Label>
+                    <Input
+                      id="origin"
+                      placeholder="例）フランス、ボルドー"
+                      className="h-12 text-lg font-body bg-transparent border-b-2 border-t-0 border-x-0 border-gray-200 rounded-none px-0 focus-visible:ring-0 focus-visible:border-primary transition-colors placeholder:text-gray-300"
+                      {...form.register("origin")}
+                    />
+                    {form.formState.errors.origin && (
+                      <p className="text-sm text-destructive font-body">{form.formState.errors.origin.message}</p>
+                    )}
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="variety" className="font-display text-lg">品種</Label>
+                    <Input
+                      id="variety"
+                      placeholder="例）カベルネ・ソーヴィニョン"
+                      className="h-12 text-lg font-body bg-transparent border-b-2 border-t-0 border-x-0 border-gray-200 rounded-none px-0 focus-visible:ring-0 focus-visible:border-primary transition-colors placeholder:text-gray-300"
+                      {...form.register("variety")}
+                    />
+                    {form.formState.errors.variety && (
+                      <p className="text-sm text-destructive font-body">{form.formState.errors.variety.message}</p>
+                    )}
+                  </div>
                 </div>
 
                 {/* Wine Image Upload */}
@@ -342,79 +507,39 @@ export default function Home() {
                     <div className="flex flex-wrap gap-2">
                       {PAIRED_FOOD_OPTIONS.map((option) => {
                         const isSelected = (watchedValues.pairedFood?.includes(option) ?? false);
+                        const buttonId = `pairedFood-${option}`;
+                        const droplets = buttonDroplets.get(buttonId) || [];
                         
                         return (
-                          <motion.button
+                          <MultiSelectButton
                           key={option}
-                          type="button"
-                            layout
+                            option={option}
+                            isSelected={isSelected}
+                            icon={PAIRED_FOOD_ICONS[option] || ""}
                           onClick={() => {
                             const current = watchedValues.pairedFood ?? [];
                             if (current.includes(option)) {
                               form.setValue("pairedFood", current.filter((c) => c !== option));
                             } else {
                               form.setValue("pairedFood", [...current, option]);
-                            }
-                          }}
-                            whileTap={{ scale: 0.95 }}
-                          className={cn(
-                              "relative px-3 py-1.5 rounded-full text-sm font-body overflow-hidden flex items-center gap-1.5",
-                              isSelected
-                              ? "bg-[#722F37] text-white"
-                                : "bg-gray-200 text-gray-700"
-                            )}
-                            transition={{
-                              layout: { duration: 0.3, ease: "easeOut" },
-                              scale: { duration: 0.15, ease: "easeOut" },
+                                const newDroplets = Array.from({ length: 4 }, (_, i) => ({
+                                  id: `${buttonId}-${Date.now()}-${i}`,
+                                  angle: (i / 4) * Math.PI * 2 + (Math.random() - 0.5) * 0.5,
+                                  distance: 20 + Math.random() * 15,
+                                  startX: 10 + Math.random() * 80, // ボタン幅の10%から90%の範囲
+                                }));
+                                setButtonDroplets(prev => new Map(prev).set(buttonId, newDroplets));
+                                setTimeout(() => {
+                                  setButtonDroplets(prev => {
+                                    const next = new Map(prev);
+                                    next.delete(buttonId);
+                                    return next;
+                                  });
+                                }, 600);
+                              }
                             }}
-                          >
-                            <AnimatePresence mode="popLayout">
-                              {isSelected && (
-                                <motion.span
-                                  key="check"
-                                  initial={{ scale: 0, opacity: 0, x: -4 }}
-                                  animate={{ scale: 1, opacity: 1, x: 0 }}
-                                  exit={{ scale: 0, opacity: 0, x: -4 }}
-                                  transition={{ duration: 0.2, ease: "easeOut" }}
-                                  className="flex-shrink-0"
-                                >
-                                  <Check className="w-3.5 h-3.5" />
-                                </motion.span>
-                              )}
-                            </AnimatePresence>
-                            <motion.span
-                              key={option}
-                              layout="position"
-                              className="whitespace-nowrap inline-flex"
-                              initial="hidden"
-                              animate="visible"
-                              variants={{
-                                visible: {
-                                  transition: {
-                                    staggerChildren: 0.05,
-                                  },
-                                },
-                              }}
-                              aria-label={option}
-                            >
-                              {option.split("").map((char, index) => (
-                                <motion.span
-                                  key={`${option}-${index}`}
-                                  aria-hidden="true"
-                                  variants={{
-                                    hidden: { opacity: 0, y: 10 },
-                                    visible: { opacity: 1, y: 0 },
-                                  }}
-                                  transition={{
-                                    duration: 0.3,
-                                    ease: "easeOut",
-                                  }}
-                                >
-                                  {char === " " ? "\u00A0" : char}
-                                </motion.span>
-                              ))}
-                            </motion.span>
-                          </motion.button>
+                            droplets={droplets}
+                          />
                         );
                       })}
                     </div>
@@ -441,78 +566,38 @@ export default function Home() {
                   <div className="flex flex-wrap gap-2">
                     {COMMENT_OPTIONS.map((option) => {
                       const isSelected = (watchedValues.myComment?.includes(option) ?? false);
+                      const buttonId = `myComment-${option}`;
+                      const droplets = buttonDroplets.get(buttonId) || [];
                       
                       return (
-                        <motion.button
+                        <MultiSelectButton
                         key={option}
-                        type="button"
-                          layout
+                          option={option}
+                          isSelected={isSelected}
+                          icon={COMMENT_ICONS[option] || ""}
                         onClick={() => {
                           const current = watchedValues.myComment ?? [];
                           if (current.includes(option)) {
                             form.setValue("myComment", current.filter((c) => c !== option));
                           } else {
                             form.setValue("myComment", [...current, option]);
-                          }
-                        }}
-                          whileTap={{ scale: 0.95 }}
-                        className={cn(
-                            "relative px-3 py-1.5 rounded-full text-sm font-body overflow-hidden flex items-center gap-1.5",
-                            isSelected
-                            ? "bg-[#722F37] text-white"
-                              : "bg-gray-200 text-gray-700"
-                          )}
-                          transition={{
-                            layout: { duration: 0.3, ease: "easeOut" },
+                              const newDroplets = Array.from({ length: 4 }, (_, i) => ({
+                                id: `${buttonId}-${Date.now()}-${i}`,
+                                angle: (i / 4) * Math.PI * 2 + (Math.random() - 0.5) * 0.5,
+                                distance: 20 + Math.random() * 15,
+                              }));
+                              setButtonDroplets(prev => new Map(prev).set(buttonId, newDroplets));
+                              setTimeout(() => {
+                                setButtonDroplets(prev => {
+                                  const next = new Map(prev);
+                                  next.delete(buttonId);
+                                  return next;
+                                });
+                              }, 600);
+                            }
                           }}
-                        >
-                          <AnimatePresence mode="popLayout">
-                            {isSelected && (
-                              <motion.span
-                                key="check"
-                                initial={{ scale: 0, opacity: 0, x: -4 }}
-                                animate={{ scale: 1, opacity: 1, x: 0 }}
-                                exit={{ scale: 0, opacity: 0, x: -4 }}
-                                transition={{ duration: 0.2, ease: "easeOut" }}
-                                className="flex-shrink-0"
-                              >
-                                <Check className="w-3.5 h-3.5" />
-                              </motion.span>
-                            )}
-                          </AnimatePresence>
-                          <motion.span
-                            key={option}
-                            layout="position"
-                            className="whitespace-nowrap inline-flex"
-                            initial="hidden"
-                            animate="visible"
-                            variants={{
-                              visible: {
-                                transition: {
-                                  staggerChildren: 0.05,
-                                },
-                              },
-                            }}
-                            aria-label={option}
-                          >
-                            {option.split("").map((char, index) => (
-                              <motion.span
-                                key={`${option}-${index}`}
-                                aria-hidden="true"
-                                variants={{
-                                  hidden: { opacity: 0, y: 10 },
-                                  visible: { opacity: 1, y: 0 },
-                                }}
-                                transition={{
-                                  duration: 0.3,
-                                  ease: "easeOut",
-                                }}
-                              >
-                                {char === " " ? "\u00A0" : char}
-                              </motion.span>
-                            ))}
-                          </motion.span>
-                        </motion.button>
+                          droplets={droplets}
+                        />
                       );
                     })}
                   </div>
@@ -538,78 +623,38 @@ export default function Home() {
                   <div className="flex flex-wrap gap-2">
                     {COMMENT_OPTIONS.map((option) => {
                       const isSelected = (watchedValues.partnerComment?.includes(option) ?? false);
+                      const buttonId = `partnerComment-${option}`;
+                      const droplets = buttonDroplets.get(buttonId) || [];
                       
                       return (
-                        <motion.button
-                        key={option}
-                        type="button"
-                          layout
-                        onClick={() => {
-                          const current = watchedValues.partnerComment ?? [];
-                          if (current.includes(option)) {
-                            form.setValue("partnerComment", current.filter((c) => c !== option));
-                          } else {
-                            form.setValue("partnerComment", [...current, option]);
-                          }
-                        }}
-                          whileTap={{ scale: 0.95 }}
-                        className={cn(
-                            "relative px-3 py-1.5 rounded-full text-sm font-body overflow-hidden flex items-center gap-1.5",
-                            isSelected
-                            ? "bg-[#722F37] text-white"
-                              : "bg-gray-200 text-gray-700"
-                          )}
-                          transition={{
-                            layout: { duration: 0.3, ease: "easeOut" },
+                        <MultiSelectButton
+                          key={option}
+                          option={option}
+                          isSelected={isSelected}
+                          icon={COMMENT_ICONS[option] || ""}
+                          onClick={() => {
+                            const current = watchedValues.partnerComment ?? [];
+                            if (current.includes(option)) {
+                              form.setValue("partnerComment", current.filter((c) => c !== option));
+                            } else {
+                              form.setValue("partnerComment", [...current, option]);
+                              const newDroplets = Array.from({ length: 4 }, (_, i) => ({
+                                id: `${buttonId}-${Date.now()}-${i}`,
+                                angle: (i / 4) * Math.PI * 2 + (Math.random() - 0.5) * 0.5,
+                                distance: 20 + Math.random() * 15,
+                              }));
+                              setButtonDroplets(prev => new Map(prev).set(buttonId, newDroplets));
+                              setTimeout(() => {
+                                setButtonDroplets(prev => {
+                                  const next = new Map(prev);
+                                  next.delete(buttonId);
+                                  return next;
+                                });
+                              }, 600);
+                            }
                           }}
-                        >
-                          <AnimatePresence mode="popLayout">
-                            {isSelected && (
-                              <motion.span
-                                key="check"
-                                initial={{ scale: 0, opacity: 0, x: -4 }}
-                                animate={{ scale: 1, opacity: 1, x: 0 }}
-                                exit={{ scale: 0, opacity: 0, x: -4 }}
-                                transition={{ duration: 0.2, ease: "easeOut" }}
-                                className="flex-shrink-0"
-                              >
-                                <Check className="w-3.5 h-3.5" />
-                              </motion.span>
-                            )}
-                          </AnimatePresence>
-                          <motion.span
-                            key={option}
-                            layout="position"
-                            className="whitespace-nowrap inline-flex"
-                            initial="hidden"
-                            animate="visible"
-                            variants={{
-                              visible: {
-                                transition: {
-                                  staggerChildren: 0.05,
-                                },
-                              },
-                            }}
-                            aria-label={option}
-                          >
-                            {option.split("").map((char, index) => (
-                              <motion.span
-                                key={`${option}-${index}`}
-                                aria-hidden="true"
-                                variants={{
-                                  hidden: { opacity: 0, y: 10 },
-                                  visible: { opacity: 1, y: 0 },
-                                }}
-                                transition={{
-                                  duration: 0.3,
-                                  ease: "easeOut",
-                                }}
-                              >
-                                {char === " " ? "\u00A0" : char}
-                              </motion.span>
-                            ))}
-                          </motion.span>
-                        </motion.button>
+                          droplets={droplets}
+                        />
                       );
                     })}
                   </div>

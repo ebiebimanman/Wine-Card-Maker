@@ -5,6 +5,8 @@ import { z } from "zod";
 export const wineCards = pgTable("wine_cards", {
   id: serial("id").primaryKey(),
   wineName: text("wine_name").notNull(),
+  origin: text("origin"), // 産地
+  variety: text("variety"), // 品種
   location: text("location").notNull(),
   price: integer("price").notNull(),
   pairedFood: text("paired_food").array().notNull(),
@@ -18,6 +20,8 @@ export const wineCards = pgTable("wine_cards", {
 
 export const insertWineCardSchema = createInsertSchema(wineCards).pick({
   wineName: true,
+  origin: true,
+  variety: true,
   location: true,
   price: true,
   pairedFood: true,
@@ -29,6 +33,8 @@ export const insertWineCardSchema = createInsertSchema(wineCards).pick({
   wineImage: true,
 }).extend({
   wineImage: z.string().optional(),
+  origin: z.string().optional(),
+  variety: z.string().optional(),
 });
 
 export const COMMENT_OPTIONS = [

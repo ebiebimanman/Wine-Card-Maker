@@ -4,6 +4,37 @@ import { Star, Quote } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import type { InsertWineCard } from "@shared/schema";
+import { PAIRED_FOOD_OPTIONS, COMMENT_OPTIONS } from "@shared/schema";
+
+// アイコンマッピング
+type FoodOption = typeof PAIRED_FOOD_OPTIONS[number];
+type CommentOption = typeof COMMENT_OPTIONS[number];
+
+const PAIRED_FOOD_ICONS: Record<FoodOption, string> = {
+  "チーズ": "🧀",
+  "ステーキ": "🥩",
+  "魚料理": "🐟",
+  "和食": "🍣",
+  "パスタ": "🍝",
+  "チョコレート": "🍫",
+  "デザート": "🍰",
+  "海鮮": "🦐",
+  "フルーツ": "🍇",
+  "前菜": "🥗",
+};
+
+const COMMENT_ICONS: Record<CommentOption, string> = {
+  "香りが良い": "🌹",
+  "飲みやすい": "💧",
+  "後味が良い": "✨",
+  "深い味わい": "🌙",
+  "フルーティー": "🍎",
+  "華やか": "🎆",
+  "しっかりした味": "💪",
+  "爽やか": "🌿",
+  "上品": "👑",
+  "クリーミー": "☁️",
+};
 
 interface WineCardPreviewProps {
   data: InsertWineCard;
@@ -132,6 +163,46 @@ export function WineCardPreview({ data, theme }: WineCardPreviewProps) {
             animate={{ opacity: 1 }}
             transition={{ duration: 0.3 }}
           >
+            {/* Origin and Variety */}
+            {(data.origin || data.variety) && (
+              <motion.div
+                key="origin-variety"
+                className={cn("font-body", cardStyles.text)}
+                initial={{ opacity: 0, y: 4 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -4 }}
+                transition={{ duration: 0.2 }}
+              >
+                {data.origin && (
+                  <>
+                    <span className="opacity-60">産地: </span>
+                    <motion.span
+                      key={`origin-${data.origin}`}
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      {data.origin}
+                    </motion.span>
+                    {data.variety && <span className="mx-2">|</span>}
+                  </>
+                )}
+                {data.variety && (
+                  <>
+                    <span className="opacity-60">品種: </span>
+                    <motion.span
+                      key={`variety-${data.variety}`}
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      {data.variety}
+                    </motion.span>
+                  </>
+                )}
+              </motion.div>
+            )}
+
             <AnimatePresence mode="wait">
               {data.location ? (
                 <motion.p 
@@ -197,10 +268,16 @@ export function WineCardPreview({ data, theme }: WineCardPreviewProps) {
                   <h4 className={cn("font-display text-xs uppercase tracking-widest mb-1 opacity-60", cardStyles.text)}>
                     ペアリング
                   </h4>
-                  <div className="flex flex-wrap gap-1">
+                  <div className="flex flex-wrap gap-2">
                     {data.pairedFood.map((food) => (
-                      <Badge key={food} variant="outline" className="text-xs bg-gray-50 text-gray-700 border-gray-300">
-                        {food}
+                      <Badge 
+                        key={food} 
+                        className="px-3 py-1.5 rounded-full text-sm font-body bg-gray-200 text-gray-700 flex items-center gap-1.5 border-0"
+                      >
+                        <span className="flex-shrink-0 inline-flex items-center justify-center w-5 h-5 text-lg leading-none">
+                          {PAIRED_FOOD_ICONS[food as FoodOption] || ""}
+                        </span>
+                        <span>{food}</span>
                       </Badge>
                     ))}
                   </div>
@@ -229,11 +306,17 @@ export function WineCardPreview({ data, theme }: WineCardPreviewProps) {
             <h3 className={cn("font-display text-sm uppercase tracking-widest mb-2 opacity-60", cardStyles.text)}>
               わたしの感想
             </h3>
-            <div className={cn("flex flex-wrap gap-1", (!data.myComment || data.myComment.length === 0) && "opacity-40 min-h-[3rem] flex items-center")}>
+            <div className={cn("flex flex-wrap gap-2", (!data.myComment || data.myComment.length === 0) && "opacity-40 min-h-[3rem] flex items-center")}>
               {data.myComment && data.myComment.length > 0 ? (
                 data.myComment.map((comment) => (
-                  <Badge key={comment} variant="outline" className="text-xs bg-gray-50 text-gray-700 border-gray-300">
-                    {comment}
+                  <Badge 
+                    key={comment} 
+                    className="px-3 py-1.5 rounded-full text-sm font-body bg-gray-200 text-gray-700 flex items-center gap-1.5 border-0"
+                  >
+                    <span className="flex-shrink-0 inline-flex items-center justify-center w-5 h-5 text-lg leading-none">
+                      {COMMENT_ICONS[comment as CommentOption] || ""}
+                    </span>
+                    <span>{comment}</span>
                   </Badge>
                 ))
               ) : (
@@ -248,11 +331,17 @@ export function WineCardPreview({ data, theme }: WineCardPreviewProps) {
             <h3 className={cn("font-display text-sm uppercase tracking-widest mb-2 opacity-60", cardStyles.text)}>
               あなたの感想
             </h3>
-            <div className={cn("flex flex-wrap gap-1 justify-end", (!data.partnerComment || data.partnerComment.length === 0) && "opacity-40 min-h-[3rem] flex items-center")}>
+            <div className={cn("flex flex-wrap gap-2 justify-end", (!data.partnerComment || data.partnerComment.length === 0) && "opacity-40 min-h-[3rem] flex items-center")}>
               {data.partnerComment && data.partnerComment.length > 0 ? (
                 data.partnerComment.map((comment) => (
-                  <Badge key={comment} variant="outline" className="text-xs bg-gray-50 text-gray-700 border-gray-300">
-                    {comment}
+                  <Badge 
+                    key={comment} 
+                    className="px-3 py-1.5 rounded-full text-sm font-body bg-gray-200 text-gray-700 flex items-center gap-1.5 border-0"
+                  >
+                    <span className="flex-shrink-0 inline-flex items-center justify-center w-5 h-5 text-lg leading-none">
+                      {COMMENT_ICONS[comment as CommentOption] || ""}
+                    </span>
+                    <span>{comment}</span>
                   </Badge>
                 ))
               ) : (
