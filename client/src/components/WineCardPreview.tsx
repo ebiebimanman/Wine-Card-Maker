@@ -241,18 +241,7 @@ export function WineCardPreview({ data, theme }: WineCardPreviewProps) {
                     </>
                   )}
                 </motion.p>
-              ) : (
-                <motion.p 
-                  key="placeholder"
-                  className={cn("font-body text-gray-300 italic", cardStyles.text)}
-                  initial={{ opacity: 0, y: 4 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -4 }}
-                  transition={{ duration: 0.2 }}
-                >
-                  場所と価格をまだ入力していません
-                </motion.p>
-              )}
+              ) : null}
             </AnimatePresence>
 
             {/* Paired Food */}
@@ -282,18 +271,7 @@ export function WineCardPreview({ data, theme }: WineCardPreviewProps) {
                     ))}
                   </div>
                 </motion.div>
-              ) : (
-                <motion.p 
-                  key="food-placeholder"
-                  className={cn("font-body text-gray-300 italic", cardStyles.text)}
-                  initial={{ opacity: 0, y: 4 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -4 }}
-                  transition={{ duration: 0.2 }}
-                >
-                  料理をまだ選んでいません
-                </motion.p>
-              )}
+              ) : null}
             </AnimatePresence>
           </motion.div>
         </div>
