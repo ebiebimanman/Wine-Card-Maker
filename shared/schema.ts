@@ -7,11 +7,11 @@ export const wineCards = pgTable("wine_cards", {
   wineName: text("wine_name").notNull(),
   origin: text("origin"), // 産地
   variety: text("variety"), // 品種
-  location: text("location").notNull(),
-  price: integer("price").notNull(),
-  pairedFood: text("paired_food").array().notNull(),
-  myComment: text("my_comment").array().notNull(),
-  partnerComment: text("partner_comment").array().notNull(),
+  location: text("location"),
+  price: integer("price"),
+  pairedFood: text("paired_food").array(),
+  myComment: text("my_comment").array(),
+  partnerComment: text("partner_comment").array(),
   myRating: integer("my_rating").notNull(),
   partnerRating: integer("partner_rating").notNull(),
   themeColor: text("theme_color").notNull(), // 'red' | 'white'
@@ -35,6 +35,11 @@ export const insertWineCardSchema = createInsertSchema(wineCards).pick({
   wineImage: z.string().optional(),
   origin: z.string().optional(),
   variety: z.string().optional(),
+  location: z.string().optional(),
+  price: z.number().optional(),
+  pairedFood: z.string().array().optional(),
+  myComment: z.string().array().optional(),
+  partnerComment: z.string().array().optional(),
 });
 
 export const COMMENT_OPTIONS = [

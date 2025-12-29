@@ -301,54 +301,54 @@ export function WineCardPreview({ data, theme }: WineCardPreviewProps) {
         {/* Comments Section */}
         <div className="flex-1 space-y-8">
           {/* My Comment */}
-          <div className="relative group">
-            <Quote className={cn("absolute -top-3 -left-2 w-8 h-8 rotate-180", cardStyles.quote)} />
-            <h3 className={cn("font-display text-sm uppercase tracking-widest mb-2 opacity-60", cardStyles.text)}>
-              わたしの感想
-            </h3>
-            <div className={cn("flex flex-wrap gap-2", (!data.myComment || data.myComment.length === 0) && "opacity-40 min-h-[3rem] flex items-center")}>
-              {data.myComment && data.myComment.length > 0 ? (
-                data.myComment.map((comment) => (
-                  <Badge 
-                    key={comment} 
-                    className="px-3 py-1.5 rounded-full text-sm font-body bg-gray-200 text-gray-700 flex items-center gap-1.5 border-0"
-                  >
-                    <span className="flex-shrink-0 inline-flex items-center justify-center w-5 h-5 text-lg leading-none">
-                      {COMMENT_ICONS[comment as CommentOption] || ""}
-                    </span>
-                    <span>{comment}</span>
-                  </Badge>
-                ))
-              ) : (
-                <span className="text-sm text-gray-400">何か選んでね</span>
-              )}
-            </div>
-          </div>
+          <AnimatePresence mode="wait">
+            {data.myComment && data.myComment.length > 0 ? (
+              <div key="my-comment" className="relative group">
+                <Quote className={cn("absolute -top-3 -left-2 w-8 h-8 rotate-180", cardStyles.quote)} />
+                <h3 className={cn("font-display text-sm uppercase tracking-widest mb-2 opacity-60 text-center", cardStyles.text)}>
+                  わたしの感想
+                </h3>
+                <div className={cn("flex flex-wrap gap-2 justify-center")}>
+                  {data.myComment.map((comment) => (
+                    <Badge 
+                      key={comment} 
+                      className="px-3 py-1.5 rounded-full text-sm font-body bg-gray-200 text-gray-700 flex items-center gap-1.5 border-0"
+                    >
+                      <span className="flex-shrink-0 inline-flex items-center justify-center w-5 h-5 text-lg leading-none">
+                        {COMMENT_ICONS[comment as CommentOption] || ""}
+                      </span>
+                      <span>{comment}</span>
+                    </Badge>
+                  ))}
+                </div>
+              </div>
+            ) : null}
+          </AnimatePresence>
 
           {/* Partner's Comment */}
-          <div className="relative group text-right">
-            <Quote className={cn("absolute -top-3 -right-2 w-8 h-8", cardStyles.quote)} />
-            <h3 className={cn("font-display text-sm uppercase tracking-widest mb-2 opacity-60", cardStyles.text)}>
-              あなたの感想
-            </h3>
-            <div className={cn("flex flex-wrap gap-2 justify-end", (!data.partnerComment || data.partnerComment.length === 0) && "opacity-40 min-h-[3rem] flex items-center")}>
-              {data.partnerComment && data.partnerComment.length > 0 ? (
-                data.partnerComment.map((comment) => (
-                  <Badge 
-                    key={comment} 
-                    className="px-3 py-1.5 rounded-full text-sm font-body bg-gray-200 text-gray-700 flex items-center gap-1.5 border-0"
-                  >
-                    <span className="flex-shrink-0 inline-flex items-center justify-center w-5 h-5 text-lg leading-none">
-                      {COMMENT_ICONS[comment as CommentOption] || ""}
-                    </span>
-                    <span>{comment}</span>
-                  </Badge>
-                ))
-              ) : (
-                <span className="text-sm text-gray-400">何か選んでね</span>
-              )}
-            </div>
-          </div>
+          <AnimatePresence mode="wait">
+            {data.partnerComment && data.partnerComment.length > 0 ? (
+              <div key="partner-comment" className="relative group">
+                <Quote className={cn("absolute -top-3 -right-2 w-8 h-8", cardStyles.quote)} />
+                <h3 className={cn("font-display text-sm uppercase tracking-widest mb-2 opacity-60 text-center", cardStyles.text)}>
+                  あなたの感想
+                </h3>
+                <div className={cn("flex flex-wrap gap-2 justify-center")}>
+                  {data.partnerComment.map((comment) => (
+                    <Badge 
+                      key={comment} 
+                      className="px-3 py-1.5 rounded-full text-sm font-body bg-gray-200 text-gray-700 flex items-center gap-1.5 border-0"
+                    >
+                      <span className="flex-shrink-0 inline-flex items-center justify-center w-5 h-5 text-lg leading-none">
+                        {COMMENT_ICONS[comment as CommentOption] || ""}
+                      </span>
+                      <span>{comment}</span>
+                    </Badge>
+                  ))}
+                </div>
+              </div>
+            ) : null}
+          </AnimatePresence>
         </div>
 
       </div>
