@@ -132,7 +132,7 @@ export function WineCardPreview({ data, theme }: WineCardPreviewProps) {
         )}
         
         {/* Wine Name and Average Rating */}
-        <div className="text-center mb-6 pb-6 border-b border-gray-200">
+        <div className="text-center mb-6">
           <h2 className={cn(
             "font-display text-2xl md:text-3xl leading-tight tracking-wide break-words mb-3",
             cardStyles.text,
@@ -143,13 +143,12 @@ export function WineCardPreview({ data, theme }: WineCardPreviewProps) {
           
           <div className="flex justify-center gap-1 mb-4">
             {[1, 2, 3, 4, 5].map((i) => {
-              const averageRating = (data.myRating + data.partnerRating) / 2;
               return (
                 <Star
                   key={i}
                   className={cn(
                     "w-5 h-5",
-                    i <= averageRating ? "fill-[#C5A059] text-[#C5A059]" : "text-gray-300"
+                    i <= data.myRating ? "fill-[#C5A059] text-[#C5A059]" : "text-gray-300"
                   )}
                 />
               );
@@ -175,7 +174,7 @@ export function WineCardPreview({ data, theme }: WineCardPreviewProps) {
               >
                 {data.origin && (
                   <>
-                    <span className="opacity-60">産地: </span>
+                    <span>🗺️ </span>
                     <motion.span
                       key={`origin-${data.origin}`}
                       initial={{ opacity: 0 }}
@@ -189,7 +188,7 @@ export function WineCardPreview({ data, theme }: WineCardPreviewProps) {
                 )}
                 {data.variety && (
                   <>
-                    <span className="opacity-60">品種: </span>
+                    <span>🍇 </span>
                     <motion.span
                       key={`variety-${data.variety}`}
                       initial={{ opacity: 0 }}
@@ -215,7 +214,7 @@ export function WineCardPreview({ data, theme }: WineCardPreviewProps) {
                 >
                   {data.location && (
                     <>
-                      <span className="opacity-60">場所: </span>
+                      <span>🛒 </span>
                       <motion.span
                         key={`location-${data.location}`}
                         initial={{ opacity: 0 }}
@@ -229,7 +228,7 @@ export function WineCardPreview({ data, theme }: WineCardPreviewProps) {
                   )}
                   {data.price && (
                     <>
-                      <span className="opacity-60">価格: </span>
+                      <span>💰 </span>
                       <motion.span
                         key={`price-${data.price}`}
                         initial={{ opacity: 0 }}
