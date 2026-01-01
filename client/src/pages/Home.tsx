@@ -460,18 +460,13 @@ export default function Home() {
 
                 {/* Price Slider */}
                 <div className="space-y-2">
-                  <Label htmlFor="price" className="font-display text-lg">
-                    価格: 
-                    <motion.span
-                      key={watchedValues.price}
-                      initial={{ scale: 1.1, opacity: 0 }}
-                      animate={{ scale: 1, opacity: 1 }}
-                      transition={{ duration: 0.3, type: "spring", stiffness: 100 }}
-                      className="ml-1 inline-block"
-                    >
-                      {(watchedValues.price ?? 5000).toLocaleString()}円
-                    </motion.span>
-                  </Label>
+                  <div className="flex justify-between items-center">
+                    <Label htmlFor="price" className="font-display text-lg">価格</Label>
+                    <div className="font-mono text-lg font-bold flex items-baseline gap-1">
+                      <span>{(watchedValues.price ?? 5000).toLocaleString()}</span>
+                      <span className="text-sm font-body">円</span>
+                    </div>
+                  </div>
                   <Slider
                     id="price"
                     min={500}
