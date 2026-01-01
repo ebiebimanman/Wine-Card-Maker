@@ -29,7 +29,6 @@ const PAIRED_FOOD_ICONS: Record<FoodOption, string> = {
   "海鮮": "🦐",
   "フルーツ": "🍇",
   "前菜": "🥗",
-  "海鮮料理": "🦐", // Compatibility
 };
 
 const COMMENT_ICONS: Record<CommentOption, string> = {
