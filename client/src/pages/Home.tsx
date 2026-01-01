@@ -307,48 +307,6 @@ export default function Home() {
                   }} />
                 </div>
 
-                {/* Wine Name */}
-                <div className="space-y-2">
-                  <Label htmlFor="wineName" className="font-display text-lg">ワイン名</Label>
-                  <Input
-                    id="wineName"
-                    placeholder="例）シャトー・マルゴー 2015"
-                    className="h-12 text-lg font-body bg-transparent border-b-2 border-t-0 border-x-0 border-gray-200 rounded-none px-0 focus-visible:ring-0 focus-visible:border-primary transition-colors placeholder:text-gray-300"
-                    {...form.register("wineName")}
-                  />
-                  {form.formState.errors.wineName && (
-                    <p className="text-sm text-destructive font-body">{form.formState.errors.wineName.message}</p>
-                  )}
-                </div>
-
-                {/* Origin and Variety */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="origin" className="font-display text-lg">産地</Label>
-                    <Input
-                      id="origin"
-                      placeholder="例）フランス、ボルドー"
-                      className="h-12 text-lg font-body bg-transparent border-b-2 border-t-0 border-x-0 border-gray-200 rounded-none px-0 focus-visible:ring-0 focus-visible:border-primary transition-colors placeholder:text-gray-300"
-                      {...form.register("origin")}
-                    />
-                    {form.formState.errors.origin && (
-                      <p className="text-sm text-destructive font-body">{form.formState.errors.origin.message}</p>
-                    )}
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="variety" className="font-display text-lg">品種</Label>
-                    <Input
-                      id="variety"
-                      placeholder="例）カベルネ・ソーヴィニョン"
-                      className="h-12 text-lg font-body bg-transparent border-b-2 border-t-0 border-x-0 border-gray-200 rounded-none px-0 focus-visible:ring-0 focus-visible:border-primary transition-colors placeholder:text-gray-300"
-                      {...form.register("variety")}
-                    />
-                    {form.formState.errors.variety && (
-                      <p className="text-sm text-destructive font-body">{form.formState.errors.variety.message}</p>
-                    )}
-                  </div>
-                </div>
-
                 {/* Wine Image Upload */}
                 <div className="space-y-2">
                   <Label htmlFor="wineImage" className="font-display text-lg">ワインの画像</Label>
@@ -458,6 +416,62 @@ export default function Home() {
                   </div>
                 </div>
 
+                {/* My Rating */}
+                <div className="space-y-2">
+                  <Label className="font-display text-lg">わたしの評価</Label>
+                  <div className="p-4 bg-gray-50/50 rounded-lg border border-gray-100 flex justify-center">
+                    <RatingInput
+                      value={watchedValues.myRating}
+                      onChange={(val) => form.setValue("myRating", val)}
+                    />
+                  </div>
+                  {form.formState.errors.myRating && (
+                    <p className="text-sm text-destructive font-body">{form.formState.errors.myRating.message}</p>
+                  )}
+                </div>
+
+                {/* Wine Name */}
+                <div className="space-y-2">
+                  <Label htmlFor="wineName" className="font-display text-lg">ワイン名</Label>
+                  <Input
+                    id="wineName"
+                    placeholder="例）シャトー・マルゴー 2015"
+                    className="h-12 text-lg font-body bg-transparent border-b-2 border-t-0 border-x-0 border-gray-200 rounded-none px-0 focus-visible:ring-0 focus-visible:border-primary transition-colors placeholder:text-gray-300"
+                    {...form.register("wineName")}
+                  />
+                  {form.formState.errors.wineName && (
+                    <p className="text-sm text-destructive font-body">{form.formState.errors.wineName.message}</p>
+                  )}
+                </div>
+
+                {/* Origin and Variety */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="origin" className="font-display text-lg">産地</Label>
+                    <Input
+                      id="origin"
+                      placeholder="例）フランス、ボルドー"
+                      className="h-12 text-lg font-body bg-transparent border-b-2 border-t-0 border-x-0 border-gray-200 rounded-none px-0 focus-visible:ring-0 focus-visible:border-primary transition-colors placeholder:text-gray-300"
+                      {...form.register("origin")}
+                    />
+                    {form.formState.errors.origin && (
+                      <p className="text-sm text-destructive font-body">{form.formState.errors.origin.message}</p>
+                    )}
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="variety" className="font-display text-lg">品種</Label>
+                    <Input
+                      id="variety"
+                      placeholder="例）カベルネ・ソーヴィニョン"
+                      className="h-12 text-lg font-body bg-transparent border-b-2 border-t-0 border-x-0 border-gray-200 rounded-none px-0 focus-visible:ring-0 focus-visible:border-primary transition-colors placeholder:text-gray-300"
+                      {...form.register("variety")}
+                    />
+                    {form.formState.errors.variety && (
+                      <p className="text-sm text-destructive font-body">{form.formState.errors.variety.message}</p>
+                    )}
+                  </div>
+                </div>
+
                 {/* Wine Information */}
                 <div className="space-y-4">
                   <Label className="font-display text-lg">ワイン情報</Label>
@@ -492,7 +506,7 @@ export default function Home() {
                           transition={{ duration: 0.3, type: "spring", stiffness: 100 }}
                           className="ml-1 inline-block"
                         >
-                          ¥{(watchedValues.price ?? 5000).toLocaleString()}
+                          {(watchedValues.price ?? 5000).toLocaleString()}円
                         </motion.span>
                       </Label>
                     </motion.div>
@@ -558,20 +572,6 @@ export default function Home() {
                   </div>
                 </div>
 
-                {/* My Rating */}
-                <div className="space-y-2">
-                  <Label className="font-display text-lg">わたしの評価</Label>
-                  <div className="p-4 bg-gray-50/50 rounded-lg border border-gray-100 flex justify-center">
-                    <RatingInput
-                      value={watchedValues.myRating}
-                      onChange={(val) => form.setValue("myRating", val)}
-                    />
-                  </div>
-                  {form.formState.errors.myRating && (
-                    <p className="text-sm text-destructive font-body">{form.formState.errors.myRating.message}</p>
-                  )}
-                </div>
-
                 <div className="pt-4">
                   <Button 
                     type="submit" 
@@ -616,9 +616,6 @@ export default function Home() {
                   </motion.div>
                 </AnimatePresence>
               </div>
-              <p className="text-xs text-[#2D2424]/30 font-sans mt-4">
-                * 入力と同時にプレビューが更新されます
-              </p>
             </div>
           </motion.div>
 

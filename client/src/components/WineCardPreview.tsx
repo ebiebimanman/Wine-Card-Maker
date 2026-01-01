@@ -80,7 +80,7 @@ export function WineCardPreview({ data, theme }: WineCardPreviewProps) {
       {/* Content Container */}
       <div className="relative flex flex-col p-8 md:p-12">
         
-        {/* Wine Image */}
+        {/* Wine Image (MOVE TO TOP) */}
         {data.wineImage && (
           <div className="mb-6 -mt-4 -mx-4 md:-mx-8 flex items-center justify-center bg-gray-50/50 rounded-lg overflow-hidden">
             {imageSize ? (
@@ -127,6 +127,11 @@ export function WineCardPreview({ data, theme }: WineCardPreviewProps) {
             {data.wineName || "ワイン名未入力"}
           </h2>
           
+          <div className="mb-2">
+            <span className={cn("text-xs font-display uppercase tracking-widest opacity-60", cardStyles.text)}>
+              わたしの評価
+            </span>
+          </div>
           <div className="flex justify-center gap-1 mb-4">
             {[1, 2, 3, 4, 5].map((i) => {
               return (
@@ -221,7 +226,7 @@ export function WineCardPreview({ data, theme }: WineCardPreviewProps) {
                         animate={{ opacity: 1 }}
                         transition={{ duration: 0.3 }}
                       >
-                        ¥{data.price.toLocaleString()}
+                        {data.price.toLocaleString()}円
                       </motion.span>
                     </>
                   )}
@@ -238,10 +243,8 @@ export function WineCardPreview({ data, theme }: WineCardPreviewProps) {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -4 }}
                   transition={{ duration: 0.2 }}
+                  className="mt-4"
                 >
-                  <h4 className={cn("font-display text-xs uppercase tracking-widest mb-1 opacity-60", cardStyles.text)}>
-                    ペアリング
-                  </h4>
                   <div className="flex flex-wrap gap-2 justify-center">
                     {data.pairedFood.map((food) => (
                       <Badge 
