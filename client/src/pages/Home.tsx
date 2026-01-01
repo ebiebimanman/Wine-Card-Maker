@@ -29,6 +29,7 @@ const PAIRED_FOOD_ICONS: Record<FoodOption, string> = {
   "海鮮": "🦐",
   "フルーツ": "🍇",
   "前菜": "🥗",
+  "海鮮料理": "🦐", // Compatibility
 };
 
 const COMMENT_ICONS: Record<CommentOption, string> = {
@@ -118,7 +119,7 @@ function MultiSelectButton({ option, isSelected, icon, onClick, droplets }: Mult
       <motion.span
         key={option}
         layout="position"
-        className="whitespace-nowrap relative z-10"
+        className="whitespace-nowrap relative z-10 flex"
         initial="hidden"
         animate="visible"
         variants={{
@@ -135,10 +136,18 @@ function MultiSelectButton({ option, isSelected, icon, onClick, droplets }: Mult
             key={`${option}-${index}`}
             aria-hidden="true"
             variants={{
-              hidden: { opacity: 0, y: 10 },
-              visible: { opacity: 1, y: 0 },
+              hidden: { opacity: 0, y: 0 },
+              visible: { 
+                opacity: 1, 
+                y: [0, -8, 0],
+                transition: {
+                  duration: 0.4,
+                  repeat: isSelected ? Infinity : 0,
+                  repeatDelay: 1.5,
+                  delay: index * 0.1
+                }
+              },
             }}
-            transition={{ duration: 0.3, ease: "easeOut" }}
           >
             {char === " " ? "\u00A0" : char}
           </motion.span>
@@ -192,6 +201,10 @@ export default function Home() {
 
   // Watch values for real-time preview
   const watchedValues = form.watch();
+
+  const handlePriceChange = (value: number) => {
+    form.setValue("price", value, { shouldValidate: true, shouldDirty: true, shouldTouch: true });
+  };
 
   const onSubmit = async (data: InsertWineCard) => {
     try {
@@ -344,7 +357,7 @@ export default function Home() {
                     <input
                       id="wineImage"
                       type="file"
-                      accept="image/*"
+                      accept="image/*,.heic"
                       className="hidden"
                       onChange={(e) => {
                         const file = e.target.files?.[0];
@@ -439,7 +452,7 @@ export default function Home() {
                           <p className="mb-1 text-sm text-gray-600">
                             <span className="font-semibold">クリックして画像を選択</span>
                           </p>
-                          <p className="text-xs text-gray-500">PNG, JPG, GIF (最大10MB)</p>
+                          <p className="text-xs text-gray-500">PNG, JPG, HEIC (最大10MB)</p>
                         </div>
                       )}
                     </label>
@@ -495,15 +508,15 @@ export default function Home() {
                         max={10000}
                         step={500}
                         value={[watchedValues.price ?? 5000]}
-                        onValueChange={(value) => form.setValue("price", value[0])}
+                        onValueChange={(value) => handlePriceChange(value[0])}
                         className="w-full"
                       />
                     </motion.div>
                   </div>
 
                   {/* Paired Food */}
-                  <div className="space-y-2">
-                    <Label className="text-sm font-body">このワインに合う料理</Label>
+                  <div className="space-y-4">
+                    <Label className="font-display text-lg">このワインに合う料理</Label>
                     <div className="flex flex-wrap gap-2">
                       {PAIRED_FOOD_OPTIONS.map((option) => {
                         const isSelected = (watchedValues.pairedFood?.includes(option) ?? false);
@@ -512,21 +525,21 @@ export default function Home() {
                         
                         return (
                           <MultiSelectButton
-                          key={option}
+                            key={option}
                             option={option}
                             isSelected={isSelected}
                             icon={PAIRED_FOOD_ICONS[option] || ""}
-                          onClick={() => {
-                            const current = watchedValues.pairedFood ?? [];
-                            if (current.includes(option)) {
-                              form.setValue("pairedFood", current.filter((c) => c !== option));
-                            } else {
-                              form.setValue("pairedFood", [...current, option]);
+                            onClick={() => {
+                              const current = watchedValues.pairedFood ?? [];
+                              if (current.includes(option)) {
+                                form.setValue("pairedFood", current.filter((c) => c !== option));
+                              } else {
+                                form.setValue("pairedFood", [...current, option]);
                                 const newDroplets = Array.from({ length: 4 }, (_, i) => ({
                                   id: `${buttonId}-${Date.now()}-${i}`,
                                   angle: (i / 4) * Math.PI * 2 + (Math.random() - 0.5) * 0.5,
                                   distance: 20 + Math.random() * 15,
-                                  startX: 10 + Math.random() * 80, // ボタン幅の10%から90%の範囲
+                                  startX: 10 + Math.random() * 80,
                                 }));
                                 setButtonDroplets(prev => new Map(prev).set(buttonId, newDroplets));
                                 setTimeout(() => {
@@ -558,106 +571,6 @@ export default function Home() {
                   {form.formState.errors.myRating && (
                     <p className="text-sm text-destructive font-body">{form.formState.errors.myRating.message}</p>
                   )}
-                </div>
-
-                {/* My Comment */}
-                <div className="space-y-2">
-                  <Label className="font-display text-lg">わたしの感想</Label>
-                  <div className="flex flex-wrap gap-2">
-                    {COMMENT_OPTIONS.map((option) => {
-                      const isSelected = (watchedValues.myComment?.includes(option) ?? false);
-                      const buttonId = `myComment-${option}`;
-                      const droplets = buttonDroplets.get(buttonId) || [];
-                      
-                      return (
-                        <MultiSelectButton
-                        key={option}
-                          option={option}
-                          isSelected={isSelected}
-                          icon={COMMENT_ICONS[option] || ""}
-                        onClick={() => {
-                          const current = watchedValues.myComment ?? [];
-                          if (current.includes(option)) {
-                            form.setValue("myComment", current.filter((c) => c !== option));
-                          } else {
-                            form.setValue("myComment", [...current, option]);
-                              const newDroplets = Array.from({ length: 4 }, (_, i) => ({
-                                id: `${buttonId}-${Date.now()}-${i}`,
-                                angle: (i / 4) * Math.PI * 2 + (Math.random() - 0.5) * 0.5,
-                                distance: 20 + Math.random() * 15,
-                              }));
-                              setButtonDroplets(prev => new Map(prev).set(buttonId, newDroplets));
-                              setTimeout(() => {
-                                setButtonDroplets(prev => {
-                                  const next = new Map(prev);
-                                  next.delete(buttonId);
-                                  return next;
-                                });
-                              }, 600);
-                            }
-                          }}
-                          droplets={droplets}
-                        />
-                      );
-                    })}
-                  </div>
-                </div>
-
-                {/* Partner Rating */}
-                <div className="space-y-2">
-                  <Label className="font-display text-lg">あなたの評価</Label>
-                  <div className="p-4 bg-gray-50/50 rounded-lg border border-gray-100 flex justify-center">
-                    <RatingInput
-                      value={watchedValues.partnerRating}
-                      onChange={(val) => form.setValue("partnerRating", val)}
-                    />
-                  </div>
-                  {form.formState.errors.partnerRating && (
-                    <p className="text-sm text-destructive font-body">{form.formState.errors.partnerRating.message}</p>
-                  )}
-                </div>
-
-                {/* Partner Comment */}
-                <div className="space-y-2">
-                  <Label className="font-display text-lg">あなたの感想</Label>
-                  <div className="flex flex-wrap gap-2">
-                    {COMMENT_OPTIONS.map((option) => {
-                      const isSelected = (watchedValues.partnerComment?.includes(option) ?? false);
-                      const buttonId = `partnerComment-${option}`;
-                      const droplets = buttonDroplets.get(buttonId) || [];
-                      
-                      return (
-                        <MultiSelectButton
-                          key={option}
-                          option={option}
-                          isSelected={isSelected}
-                          icon={COMMENT_ICONS[option] || ""}
-                          onClick={() => {
-                            const current = watchedValues.partnerComment ?? [];
-                            if (current.includes(option)) {
-                              form.setValue("partnerComment", current.filter((c) => c !== option));
-                            } else {
-                              form.setValue("partnerComment", [...current, option]);
-                              const newDroplets = Array.from({ length: 4 }, (_, i) => ({
-                                id: `${buttonId}-${Date.now()}-${i}`,
-                                angle: (i / 4) * Math.PI * 2 + (Math.random() - 0.5) * 0.5,
-                                distance: 20 + Math.random() * 15,
-                              }));
-                              setButtonDroplets(prev => new Map(prev).set(buttonId, newDroplets));
-                              setTimeout(() => {
-                                setButtonDroplets(prev => {
-                                  const next = new Map(prev);
-                                  next.delete(buttonId);
-                                  return next;
-                                });
-                              }, 600);
-                            }
-                          }}
-                          droplets={droplets}
-                        />
-                      );
-                    })}
-                  </div>
                 </div>
 
                 <div className="pt-4">

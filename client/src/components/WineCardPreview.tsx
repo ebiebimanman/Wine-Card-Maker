@@ -1,14 +1,13 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Star, Quote } from "lucide-react";
+import { Star } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import type { InsertWineCard } from "@shared/schema";
-import { PAIRED_FOOD_OPTIONS, COMMENT_OPTIONS } from "@shared/schema";
+import { PAIRED_FOOD_OPTIONS } from "@shared/schema";
 
 // アイコンマッピング
 type FoodOption = typeof PAIRED_FOOD_OPTIONS[number];
-type CommentOption = typeof COMMENT_OPTIONS[number];
 
 const PAIRED_FOOD_ICONS: Record<FoodOption, string> = {
   "チーズ": "🧀",
@@ -21,19 +20,7 @@ const PAIRED_FOOD_ICONS: Record<FoodOption, string> = {
   "海鮮": "🦐",
   "フルーツ": "🍇",
   "前菜": "🥗",
-};
-
-const COMMENT_ICONS: Record<CommentOption, string> = {
-  "香りが良い": "🌹",
-  "飲みやすい": "💧",
-  "後味が良い": "✨",
-  "深い味わい": "🌙",
-  "フルーティー": "🍎",
-  "華やか": "🎆",
-  "しっかりした味": "💪",
-  "爽やか": "🌿",
-  "上品": "👑",
-  "クリーミー": "☁️",
+  "海鮮料理": "🦐", // Compatibility
 };
 
 interface WineCardPreviewProps {
@@ -203,7 +190,7 @@ export function WineCardPreview({ data, theme }: WineCardPreviewProps) {
             )}
 
             <AnimatePresence mode="wait">
-              {data.location ? (
+              {data.location || data.price ? (
                 <motion.p 
                   key="info"
                   className={cn("font-body", cardStyles.text)}
@@ -256,7 +243,7 @@ export function WineCardPreview({ data, theme }: WineCardPreviewProps) {
                   <h4 className={cn("font-display text-xs uppercase tracking-widest mb-1 opacity-60", cardStyles.text)}>
                     ペアリング
                   </h4>
-                  <div className="flex flex-wrap gap-2">
+                  <div className="flex flex-wrap gap-2 justify-center">
                     {data.pairedFood.map((food) => (
                       <Badge 
                         key={food} 
@@ -274,60 +261,6 @@ export function WineCardPreview({ data, theme }: WineCardPreviewProps) {
             </AnimatePresence>
           </motion.div>
         </div>
-
-        {/* Comments Section */}
-        <div className="flex-1 space-y-8">
-          {/* My Comment */}
-          <AnimatePresence mode="wait">
-            {data.myComment && data.myComment.length > 0 ? (
-              <div key="my-comment" className="relative group">
-                <Quote className={cn("absolute -top-3 -left-2 w-8 h-8 rotate-180", cardStyles.quote)} />
-                <h3 className={cn("font-display text-sm uppercase tracking-widest mb-2 opacity-60 text-center", cardStyles.text)}>
-                  わたしの感想
-                </h3>
-                <div className={cn("flex flex-wrap gap-2 justify-center")}>
-                  {data.myComment.map((comment) => (
-                    <Badge 
-                      key={comment} 
-                      className="px-3 py-1.5 rounded-full text-sm font-body bg-gray-200 text-gray-700 flex items-center gap-1.5 border-0"
-                    >
-                      <span className="flex-shrink-0 inline-flex items-center justify-center w-5 h-5 text-lg leading-none">
-                        {COMMENT_ICONS[comment as CommentOption] || ""}
-                      </span>
-                      <span>{comment}</span>
-                    </Badge>
-                  ))}
-                </div>
-              </div>
-            ) : null}
-          </AnimatePresence>
-
-          {/* Partner's Comment */}
-          <AnimatePresence mode="wait">
-            {data.partnerComment && data.partnerComment.length > 0 ? (
-              <div key="partner-comment" className="relative group">
-                <Quote className={cn("absolute -top-3 -right-2 w-8 h-8", cardStyles.quote)} />
-                <h3 className={cn("font-display text-sm uppercase tracking-widest mb-2 opacity-60 text-center", cardStyles.text)}>
-                  あなたの感想
-                </h3>
-                <div className={cn("flex flex-wrap gap-2 justify-center")}>
-                  {data.partnerComment.map((comment) => (
-                    <Badge 
-                      key={comment} 
-                      className="px-3 py-1.5 rounded-full text-sm font-body bg-gray-200 text-gray-700 flex items-center gap-1.5 border-0"
-                    >
-                      <span className="flex-shrink-0 inline-flex items-center justify-center w-5 h-5 text-lg leading-none">
-                        {COMMENT_ICONS[comment as CommentOption] || ""}
-                      </span>
-                      <span>{comment}</span>
-                    </Badge>
-                  ))}
-                </div>
-              </div>
-            ) : null}
-          </AnimatePresence>
-        </div>
-
       </div>
     </motion.div>
   );
