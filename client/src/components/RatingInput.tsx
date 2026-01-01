@@ -57,7 +57,7 @@ export function RatingInput({ value, onChange, className, readOnly = false }: Ra
               initial={{ opacity: 0, y: 5 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -5 }}
-              className="text-sm font-medium text-rose-600"
+              className="text-sm font-medium text-black"
             >
               {RATING_LABELS[value]}
             </motion.span>
