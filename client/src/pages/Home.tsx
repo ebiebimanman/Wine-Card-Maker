@@ -54,11 +54,20 @@ interface MultiSelectButtonProps {
 }
 
 function MultiSelectButton({ option, isSelected, icon, onClick, droplets }: MultiSelectButtonProps) {
+  const [isBouncing, setIsBouncing] = useState(false);
+
+  const handleButtonClick = () => {
+    setIsBouncing(true);
+    onClick();
+    // アニメーションが1周したらリセット（待機時間含まず）
+    setTimeout(() => setIsBouncing(false), (option.length * 0.1) * 1000 + 400);
+  };
+
   return (
     <motion.button
       type="button"
       layout
-      onClick={onClick}
+      onClick={handleButtonClick}
       whileTap={{ scale: 0.9 }}
       className={cn(
         "relative px-3 py-1.5 rounded-full text-sm font-body flex items-center gap-1.5",
@@ -129,14 +138,12 @@ function MultiSelectButton({ option, isSelected, icon, onClick, droplets }: Mult
               key={`${option}-${index}`}
               aria-hidden="true"
               initial={{ y: 0 }}
-              animate={isSelected ? {
+              animate={isBouncing ? {
                 y: [0, -8, 0],
               } : { y: 0 }}
               transition={{
                 duration: 0.4,
-                repeat: isSelected ? Infinity : 0,
-                repeatDelay: (option.length - 1) * 0.15 + 1.1, // 全体の長さに合わせた待機時間
-                delay: index * 0.15, // 1文字ずつ順番に
+                delay: index * 0.1, // 次の文字が跳ね始めるタイミングを短く (0.15 -> 0.1)
                 ease: "easeInOut"
               }}
             >
