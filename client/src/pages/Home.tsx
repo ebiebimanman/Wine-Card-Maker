@@ -59,14 +59,14 @@ function MultiSelectButton({ option, isSelected, icon, onClick, droplets }: Mult
       type="button"
       layout
       onClick={onClick}
-      whileTap={{ scale: 0.95 }}
+      whileTap={{ scale: 0.9 }}
       className={cn(
         "relative px-3 py-1.5 rounded-full text-sm font-body flex items-center gap-1.5",
         isSelected ? "bg-[#722F37] text-white" : "bg-gray-200 text-gray-700"
       )}
       transition={{
         layout: { duration: 0.3, ease: "easeOut" },
-        scale: { type: "spring", stiffness: 400, damping: 15 },
+        scale: { type: "spring", stiffness: 400, damping: 10 },
       }}
     >
       <AnimatePresence>
@@ -120,44 +120,30 @@ function MultiSelectButton({ option, isSelected, icon, onClick, droplets }: Mult
           {option}
         </span>
         {/* 実際に表示される跳ねるテキスト */}
-        <motion.span
-          key={option}
-          layout="position"
+        <span
           className="absolute inset-0 whitespace-nowrap flex"
-          initial="hidden"
-          animate="visible"
-          variants={{
-            visible: {
-              transition: {
-                staggerChildren: 0.1,
-              },
-            },
-          }}
           aria-label={option}
         >
           {option.split("").map((char, index) => (
             <motion.span
               key={`${option}-${index}`}
               aria-hidden="true"
-              variants={{
-                hidden: { opacity: 0, y: 0 },
-                visible: { 
-                  opacity: 1, 
-                  y: [0, -8, 0],
-                  transition: {
-                    duration: 0.5,
-                    repeat: isSelected ? Infinity : 0,
-                    repeatDelay: 1.5,
-                    delay: index * 0.1, // 左から順番に跳ねるように調整
-                    ease: "easeInOut"
-                  }
-                },
+              initial={{ y: 0 }}
+              animate={isSelected ? {
+                y: [0, -8, 0],
+              } : { y: 0 }}
+              transition={{
+                duration: 0.4,
+                repeat: isSelected ? Infinity : 0,
+                repeatDelay: (option.length - 1) * 0.15 + 1.1, // 全体の長さに合わせた待機時間
+                delay: index * 0.15, // 1文字ずつ順番に
+                ease: "easeInOut"
               }}
             >
               {char === " " ? "\u00A0" : char}
             </motion.span>
           ))}
-        </motion.span>
+        </span>
       </div>
     </motion.button>
   );
@@ -423,20 +409,6 @@ export default function Home() {
                   }} />
                 </div>
 
-                {/* My Rating */}
-                <div className="space-y-2">
-                  <Label className="font-display text-lg">評価</Label>
-                  <div className="p-4 bg-gray-50/50 rounded-lg border border-gray-100 flex justify-center">
-                    <RatingInput
-                      value={watchedValues.myRating}
-                      onChange={(val) => form.setValue("myRating", val)}
-                    />
-                  </div>
-                  {form.formState.errors.myRating && (
-                    <p className="text-sm text-destructive font-body">{form.formState.errors.myRating.message}</p>
-                  )}
-                </div>
-
                 {/* Wine Name */}
                 <div className="space-y-2">
                   <Label htmlFor="wineName" className="font-display text-lg">ワイン名</Label>
@@ -479,104 +451,101 @@ export default function Home() {
                   </div>
                 </div>
 
-                {/* Wine Information */}
+                {/* Price Slider */}
+                <div className="space-y-2">
+                  <Label htmlFor="price" className="font-display text-lg">
+                    価格: 
+                    <motion.span
+                      key={watchedValues.price}
+                      initial={{ scale: 1.1, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      transition={{ duration: 0.3, type: "spring", stiffness: 100 }}
+                      className="ml-1 inline-block"
+                    >
+                      {(watchedValues.price ?? 5000).toLocaleString()}円
+                    </motion.span>
+                  </Label>
+                  <Slider
+                    id="price"
+                    min={500}
+                    max={10000}
+                    step={500}
+                    value={[watchedValues.price ?? 5000]}
+                    onValueChange={(value) => handlePriceChange(value[0])}
+                    className="w-full"
+                  />
+                </div>
+
+                {/* Location */}
+                <div className="space-y-2">
+                  <Label htmlFor="location" className="font-display text-lg">購入した場所</Label>
+                  <Input
+                    id="location"
+                    placeholder="例）新宿の酒屋、オンラインストア"
+                    className="h-12 text-lg font-body bg-transparent border-b-2 border-t-0 border-x-0 border-gray-200 rounded-none px-0 focus-visible:ring-0 focus-visible:border-primary transition-colors placeholder:text-gray-300"
+                    {...form.register("location")}
+                  />
+                  {form.formState.errors.location && (
+                    <p className="text-sm text-destructive font-body">{form.formState.errors.location.message}</p>
+                  )}
+                </div>
+
+                {/* Paired Food */}
                 <div className="space-y-4">
-                  <Label className="font-display text-lg">ワイン情報</Label>
-                  
-                  {/* Location */}
-                  <div className="space-y-2">
-                    <Label htmlFor="location" className="text-sm font-body">購入した場所</Label>
-                    <Input
-                      id="location"
-                      placeholder="例）新宿の酒屋、オンラインストア"
-                      className="h-10 text-sm font-body bg-gray-50/30 border-gray-200 focus-visible:ring-1 focus-visible:ring-primary/20"
-                      {...form.register("location")}
+                  <Label className="font-display text-lg">このワインに合う料理</Label>
+                  <div className="flex flex-wrap gap-2">
+                    {PAIRED_FOOD_OPTIONS.map((option) => {
+                      const isSelected = (watchedValues.pairedFood?.includes(option) ?? false);
+                      const buttonId = `pairedFood-${option}`;
+                      const droplets = buttonDroplets.get(buttonId) || [];
+                      
+                      return (
+                        <MultiSelectButton
+                          key={option}
+                          option={option}
+                          isSelected={isSelected}
+                          icon={PAIRED_FOOD_ICONS[option] || ""}
+                          onClick={() => {
+                            const current = watchedValues.pairedFood ?? [];
+                            if (current.includes(option)) {
+                              form.setValue("pairedFood", current.filter((c) => c !== option));
+                            } else {
+                              form.setValue("pairedFood", [...current, option]);
+                              const newDroplets = Array.from({ length: 4 }, (_, i) => ({
+                                id: `${buttonId}-${Date.now()}-${i}`,
+                                angle: (i / 4) * Math.PI * 2 + (Math.random() - 0.5) * 0.5,
+                                distance: 20 + Math.random() * 15,
+                                startX: 10 + Math.random() * 80,
+                              }));
+                              setButtonDroplets(prev => new Map(prev).set(buttonId, newDroplets));
+                              setTimeout(() => {
+                                setButtonDroplets(prev => {
+                                  const next = new Map(prev);
+                                  next.delete(buttonId);
+                                  return next;
+                                });
+                              }, 600);
+                            }
+                          }}
+                          droplets={droplets}
+                        />
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* Rating */}
+                <div className="space-y-2">
+                  <Label className="font-display text-lg">評価</Label>
+                  <div className="p-4 bg-gray-50/50 rounded-lg border border-gray-100 flex justify-center">
+                    <RatingInput
+                      value={watchedValues.myRating}
+                      onChange={(val) => form.setValue("myRating", val)}
                     />
-                    {form.formState.errors.location && (
-                      <p className="text-sm text-destructive font-body">{form.formState.errors.location.message}</p>
-                    )}
                   </div>
-
-                  {/* Price Slider */}
-                  <div className="space-y-2">
-                    <motion.div
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      transition={{ duration: 0.2 }}
-                    >
-                      <Label htmlFor="price" className="text-sm font-body">
-                        価格: 
-                        <motion.span
-                          key={watchedValues.price}
-                          initial={{ scale: 1.1, opacity: 0 }}
-                          animate={{ scale: 1, opacity: 1 }}
-                          transition={{ duration: 0.3, type: "spring", stiffness: 100 }}
-                          className="ml-1 inline-block"
-                        >
-                          {(watchedValues.price ?? 5000).toLocaleString()}円
-                        </motion.span>
-                      </Label>
-                    </motion.div>
-                    <motion.div
-                      initial={{ opacity: 0, y: 4 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.3, delay: 0.1 }}
-                    >
-                      <Slider
-                        id="price"
-                        min={500}
-                        max={10000}
-                        step={500}
-                        value={[watchedValues.price ?? 5000]}
-                        onValueChange={(value) => handlePriceChange(value[0])}
-                        className="w-full"
-                      />
-                    </motion.div>
-                  </div>
-
-                  {/* Paired Food */}
-                  <div className="space-y-4">
-                    <Label className="font-display text-lg">このワインに合う料理</Label>
-                    <div className="flex flex-wrap gap-2">
-                      {PAIRED_FOOD_OPTIONS.map((option) => {
-                        const isSelected = (watchedValues.pairedFood?.includes(option) ?? false);
-                        const buttonId = `pairedFood-${option}`;
-                        const droplets = buttonDroplets.get(buttonId) || [];
-                        
-                        return (
-                          <MultiSelectButton
-                            key={option}
-                            option={option}
-                            isSelected={isSelected}
-                            icon={PAIRED_FOOD_ICONS[option] || ""}
-                            onClick={() => {
-                              const current = watchedValues.pairedFood ?? [];
-                              if (current.includes(option)) {
-                                form.setValue("pairedFood", current.filter((c) => c !== option));
-                              } else {
-                                form.setValue("pairedFood", [...current, option]);
-                                const newDroplets = Array.from({ length: 4 }, (_, i) => ({
-                                  id: `${buttonId}-${Date.now()}-${i}`,
-                                  angle: (i / 4) * Math.PI * 2 + (Math.random() - 0.5) * 0.5,
-                                  distance: 20 + Math.random() * 15,
-                                  startX: 10 + Math.random() * 80,
-                                }));
-                                setButtonDroplets(prev => new Map(prev).set(buttonId, newDroplets));
-                                setTimeout(() => {
-                                  setButtonDroplets(prev => {
-                                    const next = new Map(prev);
-                                    next.delete(buttonId);
-                                    return next;
-                                  });
-                                }, 600);
-                              }
-                            }}
-                            droplets={droplets}
-                          />
-                        );
-                      })}
-                    </div>
-                  </div>
+                  {form.formState.errors.myRating && (
+                    <p className="text-sm text-destructive font-body">{form.formState.errors.myRating.message}</p>
+                  )}
                 </div>
 
                 <div className="pt-4">
