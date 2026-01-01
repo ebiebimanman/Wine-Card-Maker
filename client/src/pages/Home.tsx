@@ -59,7 +59,7 @@ function MultiSelectButton({ option, isSelected, icon, onClick, droplets }: Mult
       type="button"
       layout
       onClick={onClick}
-      whileTap={{ scale: 0.85, y: 4 }}
+      whileTap={{ scale: 0.95 }}
       className={cn(
         "relative px-3 py-1.5 rounded-full text-sm font-body flex items-center gap-1.5",
         isSelected ? "bg-[#722F37] text-white" : "bg-gray-200 text-gray-700"
@@ -67,7 +67,6 @@ function MultiSelectButton({ option, isSelected, icon, onClick, droplets }: Mult
       transition={{
         layout: { duration: 0.3, ease: "easeOut" },
         scale: { type: "spring", stiffness: 400, damping: 15 },
-        y: { type: "spring", stiffness: 400, damping: 15 },
       }}
     >
       <AnimatePresence>
@@ -115,43 +114,51 @@ function MultiSelectButton({ option, isSelected, icon, onClick, droplets }: Mult
           )}
         </AnimatePresence>
       </span>
-      <motion.span
-        key={option}
-        layout="position"
-        className="whitespace-nowrap relative z-10 flex"
-        initial="hidden"
-        animate="visible"
-        variants={{
-          visible: {
-            transition: {
-              staggerChildren: 0.05,
-            },
-          },
-        }}
-        aria-label={option}
-      >
-        {option.split("").map((char, index) => (
-          <motion.span
-            key={`${option}-${index}`}
-            aria-hidden="true"
-            variants={{
-              hidden: { opacity: 0, y: 0 },
-              visible: { 
-                opacity: 1, 
-                y: [0, -8, 0],
-                transition: {
-                  duration: 0.4,
-                  repeat: isSelected ? Infinity : 0,
-                  repeatDelay: 1.5,
-                  delay: index * 0.1
-                }
+      <div className="relative z-10 flex">
+        {/* レアウトシフトを防ぐための見えない土台 */}
+        <span className="invisible pointer-events-none select-none">
+          {option}
+        </span>
+        {/* 実際に表示される跳ねるテキスト */}
+        <motion.span
+          key={option}
+          layout="position"
+          className="absolute inset-0 whitespace-nowrap flex"
+          initial="hidden"
+          animate="visible"
+          variants={{
+            visible: {
+              transition: {
+                staggerChildren: 0.1,
               },
-            }}
-          >
-            {char === " " ? "\u00A0" : char}
-          </motion.span>
-        ))}
-      </motion.span>
+            },
+          }}
+          aria-label={option}
+        >
+          {option.split("").map((char, index) => (
+            <motion.span
+              key={`${option}-${index}`}
+              aria-hidden="true"
+              variants={{
+                hidden: { opacity: 0, y: 0 },
+                visible: { 
+                  opacity: 1, 
+                  y: [0, -8, 0],
+                  transition: {
+                    duration: 0.5,
+                    repeat: isSelected ? Infinity : 0,
+                    repeatDelay: 1.5,
+                    delay: index * 0.1, // 左から順番に跳ねるように調整
+                    ease: "easeInOut"
+                  }
+                },
+              }}
+            >
+              {char === " " ? "\u00A0" : char}
+            </motion.span>
+          ))}
+        </motion.span>
+      </div>
     </motion.button>
   );
 }
@@ -298,15 +305,6 @@ export default function Home() {
             <Card className="p-6 md:p-8 shadow-xl bg-white/80 backdrop-blur-sm border-white/50">
               <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
                 
-                {/* Theme Selection */}
-                <div className="space-y-3">
-                  <Label className="font-display text-lg">ワインの種類</Label>
-                  <ThemeToggle theme={theme} onThemeChange={(t) => {
-                    setTheme(t);
-                    form.setValue("themeColor", t);
-                  }} />
-                </div>
-
                 {/* Wine Image Upload */}
                 <div className="space-y-2">
                   <Label htmlFor="wineImage" className="font-display text-lg">ワインの画像</Label>
@@ -416,9 +414,18 @@ export default function Home() {
                   </div>
                 </div>
 
+                {/* Theme Selection */}
+                <div className="space-y-3">
+                  <Label className="font-display text-lg">ワインの種類</Label>
+                  <ThemeToggle theme={theme} onThemeChange={(t) => {
+                    setTheme(t);
+                    form.setValue("themeColor", t);
+                  }} />
+                </div>
+
                 {/* My Rating */}
                 <div className="space-y-2">
-                  <Label className="font-display text-lg">わたしの評価</Label>
+                  <Label className="font-display text-lg">評価</Label>
                   <div className="p-4 bg-gray-50/50 rounded-lg border border-gray-100 flex justify-center">
                     <RatingInput
                       value={watchedValues.myRating}

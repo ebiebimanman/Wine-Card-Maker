@@ -127,11 +127,6 @@ export function WineCardPreview({ data, theme }: WineCardPreviewProps) {
             {data.wineName || "ワイン名未入力"}
           </h2>
           
-          <div className="mb-2">
-            <span className={cn("text-xs font-display uppercase tracking-widest opacity-60", cardStyles.text)}>
-              わたしの評価
-            </span>
-          </div>
           <div className="flex justify-center gap-1 mb-4">
             {[1, 2, 3, 4, 5].map((i) => {
               return (
