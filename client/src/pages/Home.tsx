@@ -436,7 +436,7 @@ export default function Home() {
                     <Label htmlFor="origin" className="font-display text-lg">産地</Label>
                     <Input
                       id="origin"
-                      placeholder="例）フランス、ボルドー"
+                      placeholder="フランス、ボルドー"
                       className="h-12 text-lg font-body bg-transparent border-b-2 border-t-0 border-x-0 border-gray-200 rounded-none px-0 focus-visible:ring-0 focus-visible:border-primary transition-colors placeholder:text-gray-300"
                       {...form.register("origin")}
                     />
@@ -448,7 +448,7 @@ export default function Home() {
                     <Label htmlFor="variety" className="font-display text-lg">品種</Label>
                     <Input
                       id="variety"
-                      placeholder="例）カベルネ・ソーヴィニョン"
+                      placeholder="カベルネ・ソーヴィニョン"
                       className="h-12 text-lg font-body bg-transparent border-b-2 border-t-0 border-x-0 border-gray-200 rounded-none px-0 focus-visible:ring-0 focus-visible:border-primary transition-colors placeholder:text-gray-300"
                       {...form.register("variety")}
                     />
@@ -483,7 +483,7 @@ export default function Home() {
                   <Label htmlFor="location" className="font-display text-lg">購入した場所</Label>
                   <Input
                     id="location"
-                    placeholder="例）新宿の酒屋、オンラインストア"
+                    placeholder="新宿の酒屋、オンラインストア"
                     className="h-12 text-lg font-body bg-transparent border-b-2 border-t-0 border-x-0 border-gray-200 rounded-none px-0 focus-visible:ring-0 focus-visible:border-primary transition-colors placeholder:text-gray-300"
                     {...form.register("location")}
                   />
