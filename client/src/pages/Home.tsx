@@ -421,7 +421,7 @@ export default function Home() {
                   <Label htmlFor="wineName" className="font-display text-lg">ワイン名</Label>
                   <Input
                     id="wineName"
-                    placeholder="例）シャトー・マルゴー 2015"
+                    placeholder="シャトー・マルゴー 2015"
                     className="h-12 text-lg font-body bg-transparent border-b-2 border-t-0 border-x-0 border-gray-200 rounded-none px-0 focus-visible:ring-0 focus-visible:border-primary transition-colors placeholder:text-gray-300"
                     {...form.register("wineName")}
                   />

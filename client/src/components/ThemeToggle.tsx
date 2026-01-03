@@ -30,14 +30,14 @@ export function ThemeToggle({ theme, onThemeChange }: ThemeToggleProps) {
         className={cn(
           "group relative flex flex-col items-center gap-2 p-4 rounded-xl transition-all duration-300 w-28",
           theme === "white" 
-            ? "bg-[#F8F9FA] text-[#868e96] border border-[#E9ECEF]" 
+            ? "bg-[#DCD48E] text-[#635B21] border border-[#C5BC6A]" 
             : "bg-white text-gray-400 hover:bg-gray-50 border border-gray-100"
         )}
       >
         <div className="relative">
-          <Wine className={cn("w-6 h-6", theme === "white" ? "text-[#E6DB74]" : "text-[#E6DB74]/50")} />
+          <Wine className={cn("w-6 h-6", theme === "white" ? "text-[#FFFAEB]" : "text-[#DCD48E]/50")} />
         </div>
-        <span className="text-xs font-sans font-semibold uppercase tracking-widest text-slate-600">白ワイン</span>
+        <span className="text-xs font-sans font-semibold uppercase tracking-widest">白ワイン</span>
       </button>
     </div>
   );
