@@ -16,7 +16,7 @@ export function ThemeToggle({ theme, onThemeChange }: ThemeToggleProps) {
         className={cn(
           "group relative flex flex-col items-center gap-2 p-4 rounded-xl transition-all duration-300 w-28",
           theme === "red" 
-            ? "bg-[#722F37] text-white shadow-lg scale-105 ring-2 ring-[#722F37]/20" 
+            ? "bg-[#722F37] text-white" 
             : "bg-white text-gray-400 hover:bg-gray-50 border border-gray-100"
         )}
       >
@@ -30,7 +30,7 @@ export function ThemeToggle({ theme, onThemeChange }: ThemeToggleProps) {
         className={cn(
           "group relative flex flex-col items-center gap-2 p-4 rounded-xl transition-all duration-300 w-28",
           theme === "white" 
-            ? "bg-[#F8F9FA] text-[#868e96] border border-[#E9ECEF] shadow-lg scale-105 ring-2 ring-[#F1F3F5]" 
+            ? "bg-[#F8F9FA] text-[#868e96] border border-[#E9ECEF]" 
             : "bg-white text-gray-400 hover:bg-gray-50 border border-gray-100"
         )}
       >
