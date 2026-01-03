@@ -139,7 +139,7 @@ function MultiSelectButton({ option, isSelected, icon, onClick, droplets }: Mult
               aria-hidden="true"
               initial={{ y: 0 }}
               animate={isBouncing ? {
-                y: [0, -8, 0],
+                y: [0, -4, 0],
               } : { y: 0 }}
               transition={{
                 duration: 0.4,
@@ -462,9 +462,9 @@ export default function Home() {
                 <div className="space-y-2">
                   <div className="flex justify-between items-center">
                     <Label htmlFor="price" className="font-display text-lg">価格</Label>
-                    <div className="font-mono text-lg font-bold flex items-baseline gap-1">
+                    <div className="font-body text-lg font-bold flex items-baseline gap-1">
                       <span>{(watchedValues.price ?? 5000).toLocaleString()}</span>
-                      <span className="text-sm font-body">円</span>
+                      <span className="text-sm">円</span>
                     </div>
                   </div>
                   <Slider
