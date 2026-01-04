@@ -552,14 +552,15 @@ export default function Home() {
                     <Button 
                       type="submit" 
                       disabled={createMutation.isPending}
-                      className="w-full h-12 font-display text-lg bg-[#2D2424] hover:bg-[#4A3B3B] text-[#F5F5F0] transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-0.5"
+                      className="w-full h-12 font-display text-lg bg-[#2D2424] hover:bg-[#4A3B3B] text-[#F5F5F0] transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-0.5 flex items-center justify-center gap-2"
                     >
                       {createMutation.isPending ? (
-                        <span className="flex items-center gap-2">
-                          <Loader2 className="w-5 h-5 animate-spin" /> 保存中...
-                        </span>
+                        <>
+                          <Loader2 className="w-5 h-5 animate-spin" />
+                          <span>作成中</span>
+                        </>
                       ) : (
-                        "カードを保存"
+                        "ワインカードを作成"
                       )}
                     </Button>
                   </motion.div>
