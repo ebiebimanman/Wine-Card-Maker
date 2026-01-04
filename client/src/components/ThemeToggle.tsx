@@ -9,11 +9,11 @@ interface ThemeToggleProps {
 
 export function ThemeToggle({ theme, onThemeChange }: ThemeToggleProps) {
   const tapAnimation = {
-    scale: [1, 0.9, 1.1, 1],
+    scale: 0.9,
     transition: {
-      duration: 0.4,
-      times: [0, 0.2, 0.7, 1],
-      ease: "easeInOut",
+      type: "spring",
+      stiffness: 400,
+      damping: 10,
     },
   };
 
