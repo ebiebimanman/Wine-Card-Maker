@@ -71,7 +71,7 @@ function MultiSelectButton({ option, isSelected, icon, onClick, droplets }: Mult
       whileTap={{ scale: 0.9 }}
       className={cn(
         "relative px-3 py-1.5 my-[2px] rounded-full text-sm font-body flex items-center gap-1.5 transition-colors duration-500",
-        isSelected ? "bg-[#722F37] text-white" : "bg-gray-200 text-gray-700"
+        isSelected ? "bg-[#722F37] text-white" : "bg-[#fafafa] text-gray-700"
       )}
       transition={{
         layout: { duration: 0.3, ease: "easeOut" },
@@ -345,7 +345,7 @@ export default function Home() {
                           <img
                             src={watchedValues.wineImage}
                             alt="ワイン画像"
-                            className="w-full h-48 object-cover rounded-lg"
+                            className="w-full h-48 object-cover rounded-[16px]"
                           />
                           <button
                             type="button"
@@ -416,7 +416,7 @@ export default function Home() {
                   <Input
                     id="wineName"
                     placeholder="シャトー・マルゴー 2015"
-                    className="h-12 text-lg font-body bg-transparent border-b-2 border-t-0 border-x-0 border-gray-200 rounded-none px-0 focus-visible:ring-0 focus-visible:border-primary transition-colors placeholder:text-gray-300"
+                    className="h-12 text-lg font-body bg-transparent border-2 border-gray-200 rounded-[100px] px-4 focus-visible:ring-0 focus-visible:border-primary transition-colors placeholder:text-gray-300"
                     {...form.register("wineName")}
                   />
                   {form.formState.errors.wineName && (
@@ -431,7 +431,7 @@ export default function Home() {
                     <Input
                       id="origin"
                       placeholder="フランス、ボルドー"
-                      className="h-12 text-lg font-body bg-transparent border-b-2 border-t-0 border-x-0 border-gray-200 rounded-none px-0 focus-visible:ring-0 focus-visible:border-primary transition-colors placeholder:text-gray-300"
+                      className="h-12 text-lg font-body bg-transparent border-2 border-gray-200 rounded-[100px] px-4 focus-visible:ring-0 focus-visible:border-primary transition-colors placeholder:text-gray-300"
                       {...form.register("origin")}
                     />
                     {form.formState.errors.origin && (
@@ -443,7 +443,7 @@ export default function Home() {
                     <Input
                       id="variety"
                       placeholder="カベルネ・ソーヴィニョン"
-                      className="h-12 text-lg font-body bg-transparent border-b-2 border-t-0 border-x-0 border-gray-200 rounded-none px-0 focus-visible:ring-0 focus-visible:border-primary transition-colors placeholder:text-gray-300"
+                      className="h-12 text-lg font-body bg-transparent border-2 border-gray-200 rounded-[100px] px-4 focus-visible:ring-0 focus-visible:border-primary transition-colors placeholder:text-gray-300"
                       {...form.register("variety")}
                     />
                     {form.formState.errors.variety && (
@@ -478,7 +478,7 @@ export default function Home() {
                   <Input
                     id="location"
                     placeholder="新宿の酒屋、オンラインストア"
-                    className="h-12 text-lg font-body bg-transparent border-b-2 border-t-0 border-x-0 border-gray-200 rounded-none px-0 focus-visible:ring-0 focus-visible:border-primary transition-colors placeholder:text-gray-300"
+                    className="h-12 text-lg font-body bg-transparent border-2 border-gray-200 rounded-[100px] px-4 focus-visible:ring-0 focus-visible:border-primary transition-colors placeholder:text-gray-300"
                     {...form.register("location")}
                   />
                   {form.formState.errors.location && (
@@ -552,7 +552,7 @@ export default function Home() {
                     <Button 
                       type="submit" 
                       disabled={createMutation.isPending}
-                      className="w-full h-12 font-display text-lg bg-[#2D2424] hover:bg-[#4A3B3B] text-[#F5F5F0] transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-0.5 flex items-center justify-center gap-2"
+                      className="w-full h-12 font-display text-lg bg-[#2D2424] hover:bg-[#4A3B3B] text-[#F5F5F0] transition-all duration-300 shadow-lg hover:shadow-xl flex items-center justify-center gap-2"
                     >
                       {createMutation.isPending ? (
                         <>
