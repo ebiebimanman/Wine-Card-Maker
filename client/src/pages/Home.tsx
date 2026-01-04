@@ -70,7 +70,7 @@ function MultiSelectButton({ option, isSelected, icon, onClick, droplets }: Mult
       onClick={handleButtonClick}
       whileTap={{ scale: 0.9 }}
       className={cn(
-        "relative px-3 py-1.5 rounded-full text-sm font-body flex items-center gap-1.5",
+        "relative px-3 py-1.5 rounded-full text-sm font-body flex items-center gap-1.5 transition-colors duration-500",
         isSelected ? "bg-[#722F37] text-white" : "bg-gray-200 text-gray-700"
       )}
       transition={{
@@ -98,7 +98,7 @@ function MultiSelectButton({ option, isSelected, icon, onClick, droplets }: Mult
       </AnimatePresence>
       <span className="flex-shrink-0 inline-flex items-center justify-center w-5 h-5 relative z-10">
         <AnimatePresence mode="wait" initial={false}>
-          {isSelected ? (
+          {isSelected && (
             <motion.span
               key="check"
               className="inline-flex items-center justify-center"
@@ -109,17 +109,11 @@ function MultiSelectButton({ option, isSelected, icon, onClick, droplets }: Mult
             >
               <Check className="w-3.5 h-3.5" />
             </motion.span>
-          ) : (
-            <motion.span
-              key="icon"
-              className="inline-flex items-center justify-center text-lg leading-none"
-              initial={{ opacity: 1, scale: 1 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.8 }}
-              transition={{ duration: 0.2, ease: "easeOut" }}
-            >
+          )}
+          {!isSelected && (
+            <span key="icon" className="inline-flex items-center justify-center text-lg leading-none">
               {icon}
-            </motion.span>
+            </span>
           )}
         </AnimatePresence>
       </span>
@@ -142,8 +136,8 @@ function MultiSelectButton({ option, isSelected, icon, onClick, droplets }: Mult
                 y: [0, -4, 0],
               } : { y: 0 }}
               transition={{
-                duration: 0.4,
-                delay: index * 0.1, // 次の文字が跳ね始めるタイミングを短く (0.15 -> 0.1)
+                duration: 0.27, // 0.4 / 1.5 = ~0.27
+                delay: index * 0.067, // 0.1 / 1.5 = ~0.067
                 ease: "easeInOut"
               }}
             >
@@ -190,8 +184,8 @@ export default function Home() {
       pairedFood: [],
       myComment: [],
       partnerComment: [],
-      myRating: 0,
-      partnerRating: 0,
+      myRating: 3,
+      partnerRating: 3,
       themeColor: "red",
       wineImage: undefined,
     },
