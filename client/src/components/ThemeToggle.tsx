@@ -8,11 +8,21 @@ interface ThemeToggleProps {
 }
 
 export function ThemeToggle({ theme, onThemeChange }: ThemeToggleProps) {
+  const tapAnimation = {
+    scale: [1, 0.9, 1.1, 1],
+    transition: {
+      duration: 0.4,
+      times: [0, 0.2, 0.7, 1],
+      ease: "easeInOut",
+    },
+  };
+
   return (
     <div className="flex gap-4 items-center justify-center p-4">
-      <button
+      <motion.button
         type="button"
         onClick={() => onThemeChange("red")}
+        whileTap={tapAnimation}
         className={cn(
           "group relative flex flex-col items-center gap-2 p-4 rounded-xl transition-all duration-300 w-28",
           theme === "red" 
@@ -22,11 +32,12 @@ export function ThemeToggle({ theme, onThemeChange }: ThemeToggleProps) {
       >
         <Wine className={cn("w-6 h-6", theme === "red" ? "text-white" : "text-[#722F37]")} />
         <span className="text-xs font-sans font-semibold uppercase tracking-widest">赤ワイン</span>
-      </button>
+      </motion.button>
 
-      <button
+      <motion.button
         type="button"
         onClick={() => onThemeChange("white")}
+        whileTap={tapAnimation}
         className={cn(
           "group relative flex flex-col items-center gap-2 p-4 rounded-xl transition-all duration-300 w-28",
           theme === "white" 
@@ -38,7 +49,7 @@ export function ThemeToggle({ theme, onThemeChange }: ThemeToggleProps) {
           <Wine className={cn("w-6 h-6", theme === "white" ? "text-[#FFFAEB]" : "text-[#DCD48E]/50")} />
         </div>
         <span className="text-xs font-sans font-semibold uppercase tracking-widest">白ワイン</span>
-      </button>
+      </motion.button>
     </div>
   );
 }
