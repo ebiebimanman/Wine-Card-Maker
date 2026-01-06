@@ -57,10 +57,12 @@ function MultiSelectButton({ option, isSelected, icon, onClick, droplets }: Mult
   const [isBouncing, setIsBouncing] = useState(false);
 
   const handleButtonClick = () => {
-    setIsBouncing(true);
+    if (!isSelected) {
+      setIsBouncing(true);
+      // アニメーションが1周したらリセット（待機時間含まず）
+      setTimeout(() => setIsBouncing(false), (option.length * 0.1) * 1000 + 400);
+    }
     onClick();
-    // アニメーションが1周したらリセット（待機時間含まず）
-    setTimeout(() => setIsBouncing(false), (option.length * 0.1) * 1000 + 400);
   };
 
   return (
@@ -71,7 +73,7 @@ function MultiSelectButton({ option, isSelected, icon, onClick, droplets }: Mult
       whileTap={{ scale: 0.9 }}
       className={cn(
         "relative px-3 py-1.5 my-[2px] rounded-full text-sm font-body flex items-center gap-1.5 transition-colors duration-500",
-        isSelected ? "bg-[#722F37] text-white" : "bg-[#fafafa] text-gray-700"
+        isSelected ? "bg-[#722F37] text-white" : "bg-[#f0f0f0] text-gray-700"
       )}
       transition={{
         layout: { duration: 0.3, ease: "easeOut" },
@@ -416,7 +418,7 @@ export default function Home() {
                   <Input
                     id="wineName"
                     placeholder="シャトー・マルゴー 2015"
-                    className="h-12 text-lg font-body bg-transparent border-2 border-gray-200 rounded-[100px] px-4 focus-visible:ring-0 focus-visible:border-primary transition-colors placeholder:text-gray-300"
+                    className="h-12 text-lg font-body bg-[#f0f0f0] border-transparent rounded-[100px] px-4 focus-visible:ring-0 focus-visible:bg-white transition-colors placeholder:text-gray-300"
                     {...form.register("wineName")}
                   />
                   {form.formState.errors.wineName && (
@@ -431,7 +433,7 @@ export default function Home() {
                     <Input
                       id="origin"
                       placeholder="フランス、ボルドー"
-                      className="h-12 text-lg font-body bg-transparent border-2 border-gray-200 rounded-[100px] px-4 focus-visible:ring-0 focus-visible:border-primary transition-colors placeholder:text-gray-300"
+                      className="h-12 text-lg font-body bg-[#f0f0f0] border-transparent rounded-[100px] px-4 focus-visible:ring-0 focus-visible:bg-white transition-colors placeholder:text-gray-300"
                       {...form.register("origin")}
                     />
                     {form.formState.errors.origin && (
@@ -443,7 +445,7 @@ export default function Home() {
                     <Input
                       id="variety"
                       placeholder="カベルネ・ソーヴィニョン"
-                      className="h-12 text-lg font-body bg-transparent border-2 border-gray-200 rounded-[100px] px-4 focus-visible:ring-0 focus-visible:border-primary transition-colors placeholder:text-gray-300"
+                      className="h-12 text-lg font-body bg-[#f0f0f0] border-transparent rounded-[100px] px-4 focus-visible:ring-0 focus-visible:bg-white transition-colors placeholder:text-gray-300"
                       {...form.register("variety")}
                     />
                     {form.formState.errors.variety && (
@@ -478,7 +480,7 @@ export default function Home() {
                   <Input
                     id="location"
                     placeholder="新宿の酒屋、オンラインストア"
-                    className="h-12 text-lg font-body bg-transparent border-2 border-gray-200 rounded-[100px] px-4 focus-visible:ring-0 focus-visible:border-primary transition-colors placeholder:text-gray-300"
+                    className="h-12 text-lg font-body bg-[#f0f0f0] border-transparent rounded-[100px] px-4 focus-visible:ring-0 focus-visible:bg-white transition-colors placeholder:text-gray-300"
                     {...form.register("location")}
                   />
                   {form.formState.errors.location && (

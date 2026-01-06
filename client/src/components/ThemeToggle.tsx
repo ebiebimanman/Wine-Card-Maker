@@ -26,11 +26,11 @@ export function ThemeToggle({ theme, onThemeChange }: ThemeToggleProps) {
         className={cn(
           "group relative flex flex-col items-center gap-2 p-4 rounded-xl transition-all duration-300 w-28",
           theme === "red" 
-            ? "bg-[#722F37] text-white" 
-            : "bg-white text-gray-400 hover:bg-gray-50 border border-gray-100"
+            ? "bg-[#722F37]/10 text-[#722F37] border-2 border-[#722F37]" 
+            : "bg-[#f0f0f0] text-gray-400 hover:bg-gray-100 border border-transparent"
         )}
       >
-        <Wine className={cn("w-6 h-6", theme === "red" ? "text-white" : "text-[#722F37]")} />
+        <Wine className={cn("w-6 h-6", theme === "red" ? "text-[#722F37]" : "text-[#722F37]/40")} />
         <span className="text-xs font-sans font-semibold uppercase tracking-widest">赤ワイン</span>
       </motion.button>
 
@@ -41,12 +41,12 @@ export function ThemeToggle({ theme, onThemeChange }: ThemeToggleProps) {
         className={cn(
           "group relative flex flex-col items-center gap-2 p-4 rounded-xl transition-all duration-300 w-28",
           theme === "white" 
-            ? "bg-[#DCD48E] text-[#635B21] border border-[#C5BC6A]" 
-            : "bg-white text-gray-400 hover:bg-gray-50 border border-gray-100"
+            ? "bg-[#DCD48E]/20 text-[#635B21] border-2 border-[#DCD48E]" 
+            : "bg-[#f0f0f0] text-gray-400 hover:bg-gray-100 border border-transparent"
         )}
       >
         <div className="relative">
-          <Wine className={cn("w-6 h-6", theme === "white" ? "text-[#FFFAEB]" : "text-[#DCD48E]/50")} />
+          <Wine className={cn("w-6 h-6", theme === "white" ? "text-[#635B21]" : "text-[#DCD48E]/40")} />
         </div>
         <span className="text-xs font-sans font-semibold uppercase tracking-widest">白ワイン</span>
       </motion.button>
