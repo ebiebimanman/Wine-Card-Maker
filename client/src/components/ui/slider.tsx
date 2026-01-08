@@ -6,28 +6,27 @@ import { cn } from "@/lib/utils"
 const Slider = React.forwardRef<
   React.ElementRef<typeof SliderPrimitive.Root>,
   React.ComponentPropsWithoutRef<typeof SliderPrimitive.Root>
->(({ className, min = 0, ...props }, ref) => (
+>(({ className, ...props }, ref) => (
   <SliderPrimitive.Root
     ref={ref}
     className={cn(
-      "relative flex w-full touch-none select-none items-center py-4",
+      "relative flex w-full touch-none select-none items-center h-10", // h-10で高さを出す
       className
     )}
-    min={min}
     {...props}
   >
-    <SliderPrimitive.Track className="relative h-6 w-full grow overflow-hidden rounded-full bg-[#F8F9FA] border border-gray-200">
+    {/* トラック（背景の黒い棒） */}
+    <SliderPrimitive.Track className="relative h-full w-full grow overflow-hidden rounded-full bg-secondary/20">
+      {/* レンジ（黒く塗りつぶされる部分） */}
       <SliderPrimitive.Range className="absolute h-full bg-black" />
-      {/* Ruler-like tick marks */}
-      <div className="absolute inset-0 flex justify-between items-center pointer-events-none opacity-40">
-        {Array.from({ length: 20 }).map((_, i) => (
-          <div key={i} className="w-[2px] h-3 bg-gray-400" />
-        ))}
-      </div>
     </SliderPrimitive.Track>
-    <SliderPrimitive.Thumb className="block h-[28px] w-[28px] rounded-full bg-black shadow-md transition-all focus:outline-none disabled:pointer-events-none disabled:opacity-50 flex items-center justify-center -translate-x-1/2 hover:scale-110 active:scale-125">
-      <div className="w-2.5 h-2.5 rounded-full bg-white" />
-    </SliderPrimitive.Thumb>
+    
+    {/* つまみ（白丸） */}
+    <SliderPrimitive.Thumb 
+      className="block h-8 w-8 rounded-full border-2 border-primary bg-background ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 shadow-md" 
+      // ↓ ここがポイント：つまみがトラックの内側に浮いているように見せるスタイル
+      style={{ boxShadow: "0 0 10px rgba(0,0,0,0.1)" }}
+    />
   </SliderPrimitive.Root>
 ))
 Slider.displayName = SliderPrimitive.Root.displayName
