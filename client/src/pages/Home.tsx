@@ -153,7 +153,7 @@ function MultiSelectButton({ option, isSelected, icon, onClick, droplets }: Mult
 }
 
 // UI Components
-import { Input } from "@/components/ui/input";
+import { FloatingInput } from "@/components/ui/FloatingInput";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -414,11 +414,9 @@ export default function Home() {
 
                 {/* Wine Name */}
                 <div className="space-y-2">
-                  <Label htmlFor="wineName" className="font-display text-lg">ワイン名</Label>
-                  <Input
+                  <FloatingInput
                     id="wineName"
-                    placeholder="シャトー・マルゴー 2015"
-                    className="h-12 text-lg font-body bg-[#f0f0f0] border-transparent rounded-[100px] px-4 focus-visible:ring-0 focus-visible:bg-white transition-colors placeholder:text-gray-300"
+                    label="ワイン名"
                     {...form.register("wineName")}
                   />
                   {form.formState.errors.wineName && (
@@ -429,11 +427,9 @@ export default function Home() {
                 {/* Origin and Variety */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="origin" className="font-display text-lg">産地</Label>
-                    <Input
+                    <FloatingInput
                       id="origin"
-                      placeholder="フランス、ボルドー"
-                      className="h-12 text-lg font-body bg-[#f0f0f0] border-transparent rounded-[100px] px-4 focus-visible:ring-0 focus-visible:bg-white transition-colors placeholder:text-gray-300"
+                      label="産地"
                       {...form.register("origin")}
                     />
                     {form.formState.errors.origin && (
@@ -441,11 +437,9 @@ export default function Home() {
                     )}
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="variety" className="font-display text-lg">品種</Label>
-                    <Input
+                    <FloatingInput
                       id="variety"
-                      placeholder="カベルネ・ソーヴィニョン"
-                      className="h-12 text-lg font-body bg-[#f0f0f0] border-transparent rounded-[100px] px-4 focus-visible:ring-0 focus-visible:bg-white transition-colors placeholder:text-gray-300"
+                      label="品種"
                       {...form.register("variety")}
                     />
                     {form.formState.errors.variety && (
@@ -476,11 +470,9 @@ export default function Home() {
 
                 {/* Location */}
                 <div className="space-y-2">
-                  <Label htmlFor="location" className="font-display text-lg">購入した場所</Label>
-                  <Input
+                  <FloatingInput
                     id="location"
-                    placeholder="新宿の酒屋、オンラインストア"
-                    className="h-12 text-lg font-body bg-[#f0f0f0] border-transparent rounded-[100px] px-4 focus-visible:ring-0 focus-visible:bg-white transition-colors placeholder:text-gray-300"
+                    label="購入した場所"
                     {...form.register("location")}
                   />
                   {form.formState.errors.location && (
