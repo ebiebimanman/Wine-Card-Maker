@@ -70,7 +70,7 @@ function MultiSelectButton({ option, isSelected, icon, onClick, className }: Mul
       type="button"
       layout
       onClick={handleButtonClick}
-      whileTap={{ scale: 0.9 }}
+      whileTap={{ scale: 0.8 }}
       className={cn(
         "relative px-3 py-1.5 rounded-full text-sm font-body flex items-center gap-1.5 transition-colors duration-500",
         isSelected ? "bg-[#722F37] text-white" : "bg-[#F8F9FA] text-gray-700",
@@ -78,7 +78,7 @@ function MultiSelectButton({ option, isSelected, icon, onClick, className }: Mul
       )}
       transition={{
         layout: { duration: 0.3, ease: "easeOut" },
-        scale: { type: "spring", stiffness: 400, damping: 10 },
+        scale: { duration: 0.2, ease: "easeInOut" },
       }}
     >
       <span className="flex-shrink-0 inline-flex items-center justify-center w-5 h-5 relative z-10">
@@ -530,8 +530,8 @@ export default function Home() {
 
                 <div className="pt-4">
                   <motion.div
-                    whileTap={{ scale: 0.9 }}
-                    transition={{ type: "spring", stiffness: 400, damping: 10 }}
+                    whileTap={{ scale: 0.8 }}
+                    transition={{ duration: 0.2, ease: "easeInOut" }}
                   >
                     <Button 
                       type="submit" 

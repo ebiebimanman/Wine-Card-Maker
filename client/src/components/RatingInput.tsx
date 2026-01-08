@@ -79,7 +79,8 @@ export function RatingInput({ value, onChange, className, readOnly = false }: Ra
               type="button"
               disabled={readOnly || isAnimating}
               onClick={() => onChange(star)}
-              whileTap={!readOnly && !isAnimating ? { scale: 0.95 } : {}}
+              whileTap={!readOnly && !isAnimating ? { scale: 0.8 } : {}}
+              transition={{ duration: 0.2, ease: "easeInOut" }}
               className={cn(
                 "relative p-1 focus:outline-none",
                 readOnly ? "cursor-default" : "cursor-pointer"

@@ -20,7 +20,7 @@ export function ThemeToggle({ theme, onThemeChange }: ThemeToggleProps) {
   const wineIconVariants = {
     initial: { rotate: 0 },
     tap: { 
-      rotate: [0, -15, 0],
+      rotate: [0, -20, 10, -5, 0],
       transition: { duration: 0.5, ease: "easeInOut" }
     }
   };
@@ -30,13 +30,14 @@ export function ThemeToggle({ theme, onThemeChange }: ThemeToggleProps) {
       <motion.button
         type="button"
         onClick={() => onThemeChange("red")}
-        whileTap="tap"
+        whileTap={{ scale: 0.8 }}
         className={cn(
           "group relative flex flex-col items-center gap-2 p-4 rounded-xl transition-all duration-500 w-28",
           theme === "red" 
             ? "bg-[#722F37]/10 text-[#722F37]" 
             : "bg-[#F8F9FA] text-[#D5C1C4] hover:bg-gray-100"
         )}
+        transition={{ duration: 0.2, ease: "easeInOut" }}
       >
         <AnimatePresence>
           {theme === "red" && (
@@ -58,13 +59,14 @@ export function ThemeToggle({ theme, onThemeChange }: ThemeToggleProps) {
       <motion.button
         type="button"
         onClick={() => onThemeChange("white")}
-        whileTap="tap"
+        whileTap={{ scale: 0.8 }}
         className={cn(
           "group relative flex flex-col items-center gap-2 p-4 rounded-xl transition-all duration-500 w-28",
           theme === "white" 
             ? "bg-[#DCD48E]/20 text-[#635B21]" 
             : "bg-[#F8F9FA] text-[#E6E2C3] hover:bg-gray-100"
         )}
+        transition={{ duration: 0.2, ease: "easeInOut" }}
       >
         <AnimatePresence>
           {theme === "white" && (
