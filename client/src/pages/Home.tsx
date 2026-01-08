@@ -398,6 +398,12 @@ export default function Home() {
                     id="wineName"
                     label="ワイン名"
                     {...form.register("wineName")}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        e.preventDefault();
+                        document.getElementById("origin")?.focus();
+                      }
+                    }}
                   />
                   {form.formState.errors.wineName && (
                     <p className="text-sm text-destructive font-body">{form.formState.errors.wineName.message}</p>
@@ -411,6 +417,12 @@ export default function Home() {
                       id="origin"
                       label="産地"
                       {...form.register("origin")}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          e.preventDefault();
+                          document.getElementById("variety")?.focus();
+                        }
+                      }}
                     />
                     {form.formState.errors.origin && (
                       <p className="text-sm text-destructive font-body">{form.formState.errors.origin.message}</p>
@@ -421,6 +433,12 @@ export default function Home() {
                       id="variety"
                       label="品種"
                       {...form.register("variety")}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          e.preventDefault();
+                          document.getElementById("location")?.focus();
+                        }
+                      }}
                     />
                     {form.formState.errors.variety && (
                       <p className="text-sm text-destructive font-body">{form.formState.errors.variety.message}</p>
@@ -454,6 +472,12 @@ export default function Home() {
                     id="location"
                     label="購入した場所"
                     {...form.register("location")}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        e.preventDefault();
+                        (e.target as HTMLInputElement).blur();
+                      }
+                    }}
                   />
                   {form.formState.errors.location && (
                     <p className="text-sm text-destructive font-body">{form.formState.errors.location.message}</p>

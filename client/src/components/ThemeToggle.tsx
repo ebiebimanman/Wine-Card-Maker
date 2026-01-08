@@ -18,10 +18,15 @@ export function ThemeToggle({ theme, onThemeChange }: ThemeToggleProps) {
   };
 
   const wineIconVariants = {
-    initial: { rotate: 0 },
+    initial: { rotate: 0, scale: 1 },
     tap: { 
-      rotate: [0, -20, 10, -5, 0],
-      transition: { duration: 0.5, ease: "easeInOut" }
+      rotate: [0, -25, 15, -10, 5, 0],
+      scale: [1, 1.2, 1],
+      transition: { 
+        duration: 0.6, 
+        ease: "easeInOut",
+        times: [0, 0.2, 0.4, 0.6, 0.8, 1]
+      }
     }
   };
 
