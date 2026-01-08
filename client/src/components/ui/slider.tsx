@@ -10,22 +10,20 @@ const Slider = React.forwardRef<
   <SliderPrimitive.Root
     ref={ref}
     className={cn(
-      "relative flex w-full touch-none select-none items-center h-10", // h-10で高さを出す
+      "relative flex w-full touch-none select-none items-center",
       className
     )}
     {...props}
   >
-    {/* トラック（背景の黒い棒） */}
-    <SliderPrimitive.Track className="relative h-full w-full grow overflow-hidden rounded-full bg-secondary/20">
-      {/* レンジ（黒く塗りつぶされる部分） */}
-      <SliderPrimitive.Range className="absolute h-full bg-black" />
+    {/* トラック（背景のグレーの線） */}
+    <SliderPrimitive.Track className="relative h-2 w-full grow overflow-hidden rounded-full bg-secondary/20">
+      {/* レンジ（進捗の黒い線）：必ずrounded-fullをつける */}
+      <SliderPrimitive.Range className="absolute h-full bg-primary rounded-full" />
     </SliderPrimitive.Track>
     
-    {/* つまみ（白丸） */}
-    <SliderPrimitive.Thumb 
-      className="block h-8 w-8 rounded-full border-2 border-primary bg-background ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 shadow-md" 
-      // ↓ ここがポイント：つまみがトラックの内側に浮いているように見せるスタイル
-      style={{ boxShadow: "0 0 10px rgba(0,0,0,0.1)" }}
+    {/* つまみ（ハンドル） */}
+    <SliderPrimitive.Thumb
+      className="block h-5 w-5 rounded-full border-2 border-primary bg-background ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 shadow-md hover:scale-110 active:scale-125"
     />
   </SliderPrimitive.Root>
 ))
