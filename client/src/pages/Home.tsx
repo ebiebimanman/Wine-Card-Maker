@@ -51,9 +51,10 @@ interface MultiSelectButtonProps {
   icon: string;
   onClick: () => void;
   droplets: Array<{ id: string; angle: number; distance: number; startX: number }>;
+  className?: string;
 }
 
-function MultiSelectButton({ option, isSelected, icon, onClick, droplets }: MultiSelectButtonProps) {
+function MultiSelectButton({ option, isSelected, icon, onClick, droplets, className }: MultiSelectButtonProps) {
   const [isBouncing, setIsBouncing] = useState(false);
 
   const handleButtonClick = () => {
@@ -72,8 +73,9 @@ function MultiSelectButton({ option, isSelected, icon, onClick, droplets }: Mult
       onClick={handleButtonClick}
       whileTap={{ scale: 0.9 }}
       className={cn(
-        "relative px-3 py-1.5 m-1.5 rounded-full text-sm font-body flex items-center gap-1.5 transition-colors duration-500",
-        isSelected ? "bg-[#722F37] text-white" : "bg-[#F8F9FA] text-gray-700"
+        "relative px-3 py-1.5 rounded-full text-sm font-body flex items-center gap-1.5 transition-colors duration-500",
+        isSelected ? "bg-[#722F37] text-white" : "bg-[#F8F9FA] text-gray-700",
+        className
       )}
       transition={{
         layout: { duration: 0.3, ease: "easeOut" },
