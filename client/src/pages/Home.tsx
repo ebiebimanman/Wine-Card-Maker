@@ -72,7 +72,7 @@ function MultiSelectButton({ option, isSelected, icon, onClick, droplets }: Mult
       onClick={handleButtonClick}
       whileTap={{ scale: 0.9 }}
       className={cn(
-        "relative px-3 py-1.5 my-[2px] rounded-full text-sm font-body flex items-center gap-1.5 transition-colors duration-500",
+        "relative px-3 py-1.5 m-1.5 rounded-full text-sm font-body flex items-center gap-1.5 transition-colors duration-500",
         isSelected ? "bg-[#722F37] text-white" : "bg-[#f0f0f0] text-gray-700"
       )}
       transition={{
@@ -525,6 +525,7 @@ export default function Home() {
                               }, 600);
                             }
                           }}
+                          className="m-1"
                           droplets={droplets}
                         />
                       );
