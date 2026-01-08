@@ -525,7 +525,7 @@ export default function Home() {
                               }, 600);
                             }
                           }}
-                          className="m-1"
+                          className="m-1.5"
                           droplets={droplets}
                         />
                       );
