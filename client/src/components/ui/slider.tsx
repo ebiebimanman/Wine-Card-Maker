@@ -23,7 +23,7 @@ const Slider = React.forwardRef<
     
     {/* つまみ（ハンドル） */}
     <SliderPrimitive.Thumb
-      className="block h-5 w-5 rounded-full border-2 border-primary bg-background ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 shadow-md hover:scale-110 active:scale-125"
+      className="block h-5 w-5 rounded-full border-2 border-primary bg-background transition-transform duration-200 ease-in-out focus:outline-none disabled:pointer-events-none disabled:opacity-50 shadow-md hover:scale-110 active:scale-125"
     />
   </SliderPrimitive.Root>
 ))
