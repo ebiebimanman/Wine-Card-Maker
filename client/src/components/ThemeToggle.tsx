@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { Wine } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -21,7 +21,7 @@ export function ThemeToggle({ theme, onThemeChange }: ThemeToggleProps) {
     initial: { rotate: 0 },
     tap: { 
       rotate: [0, -15, 0],
-      transition: { duration: 0.4, ease: "easeInOut" }
+      transition: { duration: 0.5, ease: "easeInOut" }
     }
   };
 
@@ -35,16 +35,21 @@ export function ThemeToggle({ theme, onThemeChange }: ThemeToggleProps) {
           "group relative flex flex-col items-center gap-2 p-4 rounded-xl transition-all duration-500 w-28",
           theme === "red" 
             ? "bg-[#722F37]/10 text-[#722F37]" 
-            : "bg-[#f0f0f0] text-[#D5C1C4] hover:bg-gray-100"
+            : "bg-[#F8F9FA] text-[#D5C1C4] hover:bg-gray-100"
         )}
       >
-        {theme === "red" && (
-          <motion.div 
-            layoutId="active-border"
-            className="absolute inset-[2px] border border-[#722F37] rounded-[8px] pointer-events-none" 
-            transition={{ type: "spring", stiffness: 300, damping: 30 }}
-          />
-        )}
+        <AnimatePresence>
+          {theme === "red" && (
+            <motion.div 
+              layoutId="active-border"
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 1.1 }}
+              className="absolute -inset-[2px] border-2 border-[#722F37] rounded-xl pointer-events-none" 
+              transition={{ duration: 0.5, ease: "easeOut" }}
+            />
+          )}
+        </AnimatePresence>
         <motion.div variants={wineIconVariants}>
           <Wine className={cn("w-6 h-6 transition-colors duration-500", theme === "red" ? "text-[#722F37]" : "text-[#D5C1C4]")} />
         </motion.div>
@@ -59,16 +64,21 @@ export function ThemeToggle({ theme, onThemeChange }: ThemeToggleProps) {
           "group relative flex flex-col items-center gap-2 p-4 rounded-xl transition-all duration-500 w-28",
           theme === "white" 
             ? "bg-[#DCD48E]/20 text-[#635B21]" 
-            : "bg-[#f0f0f0] text-[#E6E2C3] hover:bg-gray-100"
+            : "bg-[#F8F9FA] text-[#E6E2C3] hover:bg-gray-100"
         )}
       >
-        {theme === "white" && (
-          <motion.div 
-            layoutId="active-border"
-            className="absolute inset-[2px] border border-[#DCD48E] rounded-[8px] pointer-events-none" 
-            transition={{ type: "spring", stiffness: 300, damping: 30 }}
-          />
-        )}
+        <AnimatePresence>
+          {theme === "white" && (
+            <motion.div 
+              layoutId="active-border"
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 1.1 }}
+              className="absolute -inset-[2px] border-2 border-[#DCD48E] rounded-xl pointer-events-none" 
+              transition={{ duration: 0.5, ease: "easeOut" }}
+            />
+          )}
+        </AnimatePresence>
         <div className="relative">
           <motion.div variants={wineIconVariants}>
             <Wine className={cn("w-6 h-6 transition-colors duration-500", theme === "white" ? "text-[#635B21]" : "text-[#E6E2C3]")} />

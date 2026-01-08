@@ -15,7 +15,7 @@ const Slider = React.forwardRef<
     )}
     {...props}
   >
-    <SliderPrimitive.Track className="relative h-6 w-full grow overflow-hidden rounded-full bg-gray-100 border border-gray-200">
+    <SliderPrimitive.Track className="relative h-6 w-full grow overflow-hidden rounded-full bg-[#F8F9FA] border border-gray-200">
       {/* Ruler-like tick marks */}
       <div className="absolute inset-0 flex justify-between items-center pointer-events-none opacity-40">
         {Array.from({ length: 20 }).map((_, i) => (
