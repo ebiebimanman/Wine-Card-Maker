@@ -41,11 +41,10 @@ export function ThemeToggle({ theme, onThemeChange }: ThemeToggleProps) {
         <AnimatePresence>
           {theme === "red" && (
             <motion.div 
-              layoutId="active-border"
-              initial={{ opacity: 0, scale: 0.8 }}
+              initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 1.1 }}
-              className="absolute -inset-[2px] border-2 border-[#722F37] rounded-xl pointer-events-none" 
+              exit={{ opacity: 0, scale: 1.05 }}
+              className="absolute inset-[2px] border-2 border-[#722F37] rounded-lg pointer-events-none" 
               transition={{ duration: 0.5, ease: "easeOut" }}
             />
           )}
@@ -70,11 +69,10 @@ export function ThemeToggle({ theme, onThemeChange }: ThemeToggleProps) {
         <AnimatePresence>
           {theme === "white" && (
             <motion.div 
-              layoutId="active-border"
-              initial={{ opacity: 0, scale: 0.8 }}
+              initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 1.1 }}
-              className="absolute -inset-[2px] border-2 border-[#DCD48E] rounded-xl pointer-events-none" 
+              exit={{ opacity: 0, scale: 1.05 }}
+              className="absolute inset-[2px] border-2 border-[#DCD48E] rounded-lg pointer-events-none" 
               transition={{ duration: 0.5, ease: "easeOut" }}
             />
           )}

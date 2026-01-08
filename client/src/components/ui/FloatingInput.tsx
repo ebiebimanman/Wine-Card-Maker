@@ -13,7 +13,7 @@ export const FloatingInput = React.forwardRef<HTMLInputElement, FloatingInputPro
           {...props}
           ref={ref}
           className={cn(
-            "peer w-full rounded-[8px] border-transparent bg-[#F8F9FA] px-4 pt-5 pb-1 text-lg font-body focus:bg-white focus:outline-none focus:ring-0 transition-all duration-200 placeholder:text-transparent",
+            "peer w-full rounded-[8px] border-2 border-transparent bg-[#F8F9FA] px-4 pt-5 pb-1 text-lg font-body focus:bg-[#F8F9FA] focus:border-gray-200 focus:outline-none focus:ring-0 transition-all duration-200 placeholder:text-transparent",
             className
           )}
           placeholder={label} // peerハックのために必要だが、CSSで隠す

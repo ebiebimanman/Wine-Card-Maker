@@ -50,11 +50,10 @@ interface MultiSelectButtonProps {
   isSelected: boolean;
   icon: string;
   onClick: () => void;
-  droplets: Array<{ id: string; angle: number; distance: number; startX: number }>;
   className?: string;
 }
 
-function MultiSelectButton({ option, isSelected, icon, onClick, droplets, className }: MultiSelectButtonProps) {
+function MultiSelectButton({ option, isSelected, icon, onClick, className }: MultiSelectButtonProps) {
   const [isBouncing, setIsBouncing] = useState(false);
 
   const handleButtonClick = () => {
@@ -82,24 +81,6 @@ function MultiSelectButton({ option, isSelected, icon, onClick, droplets, classN
         scale: { type: "spring", stiffness: 400, damping: 10 },
       }}
     >
-      <AnimatePresence>
-        {droplets.map((droplet) => (
-          <motion.div
-            key={droplet.id}
-            className="absolute w-1 h-1 rounded-full bg-[#722F37] pointer-events-none z-0"
-            style={{ left: `${droplet.startX}%`, top: "50%" }}
-            initial={{ scale: 0, opacity: 1, x: 0, y: 0 }}
-            animate={{
-              scale: [0, 1, 0.8],
-              opacity: 1,
-              x: Math.cos(droplet.angle) * droplet.distance,
-              y: Math.sin(droplet.angle) * droplet.distance,
-            }}
-            exit={{ opacity: 1, scale: 0 }}
-            transition={{ duration: 1.2, ease: [0.34, 1.56, 0.64, 1] }}
-          />
-        ))}
-      </AnimatePresence>
       <span className="flex-shrink-0 inline-flex items-center justify-center w-5 h-5 relative z-10">
         <AnimatePresence mode="wait" initial={false}>
           {isSelected && (
@@ -175,7 +156,6 @@ export default function Home() {
   const cardRef = useRef<HTMLDivElement>(null);
   const [savedImageUrl, setSavedImageUrl] = useState<string | null>(null);
   const [isImageModalOpen, setIsImageModalOpen] = useState(false);
-  const [buttonDroplets, setButtonDroplets] = useState<Map<string, Array<{ id: string; angle: number; distance: number; startX: number }>>>(new Map());
 
   const form = useForm<InsertWineCard>({
     resolver: zodResolver(insertWineCardSchema),
@@ -298,7 +278,6 @@ export default function Home() {
                 
                 {/* Wine Image Upload */}
                 <div className="space-y-2">
-                  <Label htmlFor="wineImage" className="font-display text-lg">ワインの画像</Label>
                   <div className="space-y-3">
                     <input
                       id="wineImage"
@@ -407,7 +386,6 @@ export default function Home() {
 
                 {/* Theme Selection */}
                 <div className="space-y-3">
-                  <Label className="font-display text-lg">ワインの種類</Label>
                   <ThemeToggle theme={theme} onThemeChange={(t) => {
                     setTheme(t);
                     form.setValue("themeColor", t);
@@ -488,8 +466,6 @@ export default function Home() {
                   <div className="flex flex-wrap gap-2">
                     {PAIRED_FOOD_OPTIONS.map((option) => {
                       const isSelected = (watchedValues.pairedFood?.includes(option) ?? false);
-                      const buttonId = `pairedFood-${option}`;
-                      const droplets = buttonDroplets.get(buttonId) || [];
                       
                       return (
                         <MultiSelectButton
@@ -503,23 +479,35 @@ export default function Home() {
                               form.setValue("pairedFood", current.filter((c) => c !== option));
                             } else {
                               form.setValue("pairedFood", [...current, option]);
-                              const newDroplets = Array.from({ length: 4 }, (_, i) => ({
-                                id: `${buttonId}-${Date.now()}-${i}`,
-                                angle: (i / 4) * Math.PI * 2 + (Math.random() - 0.5) * 0.5,
-                                distance: 20 + Math.random() * 15,
-                                startX: 10 + Math.random() * 80,
-                              }));
-                              setButtonDroplets(prev => new Map(prev).set(buttonId, newDroplets));
-                              setTimeout(() => {
-                                setButtonDroplets(prev => {
-                                  const next = new Map(prev);
-                                  next.delete(buttonId);
-                                  return next;
-                                });
-                              }, 600);
                             }
                           }}
-                          droplets={droplets}
+                        />
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* Comments */}
+                <div className="space-y-4">
+                  <Label className="font-display text-lg">特徴・コメント</Label>
+                  <div className="flex flex-wrap gap-2">
+                    {COMMENT_OPTIONS.map((option) => {
+                      const isSelected = (watchedValues.myComment?.includes(option) ?? false);
+                      
+                      return (
+                        <MultiSelectButton
+                          key={option}
+                          option={option}
+                          isSelected={isSelected}
+                          icon={COMMENT_ICONS[option] || ""}
+                          onClick={() => {
+                            const current = watchedValues.myComment ?? [];
+                            if (current.includes(option)) {
+                              form.setValue("myComment", current.filter((c) => c !== option));
+                            } else {
+                              form.setValue("myComment", [...current, option]);
+                            }
+                          }}
                         />
                       );
                     })}
