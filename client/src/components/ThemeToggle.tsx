@@ -15,7 +15,7 @@ export function ThemeToggle({ theme, onThemeChange }: ThemeToggleProps) {
     if (animatingTheme) return;
     setAnimatingTheme(newTheme);
     onThemeChange(newTheme);
-    setTimeout(() => setAnimatingTheme(null), 800); // Total duration of complex animation: 0.8s
+    setTimeout(() => setAnimatingTheme(null), 1000); // Duration adjusted for new sequence
   };
 
   const cheersVariants = {
@@ -24,37 +24,50 @@ export function ThemeToggle({ theme, onThemeChange }: ThemeToggleProps) {
       opacity: [0, 1, 1, 0],
       transition: {
         times: [0, 0.1, 0.8, 1],
-        duration: 0.8,
+        duration: 1.0,
       }
     }
   };
 
   const glassLeftVariants = {
-    initial: { x: -20, scale: 0, opacity: 0, rotate: 0 },
+    initial: { x: -30, scale: 0, opacity: 0, rotate: 0 },
     cheers: {
-      x: [-20, 0, -5, 0],
-      scale: [0, 1.5, 1.5, 0],
+      x: [-30, -35, 0, 0], // Wind-up (pull back) then fast to center
+      scale: [0, 1.5, 1.5, 1.5],
       opacity: [0, 1, 1, 0],
-      rotate: [0, -15, -15, 0],
+      rotate: [0, -10, -20, -20],
       transition: {
         duration: 0.8,
-        times: [0, 0.2, 0.8, 1],
-        ease: ["easeOut", "linear", "easeIn"]
+        times: [0, 0.2, 0.4, 1],
+        ease: ["easeOut", "backIn", "easeOut"]
       }
     }
   };
 
   const glassRightVariants = {
-    initial: { x: 20, scale: 0, opacity: 0, rotate: 0 },
+    initial: { x: 30, scale: 0, opacity: 0, rotate: 0 },
     cheers: {
-      x: [20, 0, 5, 0],
-      scale: [0, 1.5, 1.5, 0],
+      x: [30, 35, 0, 0], // Wind-up (pull back) then fast to center
+      scale: [0, 1.5, 1.5, 1.5],
       opacity: [0, 1, 1, 0],
-      rotate: [0, 15, 15, 0],
+      rotate: [0, 10, 20, 20],
       transition: {
         duration: 0.8,
-        times: [0, 0.2, 0.8, 1],
-        ease: ["easeOut", "linear", "easeIn"]
+        times: [0, 0.2, 0.4, 1],
+        ease: ["easeOut", "backIn", "easeOut"]
+      }
+    }
+  };
+
+  const sparkVariants = {
+    initial: { scale: 0, opacity: 0 },
+    animate: {
+      scale: [0, 1.5, 2],
+      opacity: [0, 1, 0],
+      transition: {
+        delay: 0.35, // When glasses hit
+        duration: 0.4,
+        ease: "easeOut"
       }
     }
   };
@@ -106,8 +119,29 @@ export function ThemeToggle({ theme, onThemeChange }: ThemeToggleProps) {
               animate="cheers"
               className="absolute inset-0 flex items-center justify-center z-50 pointer-events-none"
             >
-              <motion.span variants={glassLeftVariants} className="text-2xl">🍷</motion.span>
-              <motion.span variants={glassRightVariants} className="text-2xl">🍷</motion.span>
+              <div className="relative">
+                <motion.span variants={glassLeftVariants} className="text-2xl absolute -translate-x-full">🍷</motion.span>
+                <motion.span variants={glassRightVariants} className="text-2xl absolute">🍷</motion.span>
+                <motion.div
+                  variants={sparkVariants}
+                  initial="initial"
+                  animate="animate"
+                  className="absolute left-0 top-0 -translate-x-1/2 -translate-y-1/2"
+                >
+                  <div className="w-4 h-4 bg-yellow-400 rounded-full blur-[2px] opacity-80" />
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    {[...Array(6)].map((_, i) => (
+                      <motion.div
+                        key={i}
+                        className="absolute w-1 h-3 bg-yellow-300 rounded-full"
+                        style={{ rotate: i * 60 }}
+                        animate={{ y: [-2, -10], opacity: [1, 0] }}
+                        transition={{ delay: 0.35, duration: 0.3 }}
+                      />
+                    ))}
+                  </div>
+                </motion.div>
+              </div>
             </motion.div>
           )}
         </AnimatePresence>
@@ -158,8 +192,29 @@ export function ThemeToggle({ theme, onThemeChange }: ThemeToggleProps) {
               animate="cheers"
               className="absolute inset-0 flex items-center justify-center z-50 pointer-events-none"
             >
-              <motion.span variants={glassLeftVariants} className="text-2xl">🥂</motion.span>
-              <motion.span variants={glassRightVariants} className="text-2xl">🥂</motion.span>
+              <div className="relative">
+                <motion.span variants={glassLeftVariants} className="text-2xl absolute -translate-x-full">🥂</motion.span>
+                <motion.span variants={glassRightVariants} className="text-2xl absolute">🥂</motion.span>
+                <motion.div
+                  variants={sparkVariants}
+                  initial="initial"
+                  animate="animate"
+                  className="absolute left-0 top-0 -translate-x-1/2 -translate-y-1/2"
+                >
+                  <div className="w-4 h-4 bg-yellow-400 rounded-full blur-[2px] opacity-80" />
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    {[...Array(6)].map((_, i) => (
+                      <motion.div
+                        key={i}
+                        className="absolute w-1 h-3 bg-yellow-300 rounded-full"
+                        style={{ rotate: i * 60 }}
+                        animate={{ y: [-2, -10], opacity: [1, 0] }}
+                        transition={{ delay: 0.35, duration: 0.3 }}
+                      />
+                    ))}
+                  </div>
+                </motion.div>
+              </div>
             </motion.div>
           )}
         </AnimatePresence>
