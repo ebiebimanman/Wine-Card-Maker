@@ -15,7 +15,7 @@ export function ThemeToggle({ theme, onThemeChange }: ThemeToggleProps) {
     if (animatingTheme) return;
     setAnimatingTheme(newTheme);
     onThemeChange(newTheme);
-    setTimeout(() => setAnimatingTheme(null), 1600); // Total duration of complex animation
+    setTimeout(() => setAnimatingTheme(null), 800); // Total duration of complex animation: 0.8s
   };
 
   const cheersVariants = {
@@ -23,8 +23,8 @@ export function ThemeToggle({ theme, onThemeChange }: ThemeToggleProps) {
     cheers: {
       opacity: [0, 1, 1, 0],
       transition: {
-        times: [0, 0.1, 0.8, 1], // Faster fade in
-        duration: 1.6,
+        times: [0, 0.1, 0.8, 1],
+        duration: 0.8,
       }
     }
   };
@@ -32,13 +32,13 @@ export function ThemeToggle({ theme, onThemeChange }: ThemeToggleProps) {
   const glassLeftVariants = {
     initial: { x: -20, scale: 0, opacity: 0, rotate: 0 },
     cheers: {
-      x: [-20, 0, -5, 0], // Fast move to center for clink
+      x: [-20, 0, -5, 0],
       scale: [0, 1.5, 1.5, 0],
       opacity: [0, 1, 1, 0],
       rotate: [0, -15, -15, 0],
       transition: {
-        duration: 1.6,
-        times: [0, 0.2, 0.8, 1], // Clink happens at 0.2s (fast), then stay, then fade
+        duration: 0.8,
+        times: [0, 0.2, 0.8, 1],
         ease: ["easeOut", "linear", "easeIn"]
       }
     }
@@ -47,12 +47,12 @@ export function ThemeToggle({ theme, onThemeChange }: ThemeToggleProps) {
   const glassRightVariants = {
     initial: { x: 20, scale: 0, opacity: 0, rotate: 0 },
     cheers: {
-      x: [20, 0, 5, 0], // Fast move to center for clink
+      x: [20, 0, 5, 0],
       scale: [0, 1.5, 1.5, 0],
       opacity: [0, 1, 1, 0],
       rotate: [0, 15, 15, 0],
       transition: {
-        duration: 1.6,
+        duration: 0.8,
         times: [0, 0.2, 0.8, 1],
         ease: ["easeOut", "linear", "easeIn"]
       }
