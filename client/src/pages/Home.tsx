@@ -446,6 +446,24 @@ export default function Home() {
                   </div>
                 </div>
 
+                {/* Location */}
+                <div className="space-y-2">
+                  <FloatingInput
+                    id="location"
+                    label="購入した場所"
+                    {...form.register("location")}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        e.preventDefault();
+                        (e.target as HTMLInputElement).blur();
+                      }
+                    }}
+                  />
+                  {form.formState.errors.location && (
+                    <p className="text-sm text-destructive font-body">{form.formState.errors.location.message}</p>
+                  )}
+                </div>
+
                 {/* Price Slider */}
                 <div className="space-y-2">
                   <div className="flex justify-between items-center">
@@ -464,24 +482,6 @@ export default function Home() {
                     onValueChange={(value) => handlePriceChange(value[0])}
                     className="w-full"
                   />
-                </div>
-
-                {/* Location */}
-                <div className="space-y-2">
-                  <FloatingInput
-                    id="location"
-                    label="購入した場所"
-                    {...form.register("location")}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") {
-                        e.preventDefault();
-                        (e.target as HTMLInputElement).blur();
-                      }
-                    }}
-                  />
-                  {form.formState.errors.location && (
-                    <p className="text-sm text-destructive font-body">{form.formState.errors.location.message}</p>
-                  )}
                 </div>
 
                 {/* Paired Food */}
@@ -536,6 +536,17 @@ export default function Home() {
                       );
                     })}
                   </div>
+                  <FloatingInput
+                    id="freeTextComment"
+                    label="自由入力コメント"
+                    {...form.register("partnerComment")}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        e.preventDefault();
+                        (e.target as HTMLInputElement).blur();
+                      }
+                    }}
+                  />
                 </div>
 
                 {/* Rating */}
