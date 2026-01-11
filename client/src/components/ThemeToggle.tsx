@@ -79,7 +79,7 @@ export function ThemeToggle({ theme, onThemeChange }: ThemeToggleProps) {
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 1.05 }}
-              className="absolute inset-[2px] border-2 border-[#722F37] rounded-lg pointer-events-none" 
+              className="absolute inset-[2px] bg-[#722F37]/5 rounded-lg pointer-events-none" 
               transition={{ duration: 0.5, ease: "easeOut" }}
             />
           )}
@@ -131,7 +131,7 @@ export function ThemeToggle({ theme, onThemeChange }: ThemeToggleProps) {
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 1.05 }}
-              className="absolute inset-[2px] border-2 border-[#DCD48E] rounded-lg pointer-events-none" 
+              className="absolute inset-[2px] bg-[#DCD48E]/10 rounded-lg pointer-events-none" 
               transition={{ duration: 0.5, ease: "easeOut" }}
             />
           )}
