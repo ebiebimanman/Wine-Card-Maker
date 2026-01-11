@@ -1,16 +1,21 @@
 import { motion } from "framer-motion";
 
-export function CheersAnimation() {
+interface CheersAnimationProps {
+  wineType?: 'red' | 'white';
+}
+
+export function CheersAnimation({ wineType = 'red' }: CheersAnimationProps) {
+  const effectColorClass = wineType === 'white' ? 'bg-amber-300' : 'bg-rose-400';
+
   const leftGlassVariants = {
     initial: { rotate: 0, scale: 1, x: -30 },
     animate: {
-      rotate: [0, -20, 25, 0],
-      scale: [1, 1.05, 0.9, 1.1, 1],
-      x: [-30, -40, 0, 0],
+      rotate: [0, -10, 15, 15, 0], // Wind-up, impact, linger, return
+      x: [-30, -35, -5, -5, -30],
       transition: {
-        duration: 1.0,
-        times: [0, 0.4, 0.6, 0.8, 1],
-        ease: ["easeOut", "anticipate", "easeOut", "easeInOut"],
+        duration: 1.5,
+        times: [0, 0.3, 0.45, 0.75, 1],
+        ease: "easeInOut",
       },
     },
   };
@@ -18,13 +23,12 @@ export function CheersAnimation() {
   const rightGlassVariants = {
     initial: { rotate: 0, scale: 1, x: 30 },
     animate: {
-      rotate: [0, 20, -25, 0],
-      scale: [1, 1.05, 0.9, 1.1, 1],
-      x: [30, 40, 0, 0],
+      rotate: [0, 10, -15, -15, 0],
+      x: [30, 35, 5, 5, 30],
       transition: {
-        duration: 1.0,
-        times: [0, 0.4, 0.6, 0.8, 1],
-        ease: ["easeOut", "anticipate", "easeOut", "easeInOut"],
+        duration: 1.5,
+        times: [0, 0.3, 0.45, 0.75, 1],
+        ease: "easeInOut",
       },
     },
   };
@@ -32,11 +36,11 @@ export function CheersAnimation() {
   const sparkVariants = {
     initial: { scale: 0, opacity: 0 },
     animate: {
-      scale: [0, 1.8, 2],
+      scale: [0, 1, 0.8],
       opacity: [0, 1, 0],
       transition: {
-        delay: 0.55, // Adjusted to match the moment of impact (around 0.6s)
-        duration: 0.4,
+        delay: 0.45, // moment of impact
+        duration: 0.8,
         ease: "easeOut",
       },
     },
@@ -53,7 +57,7 @@ export function CheersAnimation() {
           className="text-7xl select-none absolute right-2 bottom-[-45px]"
           style={{ originX: 0.5, originY: 1 }}
         >
-          🍷
+          {wineType === 'white' ? '🥂' : '🍷'}
         </motion.div>
 
         {/* Right Glass */}
@@ -64,10 +68,10 @@ export function CheersAnimation() {
           className="text-7xl select-none absolute left-2 bottom-[-45px]"
           style={{ originX: 0.5, originY: 1 }}
         >
-          🍷
+          {wineType === 'white' ? '🥂' : '🍷'}
         </motion.div>
 
-        {/* Sparkle Effect - Centered between glasses */}
+        {/* Particle Effect */}
         <motion.div
           variants={sparkVariants}
           initial="initial"
@@ -75,26 +79,24 @@ export function CheersAnimation() {
           className="absolute left-0 top-[-40px] flex items-center justify-center pointer-events-none z-20 w-0 h-0"
         >
           <div className="relative flex items-center justify-center">
-            {/* Sparkles */}
-            {[...Array(12)].map((_, i) => (
-              <motion.span
+            {[...Array(5)].map((_, i) => (
+              <motion.div
                 key={i}
-                className="absolute text-2xl"
+                className={`absolute w-2 h-2 ${i % 2 === 0 ? 'rounded-sm' : 'rounded-full'} ${effectColorClass}`}
                 initial={{ x: 0, y: 0, opacity: 0 }}
                 animate={{
-                  x: [0, (Math.cos((i * 30) * Math.PI / 180) * (60 + Math.random() * 20))],
-                  y: [0, (Math.sin((i * 30) * Math.PI / 180) * (60 + Math.random() * 20))],
+                  x: [0, (Math.cos((i * 72) * Math.PI / 180) * 40)],
+                  y: [0, (Math.sin((i * 72) * Math.PI / 180) * 40) - 10],
                   opacity: [0, 1, 0],
-                  scale: [0, 1.2, 0.6]
+                  scale: [0, 1, 0.5],
+                  rotate: [0, 180]
                 }}
                 transition={{
-                  delay: 0.55,
-                  duration: 0.5,
+                  delay: 0.45,
+                  duration: 0.8,
                   ease: "easeOut",
                 }}
-              >
-                {["✨", "🎉", "🔸", "✨", "🔸"][i % 5]}
-              </motion.span>
+              />
             ))}
           </div>
         </motion.div>

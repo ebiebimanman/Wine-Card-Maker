@@ -16,7 +16,7 @@ export function ThemeToggle({ theme, onThemeChange }: ThemeToggleProps) {
     if (animatingTheme) return;
     setAnimatingTheme(newTheme);
     onThemeChange(newTheme);
-    setTimeout(() => setAnimatingTheme(null), 800); // Match CheersAnimation duration
+    setTimeout(() => setAnimatingTheme(null), 1500); // Updated to match longer 1.5s animation
   };
 
   return (
@@ -66,7 +66,7 @@ export function ThemeToggle({ theme, onThemeChange }: ThemeToggleProps) {
               exit={{ opacity: 0 }}
               className="absolute inset-0 flex items-center justify-center z-50 pointer-events-none"
             >
-              <CheersAnimation />
+              <CheersAnimation wineType="red" />
             </motion.div>
           )}
         </AnimatePresence>
@@ -118,7 +118,7 @@ export function ThemeToggle({ theme, onThemeChange }: ThemeToggleProps) {
               className="absolute inset-0 flex items-center justify-center z-50 pointer-events-none"
             >
               <div className="scale-x-[-1]">
-                <CheersAnimation />
+                <CheersAnimation wineType="white" />
               </div>
             </motion.div>
           )}
