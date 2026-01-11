@@ -16,7 +16,7 @@ export function ThemeToggle({ theme, onThemeChange }: ThemeToggleProps) {
     if (animatingTheme) return;
     setAnimatingTheme(newTheme);
     onThemeChange(newTheme);
-    setTimeout(() => setAnimatingTheme(null), 1500); // Updated to match longer 1.5s animation
+    setTimeout(() => setAnimatingTheme(null), 1200); // Shortened to match 1.2s animation
   };
 
   return (
@@ -49,10 +49,10 @@ export function ThemeToggle({ theme, onThemeChange }: ThemeToggleProps) {
           {animatingTheme !== "red" ? (
             <motion.div
               key="content"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.1 }}
+              initial={{ opacity: 0, y: 5 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -5 }}
+              transition={{ duration: 0.3, ease: "easeOut" }}
               className="flex flex-col items-center gap-2"
             >
               <Wine className={cn("w-6 h-6 transition-colors duration-500", theme === "red" ? "text-[#722F37]" : "text-[#D5C1C4]")} />
@@ -63,7 +63,7 @@ export function ThemeToggle({ theme, onThemeChange }: ThemeToggleProps) {
               key="animation"
               initial={{ opacity: 0, scale: 0.4 }}
               animate={{ opacity: 1, scale: 0.4 }}
-              exit={{ opacity: 0 }}
+              exit={{ opacity: 0, scale: 0.3 }}
               className="absolute inset-0 flex items-center justify-center z-50 pointer-events-none"
             >
               <CheersAnimation wineType="red" />
@@ -100,10 +100,10 @@ export function ThemeToggle({ theme, onThemeChange }: ThemeToggleProps) {
           {animatingTheme !== "white" ? (
             <motion.div
               key="content"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.1 }}
+              initial={{ opacity: 0, y: 5 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -5 }}
+              transition={{ duration: 0.3, ease: "easeOut" }}
               className="flex flex-col items-center gap-2"
             >
               <Wine className={cn("w-6 h-6 transition-colors duration-500", theme === "white" ? "text-[#635B21]" : "text-[#E6E2C3]")} />
@@ -114,7 +114,7 @@ export function ThemeToggle({ theme, onThemeChange }: ThemeToggleProps) {
               key="animation"
               initial={{ opacity: 0, scale: 0.4 }}
               animate={{ opacity: 1, scale: 0.4 }}
-              exit={{ opacity: 0 }}
+              exit={{ opacity: 0, scale: 0.3 }}
               className="absolute inset-0 flex items-center justify-center z-50 pointer-events-none"
             >
               <div className="scale-x-[-1]">

@@ -13,8 +13,8 @@ export function CheersAnimation({ wineType = 'red' }: CheersAnimationProps) {
       rotate: [0, -10, 15, 15, 0], // Wind-up, impact, linger, return
       x: [-30, -35, -5, -5, -30],
       transition: {
-        duration: 1.5,
-        times: [0, 0.3, 0.45, 0.75, 1],
+        duration: 1.2, // Shortened from 1.5s
+        times: [0, 0.15, 0.35, 0.7, 1], // Wind-up shortened to 0.15s
         ease: "easeInOut",
       },
     },
@@ -26,8 +26,8 @@ export function CheersAnimation({ wineType = 'red' }: CheersAnimationProps) {
       rotate: [0, 10, -15, -15, 0],
       x: [30, 35, 5, 5, 30],
       transition: {
-        duration: 1.5,
-        times: [0, 0.3, 0.45, 0.75, 1],
+        duration: 1.2,
+        times: [0, 0.15, 0.35, 0.7, 1],
         ease: "easeInOut",
       },
     },
@@ -39,8 +39,8 @@ export function CheersAnimation({ wineType = 'red' }: CheersAnimationProps) {
       scale: [0, 1, 0.8],
       opacity: [0, 1, 0],
       transition: {
-        delay: 0.45, // moment of impact
-        duration: 0.8,
+        delay: 0.35, // Sync with impact
+        duration: 0.6,
         ease: "easeOut",
       },
     },
@@ -92,8 +92,8 @@ export function CheersAnimation({ wineType = 'red' }: CheersAnimationProps) {
                   rotate: [0, 180]
                 }}
                 transition={{
-                  delay: 0.45,
-                  duration: 0.8,
+                  delay: 0.35,
+                  duration: 0.6,
                   ease: "easeOut",
                 }}
               />
