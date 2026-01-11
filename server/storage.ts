@@ -22,7 +22,14 @@ export class MemStorage implements IStorage {
     const card: WineCard = { 
       ...insertCard, 
       id,
-      wineImage: insertCard.wineImage ?? null
+      wineImage: insertCard.wineImage ?? null,
+      origin: insertCard.origin ?? null,
+      variety: insertCard.variety ?? null,
+      location: insertCard.location ?? null,
+      price: insertCard.price ?? null,
+      pairedFood: insertCard.pairedFood ?? null,
+      myComment: insertCard.myComment ?? null,
+      partnerComment: insertCard.partnerComment ?? null,
     };
     this.cards.set(id, card);
     return card;

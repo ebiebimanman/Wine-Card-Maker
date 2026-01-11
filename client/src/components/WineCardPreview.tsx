@@ -25,9 +25,10 @@ const PAIRED_FOOD_ICONS: Record<FoodOption, string> = {
 interface WineCardPreviewProps {
   data: InsertWineCard;
   theme: "red" | "white";
+  isTransparent?: boolean;
 }
 
-export function WineCardPreview({ data, theme }: WineCardPreviewProps) {
+export function WineCardPreview({ data, theme, isTransparent = true }: WineCardPreviewProps) {
   const isRed = theme === "red";
   const [imageSize, setImageSize] = useState<{ width: number; height: number } | null>(null);
   const maxHeight = 320; // max-h-80 = 320px
@@ -82,7 +83,10 @@ export function WineCardPreview({ data, theme }: WineCardPreviewProps) {
         
         {/* Wine Image (MOVE TO TOP) */}
         {data.wineImage && (
-          <div className="mb-6 -mt-4 -mx-4 md:-mx-8 flex items-center justify-center bg-gray-50/50 rounded-lg overflow-hidden">
+          <div className={cn(
+            "mb-6 -mt-4 -mx-4 md:-mx-8 flex items-center justify-center overflow-hidden",
+            isTransparent ? "rounded-lg" : "rounded-[24px]"
+          )}>
             {imageSize ? (
               <motion.img
                 src={data.wineImage}
@@ -244,7 +248,7 @@ export function WineCardPreview({ data, theme }: WineCardPreviewProps) {
                     {data.pairedFood.map((food) => (
                       <Badge 
                         key={food} 
-                        className="px-3 py-1.5 rounded-full text-sm font-body bg-gray-200 text-gray-700 flex items-center gap-1.5 border-0"
+                        className="px-3 py-2 rounded-full text-sm font-body border border-transparent bg-[#F8F9FA] text-gray-700 flex items-center gap-1.5"
                       >
                         <span className="flex-shrink-0 inline-flex items-center justify-center w-5 h-5 text-lg leading-none">
                           {PAIRED_FOOD_ICONS[food as FoodOption] || ""}

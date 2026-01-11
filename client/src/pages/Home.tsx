@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { motion, AnimatePresence } from "framer-motion";
@@ -72,8 +72,8 @@ function MultiSelectButton({ option, isSelected, icon, onClick, className }: Mul
       onClick={handleButtonClick}
       whileTap={{ scale: 0.8 }}
       className={cn(
-        "relative px-3 py-1.5 rounded-full text-sm font-body flex items-center gap-1.5 transition-colors duration-500",
-        isSelected ? "bg-[#722F37] text-white" : "bg-[#F8F9FA] text-gray-700",
+        "relative px-3 py-2 rounded-full text-sm font-body flex items-center gap-1.5 transition-colors duration-500 border",
+        isSelected ? "border-[#722F37] bg-[#722F37]/10 text-[#722F37]" : "border-transparent bg-[#F8F9FA] text-gray-700",
         className
       )}
       transition={{
@@ -110,12 +110,12 @@ function MultiSelectButton({ option, isSelected, icon, onClick, className }: Mul
         {/* 実際に表示される跳ねるテキスト */}
         <span
           className="absolute inset-0 whitespace-nowrap flex"
-          aria-label={option}
-        >
-          {option.split("").map((char, index) => (
-            <motion.span
-              key={`${option}-${index}`}
-              aria-hidden="true"
+        aria-label={option}
+      >
+        {option.split("").map((char, index) => (
+          <motion.span
+            key={`${option}-${index}`}
+            aria-hidden="true"
               initial={{ y: 0 }}
               animate={isBouncing ? {
                 y: [0, -4, 0],
@@ -125,10 +125,10 @@ function MultiSelectButton({ option, isSelected, icon, onClick, className }: Mul
                 delay: index * 0.067, // 0.1 / 1.5 = ~0.067
                 ease: "easeInOut"
               }}
-            >
-              {char === " " ? "\u00A0" : char}
-            </motion.span>
-          ))}
+          >
+            {char === " " ? "\u00A0" : char}
+          </motion.span>
+        ))}
         </span>
       </div>
     </motion.button>
@@ -141,6 +141,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Slider } from "@/components/ui/slider";
+import { Switch } from "@/components/ui/switch";
 import {
   Dialog,
   DialogContent,
@@ -151,6 +152,9 @@ import {
 
 export default function Home() {
   const [theme, setTheme] = useState<"red" | "white">("red");
+  const [isTransparent, setIsTransparent] = useState(true);
+  const [originalImage, setOriginalImage] = useState<string | null>(null);
+  const [isImageLoading, setIsImageLoading] = useState(false);
   const createMutation = useCreateWineCard();
   const { toast } = useToast();
   const cardRef = useRef<HTMLDivElement>(null);
@@ -182,6 +186,20 @@ export default function Home() {
   const handlePriceChange = (value: number) => {
     form.setValue("price", value, { shouldValidate: true, shouldDirty: true, shouldTouch: true });
   };
+
+  // 背景透過設定が変更されたときに画像を切り替え
+  useEffect(() => {
+    if (!originalImage) return;
+    
+    if (isTransparent) {
+      // 透過がオンの場合、透過済み画像を使用（既にform.wineImageに設定されている）
+      // 何もしない（透過済み画像はそのまま）
+    } else {
+      // 透過がオフの場合、元の画像を使用
+      form.setValue("wineImage", originalImage);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isTransparent, originalImage]);
 
   const onSubmit = async (data: InsertWineCard) => {
     try {
@@ -275,16 +293,17 @@ export default function Home() {
           >
             <Card className="p-6 md:p-8 shadow-xl bg-white/80 backdrop-blur-sm border-white/50">
               <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                
+
                 {/* Wine Image Upload */}
                 <div className="space-y-2">
+                  <Label htmlFor="wineImage" className="font-display text-lg">ワインの画像</Label>
                   <div className="space-y-3">
                     <input
                       id="wineImage"
                       type="file"
                       accept="image/*,.heic"
                       className="hidden"
-                      onChange={(e) => {
+                      onChange={async (e) => {
                         const file = e.target.files?.[0];
                         if (file) {
                           // ファイルサイズチェック（10MB）
@@ -298,10 +317,144 @@ export default function Home() {
                             return;
                           }
                           
+                          // 元の画像を保存（正方形に切り抜く前）
+                          const saveOriginalImage = (imageSrc: string) => {
+                            const img = new Image();
+                            img.onload = () => {
+                              const canvas = document.createElement('canvas');
+                              const ctx = canvas.getContext('2d');
+                              if (!ctx) {
+                                setIsImageLoading(false);
+                                return;
+                              }
+                              
+                              // 正方形に切り抜く（短い辺に合わせる）
+                              const size = Math.min(img.width, img.height);
+                              const x = (img.width - size) / 2;
+                              const y = (img.height - size) / 2;
+                              
+                              canvas.width = size;
+                              canvas.height = size;
+                              
+                              // 背景を白にして中央部分を切り抜いて描画
+                              ctx.fillStyle = '#FFFFFF';
+                              ctx.fillRect(0, 0, size, size);
+                              ctx.drawImage(img, x, y, size, size, 0, 0, size, size);
+                              
+                              // 元画像として保存（白背景、正方形に切り抜き済み）
+                              const originalBase64 = canvas.toDataURL('image/png');
+                              setOriginalImage(originalBase64);
+                              
+                              // 透過がオフの場合、元画像を使用
+                              if (!isTransparent) {
+                                form.setValue("wineImage", originalBase64);
+                                setIsImageLoading(false);
+                              }
+                            };
+                            img.onerror = () => {
+                              console.error('Original image processing failed');
+                              setIsImageLoading(false);
+                            };
+                            img.src = imageSrc;
+                          };
+
+                          // 画像を処理する関数（透過用）
+                          const processImage = (imageSrc: string, shouldTransparent: boolean) => {
+                            const img = new Image();
+                            img.onload = () => {
+                              const canvas = document.createElement('canvas');
+                              const ctx = canvas.getContext('2d');
+                              if (!ctx) {
+                                toast({
+                                  title: "画像の処理に失敗しました",
+                                  description: "Canvasが使用できません。",
+                                  variant: "destructive",
+                                });
+                                setIsImageLoading(false);
+                                return;
+                              }
+                              
+                              // 正方形に切り抜く（短い辺に合わせる）
+                              const size = Math.min(img.width, img.height);
+                              const x = (img.width - size) / 2;
+                              const y = (img.height - size) / 2;
+                              
+                              canvas.width = size;
+                              canvas.height = size;
+                              
+                              if (shouldTransparent) {
+                                // 背景を透明にする
+                                ctx.clearRect(0, 0, size, size);
+                              } else {
+                                // 背景を白にする
+                                ctx.fillStyle = '#FFFFFF';
+                                ctx.fillRect(0, 0, size, size);
+                              }
+                              
+                              // 中央部分を切り抜いて描画
+                              ctx.drawImage(img, x, y, size, size, 0, 0, size, size);
+                              
+                              // PNG形式で保存（透明度を保持）
+                              const croppedBase64 = canvas.toDataURL('image/png');
+                              form.setValue("wineImage", croppedBase64);
+                              setIsImageLoading(false);
+                            };
+                            img.onerror = () => {
+                              toast({
+                                title: "画像の処理に失敗しました",
+                                description: "もう一度お試しください。",
+                                variant: "destructive",
+                              });
+                              setIsImageLoading(false);
+                            };
+                            img.src = imageSrc;
+                          };
+                          
+                          // まず元画像を読み込んで保存
                           const reader = new FileReader();
                           reader.onloadend = () => {
-                            const base64String = reader.result as string;
-                            form.setValue("wineImage", base64String);
+                            const originalBase64 = reader.result as string;
+                            saveOriginalImage(originalBase64);
+                            
+                            if (isTransparent) {
+                              try {
+                                // 背景削除ライブラリを動的にインポート
+                                const { removeBackground } = await import('@imgly/background-removal');
+                                
+                                // ファイルを直接使用して背景を削除
+                                removeBackground(file).then((imageBlob) => {
+                                  // Blobをbase64に変換
+                                  const blobReader = new FileReader();
+                                  blobReader.onloadend = () => {
+                                    const transparentBase64 = blobReader.result as string;
+                                    processImage(transparentBase64, true);
+                                  };
+                                  blobReader.onerror = () => {
+                                    toast({
+                                      title: "背景削除後の画像の読み込みに失敗しました",
+                                      description: "元の画像を使用します。",
+                                      variant: "destructive",
+                                    });
+                                    // 背景削除に失敗した場合は、元の画像を使用
+                                    form.setValue("wineImage", originalBase64);
+                                    setIsImageLoading(false);
+                                  };
+                                  blobReader.readAsDataURL(imageBlob);
+                                }).catch((error) => {
+                                  console.error('Background removal failed:', error);
+                                  // 背景削除に失敗した場合は、元の画像を使用
+                                  form.setValue("wineImage", originalBase64);
+                                  setIsImageLoading(false);
+                                });
+                              } catch (error) {
+                                console.error('Background removal failed:', error);
+                                // 背景削除に失敗した場合は、元の画像を使用
+                                form.setValue("wineImage", originalBase64);
+                                setIsImageLoading(false);
+                              }
+                            } else {
+                              // 透過がオフの場合は、元の画像を使用（既にsaveOriginalImageで設定済み）
+                            }
                           };
                           reader.onerror = () => {
                             toast({
@@ -309,6 +462,7 @@ export default function Home() {
                               description: "もう一度お試しください。",
                               variant: "destructive",
                             });
+                            setIsImageLoading(false);
                           };
                           reader.readAsDataURL(file);
                         }
@@ -323,7 +477,14 @@ export default function Home() {
                           : "border-gray-300 hover:bg-gray-50"
                       )}
                     >
-                      {watchedValues.wineImage ? (
+                      {isImageLoading ? (
+                        <div className="relative w-full h-48 flex items-center justify-center bg-gray-100 rounded-[16px]">
+                          <div className="flex flex-col items-center gap-3">
+                            <Loader2 className="w-8 h-8 animate-spin text-gray-400" />
+                            <p className="text-sm text-gray-500 font-body">画像を読み込み中...</p>
+                          </div>
+                        </div>
+                      ) : watchedValues.wineImage ? (
                         <div className="relative w-full">
                           <img
                             src={watchedValues.wineImage}
@@ -336,6 +497,8 @@ export default function Home() {
                               e.preventDefault();
                               e.stopPropagation();
                               form.setValue("wineImage", undefined);
+                              setOriginalImage(null);
+                              setIsImageLoading(false);
                               const input = document.getElementById("wineImage") as HTMLInputElement;
                               if (input) input.value = "";
                             }}
@@ -356,6 +519,17 @@ export default function Home() {
                             >
                               画像を変更
                             </button>
+                          </div>
+                          {/* 背景透過スイッチ（右下） */}
+                          <div className="absolute bottom-2 right-2 flex items-center gap-2 bg-white/90 backdrop-blur-sm px-3 py-2 rounded-lg shadow-lg z-10">
+                            <Label htmlFor="transparent" className="text-sm font-body cursor-pointer whitespace-nowrap">
+                              背景透過
+                            </Label>
+                            <Switch
+                              id="transparent"
+                              checked={isTransparent}
+                              onCheckedChange={setIsTransparent}
+                            />
                           </div>
                         </div>
                       ) : (
@@ -445,27 +619,27 @@ export default function Home() {
                     )}
                   </div>
                 </div>
-
-                {/* Location */}
-                <div className="space-y-2">
+                  
+                  {/* Location */}
+                  <div className="space-y-2">
                   <FloatingInput
-                    id="location"
+                      id="location"
                     label="購入した場所"
-                    {...form.register("location")}
+                      {...form.register("location")}
                     onKeyDown={(e) => {
                       if (e.key === "Enter") {
                         e.preventDefault();
                         (e.target as HTMLInputElement).blur();
                       }
                     }}
-                  />
-                  {form.formState.errors.location && (
-                    <p className="text-sm text-destructive font-body">{form.formState.errors.location.message}</p>
-                  )}
-                </div>
+                    />
+                    {form.formState.errors.location && (
+                      <p className="text-sm text-destructive font-body">{form.formState.errors.location.message}</p>
+                    )}
+                  </div>
 
-                {/* Price Slider */}
-                <div className="space-y-2">
+                  {/* Price Slider */}
+                  <div className="space-y-2">
                   <div className="flex justify-between items-center">
                     <Label htmlFor="price" className="font-display text-lg">価格</Label>
                     <div className="font-body text-lg font-bold flex items-baseline gap-1">
@@ -473,30 +647,30 @@ export default function Home() {
                       <span className="text-sm">円</span>
                     </div>
                   </div>
-                  <Slider
-                    id="price"
-                    min={500}
-                    max={10000}
-                    step={500}
-                    value={[watchedValues.price ?? 5000]}
+                      <Slider
+                        id="price"
+                        min={500}
+                        max={10000}
+                        step={500}
+                        value={[watchedValues.price ?? 5000]}
                     onValueChange={(value) => handlePriceChange(value[0])}
-                    className="w-full"
-                  />
-                </div>
+                        className="w-full"
+                      />
+                  </div>
 
-                {/* Paired Food */}
+                  {/* Paired Food */}
                 <div className="space-y-4">
                   <Label className="font-display text-lg">このワインに合う料理</Label>
-                  <div className="flex flex-wrap gap-2">
-                    {PAIRED_FOOD_OPTIONS.map((option) => {
-                      const isSelected = (watchedValues.pairedFood?.includes(option) ?? false);
-                      
-                      return (
-                        <MultiSelectButton
+                    <div className="flex flex-wrap gap-2">
+                      {PAIRED_FOOD_OPTIONS.map((option) => {
+                        const isSelected = (watchedValues.pairedFood?.includes(option) ?? false);
+                        
+                        return (
+                          <MultiSelectButton
                           key={option}
-                          option={option}
-                          isSelected={isSelected}
-                          icon={PAIRED_FOOD_ICONS[option] || ""}
+                            option={option}
+                            isSelected={isSelected}
+                            icon={PAIRED_FOOD_ICONS[option] || ""}
                           onClick={() => {
                             const current = watchedValues.pairedFood ?? [];
                             if (current.includes(option)) {
@@ -505,9 +679,9 @@ export default function Home() {
                               form.setValue("pairedFood", [...current, option]);
                             }
                           }}
-                        />
-                      );
-                    })}
+                          />
+                        );
+                      })}
                   </div>
                 </div>
 
@@ -520,16 +694,16 @@ export default function Home() {
                       
                       return (
                         <MultiSelectButton
-                          key={option}
+                        key={option}
                           option={option}
                           isSelected={isSelected}
                           icon={COMMENT_ICONS[option] || ""}
-                          onClick={() => {
-                            const current = watchedValues.myComment ?? [];
-                            if (current.includes(option)) {
-                              form.setValue("myComment", current.filter((c) => c !== option));
-                            } else {
-                              form.setValue("myComment", [...current, option]);
+                        onClick={() => {
+                          const current = watchedValues.myComment ?? [];
+                          if (current.includes(option)) {
+                            form.setValue("myComment", current.filter((c) => c !== option));
+                          } else {
+                            form.setValue("myComment", [...current, option]);
                             }
                           }}
                         />
@@ -568,20 +742,20 @@ export default function Home() {
                     whileTap={{ scale: 0.8 }}
                     transition={{ duration: 0.2, ease: "easeInOut" }}
                   >
-                    <Button 
-                      type="submit" 
-                      disabled={createMutation.isPending}
+                  <Button 
+                    type="submit" 
+                    disabled={createMutation.isPending}
                       className="w-full h-12 font-display text-lg bg-[#2D2424] hover:bg-[#4A3B3B] text-[#F5F5F0] transition-all duration-300 shadow-lg hover:shadow-xl flex items-center justify-center gap-2"
-                    >
-                      {createMutation.isPending ? (
+                  >
+                    {createMutation.isPending ? (
                         <>
                           <Loader2 className="w-5 h-5 animate-spin" />
                           <span>作成中</span>
                         </>
                       ) : (
                         "ワインカードを作成"
-                      )}
-                    </Button>
+                    )}
+                  </Button>
                   </motion.div>
                 </div>
 
@@ -609,6 +783,7 @@ export default function Home() {
                     <WineCardPreview 
                       data={{ ...watchedValues, themeColor: theme }} 
                       theme={theme} 
+                      isTransparent={isTransparent}
                     />
                   </motion.div>
                 </AnimatePresence>
