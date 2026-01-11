@@ -9,13 +9,13 @@ interface ThemeToggleProps {
 }
 
 export function ThemeToggle({ theme, onThemeChange }: ThemeToggleProps) {
-  const [isAnimating, setIsAnimating] = useState(false);
+  const [animatingTheme, setAnimatingTheme] = useState<"red" | "white" | null>(null);
 
   const handleThemeChange = (newTheme: "red" | "white") => {
-    if (isAnimating) return;
-    setIsAnimating(true);
+    if (animatingTheme) return;
+    setAnimatingTheme(newTheme);
     onThemeChange(newTheme);
-    setTimeout(() => setIsAnimating(false), 1600); // Total duration of complex animation
+    setTimeout(() => setAnimatingTheme(null), 1600); // Total duration of complex animation
   };
 
   const cheersVariants = {
@@ -23,34 +23,38 @@ export function ThemeToggle({ theme, onThemeChange }: ThemeToggleProps) {
     cheers: {
       opacity: [0, 1, 1, 0],
       transition: {
-        times: [0, 0.125, 0.75, 1], // 0.2s fade in, stay until 1.2s, 0.2s fade out
+        times: [0, 0.1, 0.8, 1], // Faster fade in
         duration: 1.6,
       }
     }
   };
 
   const glassLeftVariants = {
-    initial: { x: 0, scale: 0, opacity: 0 },
+    initial: { x: -20, scale: 0, opacity: 0, rotate: 0 },
     cheers: {
-      x: [0, 0, -10, 0, 0],
-      scale: [0, 1.5, 1.5, 1.5, 0],
-      opacity: [0, 1, 1, 1, 0],
+      x: [-20, 0, -5, 0], // Fast move to center for clink
+      scale: [0, 1.5, 1.5, 0],
+      opacity: [0, 1, 1, 0],
+      rotate: [0, -15, -15, 0],
       transition: {
         duration: 1.6,
-        times: [0, 0.125, 0.75, 0.875, 1], // Appear 0.2s, Stay, Clink at 1.2s, Disappear 1.4-1.6s
+        times: [0, 0.2, 0.8, 1], // Clink happens at 0.2s (fast), then stay, then fade
+        ease: ["easeOut", "linear", "easeIn"]
       }
     }
   };
 
   const glassRightVariants = {
-    initial: { x: 50, scale: 0, opacity: 0 },
+    initial: { x: 20, scale: 0, opacity: 0, rotate: 0 },
     cheers: {
-      x: [50, 50, 10, 0, 0],
-      scale: [0, 1.5, 1.5, 1.5, 0],
-      opacity: [0, 1, 1, 1, 0],
+      x: [20, 0, 5, 0], // Fast move to center for clink
+      scale: [0, 1.5, 1.5, 0],
+      opacity: [0, 1, 1, 0],
+      rotate: [0, 15, 15, 0],
       transition: {
         duration: 1.6,
-        times: [0, 0.125, 0.75, 0.875, 1],
+        times: [0, 0.2, 0.8, 1],
+        ease: ["easeOut", "linear", "easeIn"]
       }
     }
   };
@@ -70,7 +74,7 @@ export function ThemeToggle({ theme, onThemeChange }: ThemeToggleProps) {
         transition={{ duration: 0.2, ease: "easeInOut" }}
       >
         <AnimatePresence>
-          {theme === "red" && !isAnimating && (
+          {theme === "red" && animatingTheme !== "red" && (
             <motion.div 
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -82,7 +86,7 @@ export function ThemeToggle({ theme, onThemeChange }: ThemeToggleProps) {
         </AnimatePresence>
 
         <AnimatePresence mode="wait">
-          {!isAnimating ? (
+          {animatingTheme !== "red" ? (
             <motion.div
               key="content"
               initial={{ opacity: 0 }}
@@ -122,7 +126,7 @@ export function ThemeToggle({ theme, onThemeChange }: ThemeToggleProps) {
         transition={{ duration: 0.2, ease: "easeInOut" }}
       >
         <AnimatePresence>
-          {theme === "white" && !isAnimating && (
+          {theme === "white" && animatingTheme !== "white" && (
             <motion.div 
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -134,7 +138,7 @@ export function ThemeToggle({ theme, onThemeChange }: ThemeToggleProps) {
         </AnimatePresence>
 
         <AnimatePresence mode="wait">
-          {!isAnimating ? (
+          {animatingTheme !== "white" ? (
             <motion.div
               key="content"
               initial={{ opacity: 0 }}
