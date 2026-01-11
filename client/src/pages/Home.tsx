@@ -513,7 +513,7 @@ export default function Home() {
 
                 {/* Comments */}
                 <div className="space-y-4">
-                  <Label className="font-display text-lg">特徴・コメント</Label>
+                  <Label className="font-display text-lg">感想</Label>
                   <div className="flex flex-wrap gap-2">
                     {COMMENT_OPTIONS.map((option) => {
                       const isSelected = (watchedValues.myComment?.includes(option) ?? false);
@@ -538,7 +538,7 @@ export default function Home() {
                   </div>
                   <FloatingInput
                     id="freeTextComment"
-                    label="自由入力コメント"
+                    label="メモ"
                     {...form.register("partnerComment")}
                     onKeyDown={(e) => {
                       if (e.key === "Enter") {
