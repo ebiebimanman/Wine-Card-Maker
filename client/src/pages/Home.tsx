@@ -219,6 +219,20 @@ export default function Home() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isTransparent, originalImage, transparentImage]);
 
+  // 背景削除モデルをページ読み込み時に先読み（処理時間短縮のため）
+  useEffect(() => {
+    const preloadModel = async () => {
+      try {
+        const { preload } = await import('@imgly/background-removal');
+        await preload();
+        console.log('Background removal model preloaded');
+      } catch (error) {
+        console.log('Model preload skipped:', error);
+      }
+    };
+    preloadModel();
+  }, []);
+
   const onSubmit = async (data: InsertWineCard) => {
     try {
       if (cardRef.current) {
@@ -492,8 +506,8 @@ export default function Home() {
                                   });
                                 };
                                 
-                                // 画像をリサイズ
-                                const resizedBlob = await resizeImage(file, 1200);
+                                // 画像をリサイズ（800pxで高速化）
+                                const resizedBlob = await resizeImage(file, 800);
                                 
                                 // 背景削除ライブラリを動的にインポート
                                 const { removeBackground } = await import('@imgly/background-removal');
