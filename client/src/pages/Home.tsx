@@ -121,11 +121,11 @@ function MultiSelectButton({ option, isSelected, icon, onClick, className }: Mul
         <span className="invisible pointer-events-none select-none">
           {option}
         </span>
-        {/* 実際に表示される跳ねるテキスト */}
-        <span
-          className="absolute inset-0 whitespace-nowrap flex"
-        aria-label={option}
-      >
+                        {/* 実際に表示される跳ねるテキスト */}
+                        <span
+                          className="absolute inset-0 whitespace-nowrap flex items-center justify-center"
+                          aria-label={option}
+                        >
         {option.split("").map((char, index) => (
           <motion.span
             key={`${option}-${index}`}
@@ -539,6 +539,7 @@ export default function Home() {
                               id="transparent"
                               checked={isTransparent}
                               onCheckedChange={setIsTransparent}
+                              className="scale-75 data-[state=checked]:bg-[#722F37]"
                             />
                           </div>
                         </div>
