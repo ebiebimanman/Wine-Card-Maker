@@ -168,6 +168,7 @@ export default function Home() {
   const [theme, setTheme] = useState<"red" | "white" | "rose" | "other">("red");
   const [isTransparent, setIsTransparent] = useState(true);
   const [originalImage, setOriginalImage] = useState<string | null>(null);
+  const [transparentImage, setTransparentImage] = useState<string | null>(null);
   const [isImageLoading, setIsImageLoading] = useState(false);
   const createMutation = useCreateWineCard();
   const { toast } = useToast();
@@ -207,14 +208,16 @@ export default function Home() {
     if (!originalImage) return;
     
     if (isTransparent) {
-      // 透過がオンの場合、透過済み画像を使用（既にform.wineImageに設定されている）
-      // 何もしない（透過済み画像はそのまま）
+      // 透過がオンの場合、保存済みの透過画像を使用
+      if (transparentImage) {
+        form.setValue("wineImage", transparentImage);
+      }
     } else {
       // 透過がオフの場合、元の画像を使用
       form.setValue("wineImage", originalImage);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isTransparent, originalImage]);
+  }, [isTransparent, originalImage, transparentImage]);
 
   const onSubmit = async (data: InsertWineCard) => {
     try {
@@ -375,8 +378,8 @@ export default function Home() {
                             img.src = imageSrc;
                           };
 
-                          // 画像を処理する関数（透過用）
-                          const processImage = (imageSrc: string, shouldTransparent: boolean) => {
+                          // 画像を処理する関数（透過用）- 透過画像を保存し、現在の設定に応じて表示
+                          const processImage = (imageSrc: string) => {
                             const img = new Image();
                             img.onload = () => {
                               const canvas = document.createElement('canvas');
@@ -399,21 +402,22 @@ export default function Home() {
                               canvas.width = size;
                               canvas.height = size;
                               
-                              if (shouldTransparent) {
-                                // 背景を透明にする
-                                ctx.clearRect(0, 0, size, size);
-                              } else {
-                                // 背景を白にする
-                                ctx.fillStyle = '#FFFFFF';
-                                ctx.fillRect(0, 0, size, size);
-                              }
+                              // 背景を透明にする
+                              ctx.clearRect(0, 0, size, size);
                               
                               // 中央部分を切り抜いて描画
                               ctx.drawImage(img, x, y, size, size, 0, 0, size, size);
                               
                               // PNG形式で保存（透明度を保持）
                               const croppedBase64 = canvas.toDataURL('image/png');
-                              form.setValue("wineImage", croppedBase64);
+                              
+                              // 透過画像を保存
+                              setTransparentImage(croppedBase64);
+                              
+                              // 現在の設定に応じて表示画像を設定
+                              if (isTransparent) {
+                                form.setValue("wineImage", croppedBase64);
+                              }
                               setIsImageLoading(false);
                             };
                             img.onerror = () => {
@@ -433,41 +437,36 @@ export default function Home() {
                             const originalBase64 = reader.result as string;
                             saveOriginalImage(originalBase64);
                             
-                            if (isTransparent) {
-                              (async () => {
-                                try {
-                                  // 背景削除ライブラリを動的にインポート
-                                  const { removeBackground } = await import('@imgly/background-removal');
-                                  
-                                  // ファイルを直接使用して背景を削除
-                                  const imageBlob = await removeBackground(file);
-                                  // Blobをbase64に変換
-                                  const blobReader = new FileReader();
-                                  blobReader.onloadend = () => {
-                                    const transparentBase64 = blobReader.result as string;
-                                    processImage(transparentBase64, true);
-                                  };
-                                  blobReader.onerror = () => {
-                                    toast({
-                                      title: "背景削除後の画像の読み込みに失敗しました",
-                                      description: "元の画像を使用します。",
-                                      variant: "destructive",
-                                    });
-                                    // 背景削除に失敗した場合は、元の画像を使用
-                                    form.setValue("wineImage", originalBase64);
-                                    setIsImageLoading(false);
-                                  };
-                                  blobReader.readAsDataURL(imageBlob);
-                                } catch (error) {
-                                  console.error('Background removal failed:', error);
-                                  // 背景削除に失敗した場合は、元の画像を使用
-                                  form.setValue("wineImage", originalBase64);
+                            // 常に背景削除を実行（両方の画像を保持するため）
+                            (async () => {
+                              try {
+                                // 背景削除ライブラリを動的にインポート
+                                const { removeBackground } = await import('@imgly/background-removal');
+                                
+                                // ファイルを直接使用して背景を削除
+                                const imageBlob = await removeBackground(file);
+                                // Blobをbase64に変換
+                                const blobReader = new FileReader();
+                                blobReader.onloadend = () => {
+                                  const transparentBase64 = blobReader.result as string;
+                                  processImage(transparentBase64);
+                                };
+                                blobReader.onerror = () => {
+                                  toast({
+                                    title: "背景削除後の画像の読み込みに失敗しました",
+                                    description: "元の画像を使用します。",
+                                    variant: "destructive",
+                                  });
+                                  // 背景削除に失敗した場合は、透過画像なしで終了
                                   setIsImageLoading(false);
-                                }
-                              })();
-                            } else {
-                              // 透過がオフの場合は、元の画像を使用（既にsaveOriginalImageで設定済み）
-                            }
+                                };
+                                blobReader.readAsDataURL(imageBlob);
+                              } catch (error) {
+                                console.error('Background removal failed:', error);
+                                // 背景削除に失敗した場合は、透過画像なしで終了
+                                setIsImageLoading(false);
+                              }
+                            })();
                           };
                           reader.onerror = () => {
                             toast({
@@ -510,6 +509,7 @@ export default function Home() {
                               e.stopPropagation();
                               form.setValue("wineImage", undefined);
                               setOriginalImage(null);
+                              setTransparentImage(null);
                               setIsImageLoading(false);
                               const input = document.getElementById("wineImage") as HTMLInputElement;
                               if (input) input.value = "";
