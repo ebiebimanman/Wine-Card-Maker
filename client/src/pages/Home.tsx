@@ -417,12 +417,13 @@ export default function Home() {
                             saveOriginalImage(originalBase64);
                             
                             if (isTransparent) {
-                              try {
-                                // 背景削除ライブラリを動的にインポート
-                                const { removeBackground } = await import('@imgly/background-removal');
-                                
-                                // ファイルを直接使用して背景を削除
-                                removeBackground(file).then((imageBlob) => {
+                              (async () => {
+                                try {
+                                  // 背景削除ライブラリを動的にインポート
+                                  const { removeBackground } = await import('@imgly/background-removal');
+                                  
+                                  // ファイルを直接使用して背景を削除
+                                  const imageBlob = await removeBackground(file);
                                   // Blobをbase64に変換
                                   const blobReader = new FileReader();
                                   blobReader.onloadend = () => {
@@ -440,18 +441,13 @@ export default function Home() {
                                     setIsImageLoading(false);
                                   };
                                   blobReader.readAsDataURL(imageBlob);
-                                }).catch((error) => {
+                                } catch (error) {
                                   console.error('Background removal failed:', error);
                                   // 背景削除に失敗した場合は、元の画像を使用
                                   form.setValue("wineImage", originalBase64);
                                   setIsImageLoading(false);
-                                });
-                              } catch (error) {
-                                console.error('Background removal failed:', error);
-                                // 背景削除に失敗した場合は、元の画像を使用
-                                form.setValue("wineImage", originalBase64);
-                                setIsImageLoading(false);
-                              }
+                                }
+                              })();
                             } else {
                               // 透過がオフの場合は、元の画像を使用（既にsaveOriginalImageで設定済み）
                             }
