@@ -481,25 +481,25 @@ export default function Home() {
                     <label
                       htmlFor="wineImage"
                       className={cn(
-                        "flex flex-col items-center justify-center w-full rounded-lg cursor-pointer transition-colors bg-[#f7f7f7]",
+                        "flex flex-col items-center justify-center w-full rounded-[16px] cursor-pointer transition-colors bg-[#f7f7f7] aspect-[4/3]",
                         watchedValues.wineImage 
                           ? "hover:bg-gray-100" 
                           : "hover:bg-gray-100"
                       )}
                     >
                       {isImageLoading ? (
-                        <div className="relative w-full h-48 flex items-center justify-center bg-gray-100 rounded-[16px]">
+                        <div className="relative w-full h-full flex items-center justify-center rounded-[16px]">
                           <div className="flex flex-col items-center gap-3">
                             <Loader2 className="w-8 h-8 animate-spin text-gray-400" />
                             <p className="text-sm text-gray-500 font-body">画像を読み込み中...</p>
                           </div>
                         </div>
                       ) : watchedValues.wineImage ? (
-                        <div className="relative w-full">
+                        <div className="relative w-full h-full">
                           <img
                             src={watchedValues.wineImage}
                             alt="ワイン画像"
-                            className="w-full h-48 object-cover rounded-[16px]"
+                            className="w-full h-full object-cover rounded-[16px]"
                           />
                           <button
                             type="button"
@@ -543,8 +543,8 @@ export default function Home() {
                           </div>
                         </div>
                       ) : (
-                        <div className="flex flex-col items-center justify-center py-10">
-                          <Upload className="w-10 h-10 text-gray-400" />
+                        <div className="flex flex-col items-center justify-center">
+                          <Plus className="w-10 h-10 text-gray-400" />
                         </div>
                       )}
                     </label>
