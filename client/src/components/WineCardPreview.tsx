@@ -111,24 +111,22 @@ export function WineCardPreview({ data, theme, isTransparent = true }: WineCardP
         {/* Wine Image (MOVE TO TOP) */}
         {data.wineImage && (
           <div className={cn(
-            "mb-6 -mt-4 -mx-4 md:-mx-8 flex items-center justify-center overflow-visible",
-            isTransparent ? "rounded-lg" : "rounded-[24px]"
+            "mb-6 -mt-4 -mx-4 md:-mx-8 flex items-center justify-center",
+            isTransparent ? "overflow-visible" : "overflow-hidden rounded-[24px]"
           )}>
             {imageSize ? (
               <motion.img
                 src={data.wineImage}
                 alt={data.wineName || "ワイン画像"}
-                className={cn(
-                  "object-contain",
-                  isTransparent && "rotate-[15deg]"
-                )}
+                className="object-contain"
                 style={{
-                  width: '100%',
+                  width: isTransparent ? '85%' : '100%',
                   height: imageSize.height > maxHeight 
                     ? `${maxHeight}px`
                     : 'auto',
                   maxHeight: `${maxHeight}px`,
                   aspectRatio: `${imageSize.width} / ${imageSize.height}`,
+                  transform: isTransparent ? 'rotate(15deg)' : 'none',
                 }}
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
@@ -138,10 +136,11 @@ export function WineCardPreview({ data, theme, isTransparent = true }: WineCardP
               <motion.img
                 src={data.wineImage}
                 alt={data.wineName || "ワイン画像"}
-                className={cn(
-                  "w-full max-h-64 md:max-h-80 object-contain",
-                  isTransparent && "rotate-[15deg]"
-                )}
+                className="w-full max-h-64 md:max-h-80 object-contain"
+                style={{
+                  width: isTransparent ? '85%' : '100%',
+                  transform: isTransparent ? 'rotate(15deg)' : 'none',
+                }}
                 onLoad={(e) => {
                   const img = e.currentTarget;
                   setImageSize({ width: img.naturalWidth, height: img.naturalHeight });
