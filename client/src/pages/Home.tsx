@@ -440,11 +440,66 @@ export default function Home() {
                             // 常に背景削除を実行（両方の画像を保持するため）
                             (async () => {
                               try {
+                                // 画像をリサイズして処理を高速化（最大1200px）
+                                const resizeImage = (file: File, maxSize: number = 1200): Promise<Blob> => {
+                                  return new Promise((resolve, reject) => {
+                                    const img = new Image();
+                                    const objectUrl = URL.createObjectURL(file);
+                                    
+                                    const cleanup = () => URL.revokeObjectURL(objectUrl);
+                                    
+                                    img.onload = () => {
+                                      const canvas = document.createElement('canvas');
+                                      let width = img.width;
+                                      let height = img.height;
+                                      
+                                      // 大きい方の辺を基準にリサイズ
+                                      if (width > maxSize || height > maxSize) {
+                                        if (width > height) {
+                                          height = Math.round((height * maxSize) / width);
+                                          width = maxSize;
+                                        } else {
+                                          width = Math.round((width * maxSize) / height);
+                                          height = maxSize;
+                                        }
+                                      }
+                                      
+                                      canvas.width = width;
+                                      canvas.height = height;
+                                      
+                                      const ctx = canvas.getContext('2d');
+                                      if (!ctx) {
+                                        cleanup();
+                                        reject(new Error('Canvas context not available'));
+                                        return;
+                                      }
+                                      
+                                      ctx.drawImage(img, 0, 0, width, height);
+                                      canvas.toBlob((blob) => {
+                                        cleanup();
+                                        if (blob) {
+                                          resolve(blob);
+                                        } else {
+                                          reject(new Error('Failed to create blob'));
+                                        }
+                                      }, 'image/png');
+                                    };
+                                    img.onerror = () => {
+                                      cleanup();
+                                      reject(new Error('Failed to load image'));
+                                    };
+                                    img.src = objectUrl;
+                                  });
+                                };
+                                
+                                // 画像をリサイズ
+                                const resizedBlob = await resizeImage(file, 1200);
+                                
                                 // 背景削除ライブラリを動的にインポート
                                 const { removeBackground } = await import('@imgly/background-removal');
                                 
-                                // ファイルを直接使用して背景を削除
-                                const imageBlob = await removeBackground(file);
+                                // リサイズした画像で背景を削除
+                                const imageBlob = await removeBackground(resizedBlob);
                                 // Blobをbase64に変換
                                 const blobReader = new FileReader();
                                 blobReader.onloadend = () => {
