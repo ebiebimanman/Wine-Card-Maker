@@ -645,7 +645,7 @@ export default function Home() {
                         id="price"
                         min={500}
                         max={30000}
-                        step={100}
+                        step={500}
                         defaultValue={[watchedValues.price ?? 5000]}
                         onValueCommit={(value) => handlePriceChange(value[0])}
                         className="w-full"
