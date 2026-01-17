@@ -38,7 +38,7 @@ const Slider = React.forwardRef<
               initial={{ opacity: 0, y: 0, x: "-50%", scale: 0.8 }}
               animate={{ opacity: 1, y: -35, x: "-50%", scale: 1 }}
               exit={{ opacity: 0, y: 0, x: "-50%", scale: 0.8 }}
-              className="absolute left-1/2 -translate-x-1/2 px-2 py-1 bg-primary text-primary-foreground text-[10px] font-bold rounded shadow-lg pointer-events-none whitespace-nowrap z-50"
+              className="absolute left-1/2 -translate-x-1/2 px-2 py-1 bg-primary text-primary-foreground text-[14px] font-bold rounded shadow-lg pointer-events-none whitespace-nowrap z-50"
             >
               {value.toLocaleString()}円
               <div className="absolute top-full left-1/2 -translate-x-1/2 border-x-[4px] border-x-transparent border-t-[4px] border-t-primary" />

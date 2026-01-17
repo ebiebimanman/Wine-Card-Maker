@@ -44,11 +44,11 @@
 @layer base {
   body {
     @apply bg-background text-foreground antialiased selection:bg-primary/20;
-    font-family: var(--font-body);
+    font-family: sans-serif;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: var(--font-display);
+    font-family: sans-serif;
     @apply font-bold tracking-tight;
   }
 }
