@@ -202,7 +202,7 @@ export default function Home() {
     form.setValue("price", value, { shouldValidate: true, shouldDirty: true, shouldTouch: true });
   };
 
-  // 背景透過設定が変更されたときに画像を切り替え
+  // 切り抜き設定が変更されたときに画像を切り替え
   useEffect(() => {
     if (!originalImage) return;
     
@@ -321,6 +321,7 @@ export default function Home() {
                       onChange={async (e) => {
                         const file = e.target.files?.[0];
                         if (file) {
+                          setIsImageLoading(true);
                           // ファイルサイズチェック（10MB）
                           const maxSize = 10 * 1024 * 1024; // 10MB
                           if (file.size > maxSize) {
@@ -329,6 +330,7 @@ export default function Home() {
                               description: "画像は10MB以下にしてください。",
                               variant: "destructive",
                             });
+                            setIsImageLoading(false);
                             return;
                           }
                           
@@ -491,8 +493,7 @@ export default function Home() {
                       {isImageLoading ? (
                         <div className="relative w-full h-full flex items-center justify-center rounded-[16px]">
                           <div className="flex flex-col items-center gap-3">
-                            <Loader2 className="w-8 h-8 animate-spin text-gray-400" />
-                            <p className="text-sm text-gray-500 font-body">画像を読み込み中...</p>
+                            <p className="text-2xl text-gray-500 font-body">読み込み中🍷</p>
                           </div>
                         </div>
                       ) : watchedValues.wineImage ? (
@@ -531,10 +532,10 @@ export default function Home() {
                               画像を変更
                             </button>
                           </div>
-                          {/* 背景透過スイッチ（右下） */}
+                          {/* 切り抜きスイッチ（右下） */}
                           <div className="absolute bottom-2 right-2 flex items-center gap-2 bg-white/90 backdrop-blur-sm px-3 py-2 rounded-lg shadow-lg z-10">
                             <Label htmlFor="transparent" className="text-sm font-body cursor-pointer whitespace-nowrap">
-                              背景透過
+                              切り抜き
                             </Label>
                             <Switch
                               id="transparent"
