@@ -165,7 +165,7 @@ import {
 } from "@/components/ui/dialog";
 
 export default function Home() {
-  const [theme, setTheme] = useState<"red" | "white">("red");
+  const [theme, setTheme] = useState<"red" | "white" | "rose" | "other">("red");
   const [isTransparent, setIsTransparent] = useState(true);
   const [originalImage, setOriginalImage] = useState<string | null>(null);
   const [isImageLoading, setIsImageLoading] = useState(false);
@@ -552,12 +552,43 @@ export default function Home() {
                   </div>
                 </div>
 
-                {/* Theme Selection */}
-                <div className="space-y-3">
-                  <ThemeToggle theme={theme} onThemeChange={(t) => {
-                    setTheme(t);
-                    form.setValue("themeColor", t);
-                  }} />
+                {/* Wine Type Selector */}
+                <div className="space-y-4">
+                  <Label className="font-display text-lg">ワインの種類</Label>
+                  <div className="grid grid-cols-4 gap-2">
+                    {[
+                      { id: "red", label: "赤", color: "#722F37", icon: Wine },
+                      { id: "white", label: "白", color: "#F3E5AB", icon: Wine },
+                      { id: "rose", label: "ロゼ", color: "#FFC0CB", icon: Wine },
+                      { id: "other", label: "他", color: "#E5E7EB", icon: Plus },
+                    ].map((type) => (
+                      <button
+                        key={type.id}
+                        type="button"
+                        onClick={() => {
+                          setTheme(type.id as any);
+                          form.setValue("themeColor", type.id);
+                        }}
+                        className={cn(
+                          "flex flex-col items-center justify-center p-3 rounded-xl border-2 transition-all duration-300 gap-1",
+                          theme === type.id 
+                            ? "border-primary bg-primary/5 shadow-md" 
+                            : "border-transparent bg-gray-50/50 hover:bg-gray-100"
+                        )}
+                      >
+                        <type.icon 
+                          className={cn("w-6 h-6 mb-1")} 
+                          style={{ color: theme === type.id ? type.color : "#9CA3AF" }}
+                        />
+                        <span className={cn(
+                          "text-sm font-body",
+                          theme === type.id ? "text-primary font-bold" : "text-gray-500"
+                        )}>
+                          {type.label}
+                        </span>
+                      </button>
+                    ))}
+                  </div>
                 </div>
 
                 {/* Wine Name */}

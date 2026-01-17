@@ -14,7 +14,7 @@ export const wineCards = pgTable("wine_cards", {
   partnerComment: text("partner_comment").array(),
   myRating: integer("my_rating").notNull(),
   partnerRating: integer("partner_rating").notNull(),
-  themeColor: text("theme_color").notNull(), // 'red' | 'white'
+  themeColor: text("theme_color").notNull(), // 'red' | 'white' | 'rose' | 'other'
   wineImage: text("wine_image"), // Base64 encoded image or URL
 });
 

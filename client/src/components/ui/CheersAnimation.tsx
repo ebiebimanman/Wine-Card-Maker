@@ -1,11 +1,15 @@
 import { motion } from "framer-motion";
 
 interface CheersAnimationProps {
-  wineType?: 'red' | 'white';
+  wineType?: 'red' | 'white' | 'rose' | 'other';
 }
 
 export function CheersAnimation({ wineType = 'red' }: CheersAnimationProps) {
-  const effectColorClass = wineType === 'white' ? 'bg-amber-300' : 'bg-rose-400';
+  const effectColorClass = 
+    wineType === 'white' ? 'bg-amber-300' : 
+    wineType === 'rose' ? 'bg-pink-300' :
+    wineType === 'other' ? 'bg-indigo-300' :
+    'bg-rose-400';
 
   const leftGlassVariants = {
     initial: { rotate: 0, scale: 1, x: -30 },
@@ -46,6 +50,17 @@ export function CheersAnimation({ wineType = 'red' }: CheersAnimationProps) {
     },
   };
 
+  const getEmoji = () => {
+    switch(wineType) {
+      case 'white': return '🥂';
+      case 'rose': return '🍷'; // Use wine glass for rose too
+      case 'other': return '🍹';
+      default: return '🍷';
+    }
+  };
+
+  const emoji = getEmoji();
+
   return (
     <div className="flex items-center justify-center py-10 overflow-visible h-full w-full">
       <div className="relative flex items-center justify-center w-0 h-0">
@@ -57,7 +72,7 @@ export function CheersAnimation({ wineType = 'red' }: CheersAnimationProps) {
           className="text-7xl select-none absolute right-2 bottom-[-45px]"
           style={{ originX: 0.5, originY: 1 }}
         >
-          {wineType === 'white' ? '🥂' : '🍷'}
+          {emoji}
         </motion.div>
 
         {/* Right Glass */}
@@ -68,7 +83,7 @@ export function CheersAnimation({ wineType = 'red' }: CheersAnimationProps) {
           className="text-7xl select-none absolute left-2 bottom-[-45px]"
           style={{ originX: 0.5, originY: 1 }}
         >
-          {wineType === 'white' ? '🥂' : '🍷'}
+          {emoji}
         </motion.div>
 
         {/* Particle Effect */}
