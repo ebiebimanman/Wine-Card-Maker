@@ -24,12 +24,11 @@ const PAIRED_FOOD_ICONS: Record<FoodOption, string> = {
 
 interface WineCardPreviewProps {
   data: InsertWineCard;
-  theme: "red" | "white";
+  theme: "red" | "white" | "rose" | "other";
   isTransparent?: boolean;
 }
 
 export function WineCardPreview({ data, theme, isTransparent = true }: WineCardPreviewProps) {
-  const isRed = theme === "red";
   const [imageSize, setImageSize] = useState<{ width: number; height: number } | null>(null);
   const maxHeight = 320; // max-h-80 = 320px
 
@@ -46,25 +45,53 @@ export function WineCardPreview({ data, theme, isTransparent = true }: WineCardP
   }, [data.wineImage]);
 
   // Dynamic styles based on theme
-  const cardStyles = isRed
-    ? {
-        background: "bg-[#F9F3F0]",
-        border: "border-[#722F37]",
-        text: "text-[#2D2424]",
-        accent: "text-[#722F37]",
-        divider: "bg-[#722F37]/20",
-        quote: "text-[#722F37]/10",
-        shadow: "shadow-2xl shadow-[#722F37]/10",
-      }
-    : {
-        background: "bg-[#FFFFFF]",
-        border: "border-[#A8B5A2]", // Sage green border
-        text: "text-[#343A40]",
-        accent: "text-[#6B705C]", // Olive accent
-        divider: "bg-[#A8B5A2]/20",
-        quote: "text-[#A8B5A2]/15",
-        shadow: "shadow-2xl shadow-[#A8B5A2]/15",
-      };
+  const getCardStyles = () => {
+    switch(theme) {
+      case "red":
+        return {
+          background: "bg-[#F9F3F0]",
+          border: "border-[#722F37]",
+          text: "text-[#2D2424]",
+          accent: "text-[#722F37]",
+          divider: "bg-[#722F37]/20",
+          quote: "text-[#722F37]/10",
+          shadow: "shadow-2xl shadow-[#722F37]/10",
+        };
+      case "white":
+        return {
+          background: "bg-[#FFFFFF]",
+          border: "border-[#A8B5A2]",
+          text: "text-[#343A40]",
+          accent: "text-[#6B705C]",
+          divider: "bg-[#A8B5A2]/20",
+          quote: "text-[#A8B5A2]/15",
+          shadow: "shadow-2xl shadow-[#A8B5A2]/15",
+        };
+      case "rose":
+        return {
+          background: "bg-[#FFF5F5]",
+          border: "border-[#DB7093]",
+          text: "text-[#4A3B3B]",
+          accent: "text-[#DB7093]",
+          divider: "bg-[#DB7093]/20",
+          quote: "text-[#DB7093]/10",
+          shadow: "shadow-2xl shadow-[#DB7093]/10",
+        };
+      case "other":
+      default:
+        return {
+          background: "bg-[#F5F5F5]",
+          border: "border-[#6B7280]",
+          text: "text-[#374151]",
+          accent: "text-[#6B7280]",
+          divider: "bg-[#6B7280]/20",
+          quote: "text-[#6B7280]/10",
+          shadow: "shadow-2xl shadow-[#6B7280]/10",
+        };
+    }
+  };
+
+  const cardStyles = getCardStyles();
 
   return (
     <motion.div
