@@ -644,10 +644,10 @@ export default function Home() {
                       <Slider
                         id="price"
                         min={500}
-                        max={10000}
-                        step={500}
-                        value={[watchedValues.price ?? 5000]}
-                    onValueChange={(value) => handlePriceChange(value[0])}
+                        max={30000}
+                        step={100}
+                        defaultValue={[watchedValues.price ?? 5000]}
+                        onValueCommit={(value) => handlePriceChange(value[0])}
                         className="w-full"
                       />
                   </div>

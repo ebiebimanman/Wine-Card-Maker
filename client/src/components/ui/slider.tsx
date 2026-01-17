@@ -10,7 +10,8 @@ const Slider = React.forwardRef<
 >(({ className, ...props }, ref) => {
   const [isActive, setIsActive] = React.useState(false)
   const [isHovered, setIsHovered] = React.useState(false)
-  const value = props.value?.[0] ?? props.defaultValue?.[0] ?? 0
+  const [internalValue, setInternalValue] = React.useState<number[]>(props.value ?? props.defaultValue ?? [0])
+  const displayValue = internalValue[0]
 
   return (
     <SliderPrimitive.Root
@@ -23,6 +24,10 @@ const Slider = React.forwardRef<
       onPointerUp={() => setIsActive(false)}
       onPointerLeave={() => setIsActive(false)}
       {...props}
+      onValueChange={(val) => {
+        setInternalValue(val)
+        props.onValueChange?.(val)
+      }}
     >
       <SliderPrimitive.Track className="relative h-2 w-full grow overflow-hidden rounded-full bg-secondary/20">
         <SliderPrimitive.Range className="absolute h-full bg-primary rounded-full" />
@@ -36,11 +41,11 @@ const Slider = React.forwardRef<
           {(isActive || isHovered) && (
             <motion.div
               initial={{ opacity: 0, y: 0, x: "-50%", scale: 0.8 }}
-              animate={{ opacity: 1, y: -35, x: "-50%", scale: 1 }}
+              animate={{ opacity: 1, y: -43, x: "-50%", scale: 1 }}
               exit={{ opacity: 0, y: 0, x: "-50%", scale: 0.8 }}
               className="absolute left-1/2 -translate-x-1/2 px-2 py-1 bg-primary text-primary-foreground text-[14px] font-bold rounded shadow-lg pointer-events-none whitespace-nowrap z-50"
             >
-              {value.toLocaleString()}円
+              {displayValue.toLocaleString()}円
               <div className="absolute top-full left-1/2 -translate-x-1/2 border-x-[4px] border-x-transparent border-t-[4px] border-t-primary" />
             </motion.div>
           )}
