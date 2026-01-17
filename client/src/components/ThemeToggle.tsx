@@ -53,7 +53,7 @@ export function ThemeToggle({ theme, onThemeChange }: ThemeToggleProps) {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -5 }}
               transition={{ duration: 0.3, ease: "easeOut" }}
-              className="flex flex-col items-center gap-2"
+              className="flex flex-col items-center justify-center gap-2 h-full w-full"
             >
               <Wine className={cn("w-6 h-6 transition-colors duration-500", theme === "red" ? "text-[#722F37]" : "text-[#D5C1C4]")} />
               <span className="text-xs font-body font-semibold uppercase tracking-widest text-[#722F37]">赤ワイン</span>
@@ -77,7 +77,7 @@ export function ThemeToggle({ theme, onThemeChange }: ThemeToggleProps) {
         onClick={() => handleThemeChange("white")}
         whileTap={{ scale: 0.8 }}
         className={cn(
-          "group relative flex flex-col items-center gap-2 p-4 rounded-xl transition-all duration-500 w-28 h-24 overflow-visible",
+          "group relative flex flex-col items-center justify-center gap-2 p-4 rounded-xl transition-all duration-500 w-28 h-24 overflow-visible",
           theme === "white" 
             ? "bg-[#DCD48E]/20 text-[#635B21]" 
             : "bg-[#F8F9FA] text-[#E6E2C3] hover:bg-gray-100"
@@ -104,7 +104,7 @@ export function ThemeToggle({ theme, onThemeChange }: ThemeToggleProps) {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -5 }}
               transition={{ duration: 0.3, ease: "easeOut" }}
-              className="flex flex-col items-center gap-2"
+              className="flex flex-col items-center justify-center gap-2 h-full w-full"
             >
               <Wine className={cn("w-6 h-6 transition-colors duration-500", theme === "white" ? "text-[#635B21]" : "text-[#E6E2C3]")} />
               <span className="text-xs font-body font-semibold uppercase tracking-widest text-[#635B21]">白ワイン</span>
