@@ -111,14 +111,17 @@ export function WineCardPreview({ data, theme, isTransparent = true }: WineCardP
         {/* Wine Image (MOVE TO TOP) */}
         {data.wineImage && (
           <div className={cn(
-            "mb-6 -mt-4 -mx-4 md:-mx-8 flex items-center justify-center overflow-hidden",
+            "mb-6 -mt-4 -mx-4 md:-mx-8 flex items-center justify-center overflow-visible",
             isTransparent ? "rounded-lg" : "rounded-[24px]"
           )}>
             {imageSize ? (
               <motion.img
                 src={data.wineImage}
                 alt={data.wineName || "ワイン画像"}
-                className="object-contain"
+                className={cn(
+                  "object-contain",
+                  isTransparent && "rotate-[15deg]"
+                )}
                 style={{
                   width: '100%',
                   height: imageSize.height > maxHeight 
@@ -135,7 +138,10 @@ export function WineCardPreview({ data, theme, isTransparent = true }: WineCardP
               <motion.img
                 src={data.wineImage}
                 alt={data.wineName || "ワイン画像"}
-                className="w-full max-h-64 md:max-h-80 object-contain"
+                className={cn(
+                  "w-full max-h-64 md:max-h-80 object-contain",
+                  isTransparent && "rotate-[15deg]"
+                )}
                 onLoad={(e) => {
                   const img = e.currentTarget;
                   setImageSize({ width: img.naturalWidth, height: img.naturalHeight });
