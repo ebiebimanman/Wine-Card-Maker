@@ -126,10 +126,13 @@ export function WineCardPreview({ data, theme, isTransparent = true }: WineCardP
                     : 'auto',
                   maxHeight: `${maxHeight}px`,
                   aspectRatio: `${imageSize.width} / ${imageSize.height}`,
-                  transform: isTransparent ? 'rotate(15deg)' : 'none',
                 }}
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
+                initial={{ opacity: 0, scale: 0.95, rotate: 0 }}
+                animate={{ 
+                  opacity: 1, 
+                  scale: 1, 
+                  rotate: isTransparent ? 15 : 0 
+                }}
                 transition={{ duration: 0.3 }}
               />
             ) : (
@@ -139,14 +142,17 @@ export function WineCardPreview({ data, theme, isTransparent = true }: WineCardP
                 className="w-full max-h-64 md:max-h-80 object-contain"
                 style={{
                   width: isTransparent ? '85%' : '100%',
-                  transform: isTransparent ? 'rotate(15deg)' : 'none',
                 }}
                 onLoad={(e) => {
                   const img = e.currentTarget;
                   setImageSize({ width: img.naturalWidth, height: img.naturalHeight });
                 }}
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
+                initial={{ opacity: 0, scale: 0.95, rotate: 0 }}
+                animate={{ 
+                  opacity: 1, 
+                  scale: 1, 
+                  rotate: isTransparent ? 15 : 0 
+                }}
                 transition={{ duration: 0.3 }}
               />
             )}
