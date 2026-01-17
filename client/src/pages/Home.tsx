@@ -186,6 +186,7 @@ export default function Home() {
       pairedFood: [],
       myComment: [],
       partnerComment: [],
+      memo: "",
       myRating: 3,
       partnerRating: 3,
       themeColor: "red",
@@ -738,7 +739,7 @@ export default function Home() {
                   <FloatingInput
                     id="freeTextComment"
                     label="メモ"
-                    {...form.register("partnerComment")}
+                    {...form.register("memo")}
                     onKeyDown={(e) => {
                       if (e.key === "Enter") {
                         e.preventDefault();

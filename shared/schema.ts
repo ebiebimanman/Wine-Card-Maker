@@ -12,6 +12,7 @@ export const wineCards = pgTable("wine_cards", {
   pairedFood: text("paired_food").array(),
   myComment: text("my_comment").array(),
   partnerComment: text("partner_comment").array(),
+  memo: text("memo"), // Free-text memo field
   myRating: integer("my_rating").notNull(),
   partnerRating: integer("partner_rating").notNull(),
   themeColor: text("theme_color").notNull(), // 'red' | 'white' | 'rose' | 'other'
@@ -27,6 +28,7 @@ export const insertWineCardSchema = createInsertSchema(wineCards).pick({
   pairedFood: true,
   myComment: true,
   partnerComment: true,
+  memo: true,
   myRating: true,
   partnerRating: true,
   themeColor: true,
@@ -40,6 +42,7 @@ export const insertWineCardSchema = createInsertSchema(wineCards).pick({
   pairedFood: z.string().array().optional(),
   myComment: z.string().array().optional(),
   partnerComment: z.string().array().optional(),
+  memo: z.string().optional(),
 });
 
 export const COMMENT_OPTIONS = [
