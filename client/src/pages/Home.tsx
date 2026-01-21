@@ -209,6 +209,12 @@ export default function Home() {
   const [showVarietySuggestions, setShowVarietySuggestions] = useState(false);
   const [selectedVarietyIndex, setSelectedVarietyIndex] = useState(-1);
   const varietySuggestionsRef = useRef<HTMLDivElement>(null);
+  
+  const [savedLocations, setSavedLocations] = useState<string[]>([]);
+  const [locationSuggestions, setLocationSuggestions] = useState<string[]>([]);
+  const [showLocationSuggestions, setShowLocationSuggestions] = useState(false);
+  const [selectedLocationIndex, setSelectedLocationIndex] = useState(-1);
+  const locationSuggestionsRef = useRef<HTMLDivElement>(null);
 
   const form = useForm<InsertWineCard>({
     resolver: zodResolver(insertWineCardSchema),
@@ -266,6 +272,30 @@ export default function Home() {
     };
     preloadModel();
   }, []);
+  
+  // 保存された購入場所をローカルストレージから読み込み
+  useEffect(() => {
+    const stored = localStorage.getItem('wineCardLocations');
+    if (stored) {
+      try {
+        const locations = JSON.parse(stored);
+        if (Array.isArray(locations)) {
+          setSavedLocations(locations);
+        }
+      } catch (e) {
+        console.log('Failed to parse saved locations');
+      }
+    }
+  }, []);
+  
+  // 購入場所をローカルストレージに保存する関数
+  const saveLocation = (location: string) => {
+    if (!location.trim()) return;
+    const trimmed = location.trim();
+    const updated = [trimmed, ...savedLocations.filter(l => l !== trimmed)].slice(0, 50);
+    setSavedLocations(updated);
+    localStorage.setItem('wineCardLocations', JSON.stringify(updated));
+  };
 
   const onSubmit = async (data: InsertWineCard) => {
     try {
@@ -338,6 +368,11 @@ export default function Home() {
         description: "カードの保存に失敗しました。もう一度お試しください。",
         variant: "destructive",
       });
+    }
+    
+    // 購入場所を保存
+    if (data.location) {
+      saveLocation(data.location);
     }
     
     createMutation.mutate({ ...data, themeColor: theme });
@@ -988,18 +1023,104 @@ export default function Home() {
                 </div>
                   
                   {/* Location */}
-                  <div className="space-y-2">
-                  <FloatingInput
+                  <div className="space-y-2 relative">
+                    <FloatingInput
                       id="location"
-                    label="購入した場所"
+                      label="購入した場所"
                       {...form.register("location")}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") {
-                        e.preventDefault();
-                        (e.target as HTMLInputElement).blur();
-                      }
-                    }}
+                      onInput={(e) => {
+                        const value = (e.target as HTMLInputElement).value;
+                        if (value.length > 0 && savedLocations.length > 0) {
+                          const filtered = savedLocations.filter(loc => 
+                            matchesWineName(loc, value)
+                          ).slice(0, 8);
+                          setLocationSuggestions(filtered);
+                          setShowLocationSuggestions(filtered.length > 0);
+                          setSelectedLocationIndex(-1);
+                        } else if (value.length === 0 && savedLocations.length > 0) {
+                          setLocationSuggestions(savedLocations.slice(0, 8));
+                          setShowLocationSuggestions(true);
+                          setSelectedLocationIndex(-1);
+                        } else {
+                          setLocationSuggestions([]);
+                          setShowLocationSuggestions(false);
+                        }
+                      }}
+                      onFocus={() => {
+                        const value = form.getValues("location");
+                        if (savedLocations.length > 0) {
+                          if (value && value.length > 0) {
+                            const filtered = savedLocations.filter(loc => 
+                              matchesWineName(loc, value)
+                            ).slice(0, 8);
+                            setLocationSuggestions(filtered);
+                            setShowLocationSuggestions(filtered.length > 0);
+                          } else {
+                            setLocationSuggestions(savedLocations.slice(0, 8));
+                            setShowLocationSuggestions(true);
+                          }
+                        }
+                      }}
+                      onBlur={() => {
+                        setTimeout(() => setShowLocationSuggestions(false), 150);
+                      }}
+                      onKeyDown={(e) => {
+                        if (showLocationSuggestions && locationSuggestions.length > 0) {
+                          if (e.key === "ArrowDown") {
+                            e.preventDefault();
+                            setSelectedLocationIndex(prev => 
+                              prev < locationSuggestions.length - 1 ? prev + 1 : prev
+                            );
+                          } else if (e.key === "ArrowUp") {
+                            e.preventDefault();
+                            setSelectedLocationIndex(prev => prev > 0 ? prev - 1 : -1);
+                          } else if (e.key === "Enter" && selectedLocationIndex >= 0) {
+                            e.preventDefault();
+                            form.setValue("location", locationSuggestions[selectedLocationIndex]);
+                            setShowLocationSuggestions(false);
+                            (e.target as HTMLInputElement).blur();
+                          } else if (e.key === "Escape") {
+                            setShowLocationSuggestions(false);
+                          } else if (e.key === "Enter") {
+                            e.preventDefault();
+                            (e.target as HTMLInputElement).blur();
+                          }
+                        } else if (e.key === "Enter") {
+                          e.preventDefault();
+                          (e.target as HTMLInputElement).blur();
+                        }
+                      }}
                     />
+                    <AnimatePresence>
+                      {showLocationSuggestions && locationSuggestions.length > 0 && (
+                        <motion.div
+                          ref={locationSuggestionsRef}
+                          initial={{ opacity: 0, y: -4 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: -4 }}
+                          transition={{ duration: 0.15 }}
+                          className="absolute z-50 w-full mt-1 bg-popover border border-border rounded-lg shadow-lg overflow-hidden"
+                        >
+                          {locationSuggestions.map((suggestion, index) => (
+                            <button
+                              key={suggestion}
+                              type="button"
+                              className={cn(
+                                "w-full px-4 py-2.5 text-left text-sm font-body text-popover-foreground hover:bg-muted",
+                                index === selectedLocationIndex && "bg-accent text-accent-foreground"
+                              )}
+                              onMouseDown={(e) => {
+                                e.preventDefault();
+                                form.setValue("location", suggestion);
+                                setShowLocationSuggestions(false);
+                              }}
+                            >
+                              {suggestion}
+                            </button>
+                          ))}
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
                     {form.formState.errors.location && (
                       <p className="text-sm text-destructive font-body">{form.formState.errors.location.message}</p>
                     )}
