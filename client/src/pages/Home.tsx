@@ -59,6 +59,23 @@ const COMMENT_ICONS: Record<CommentOption, string> = {
   "クリーミー": "☁️",
 };
 
+// ひらがなをカタカナに変換する関数（フリック入力対応）
+const hiraganaToKatakana = (str: string): string => {
+  return str.replace(/[\u3041-\u3096]/g, (match) => {
+    return String.fromCharCode(match.charCodeAt(0) + 0x60);
+  });
+};
+
+// サジェスト用のマッチング関数（ひらがな・カタカナ両対応）
+const matchesWineName = (wine: string, query: string): boolean => {
+  const normalizedWine = wine.toLowerCase();
+  const normalizedQuery = query.toLowerCase();
+  const katakanaQuery = hiraganaToKatakana(query);
+  
+  return normalizedWine.includes(normalizedQuery) || 
+         wine.includes(katakanaQuery);
+};
+
 // マルチセレクトボタンコンポーネント
 interface MultiSelectButtonProps {
   option: FoodOption | CommentOption;
@@ -672,27 +689,26 @@ export default function Home() {
                   <FloatingInput
                     id="wineName"
                     label="ワイン名"
-                    {...form.register("wineName", {
-                      onChange: (e) => {
-                        const value = e.target.value;
-                        if (value.length > 0) {
-                          const filtered = popularWines.filter(wine => 
-                            wine.toLowerCase().includes(value.toLowerCase())
-                          ).slice(0, 8);
-                          setWineSuggestions(filtered);
-                          setShowSuggestions(filtered.length > 0);
-                          setSelectedSuggestionIndex(-1);
-                        } else {
-                          setWineSuggestions([]);
-                          setShowSuggestions(false);
-                        }
+                    {...form.register("wineName")}
+                    onInput={(e) => {
+                      const value = (e.target as HTMLInputElement).value;
+                      if (value.length > 0) {
+                        const filtered = popularWines.filter(wine => 
+                          matchesWineName(wine, value)
+                        ).slice(0, 8);
+                        setWineSuggestions(filtered);
+                        setShowSuggestions(filtered.length > 0);
+                        setSelectedSuggestionIndex(-1);
+                      } else {
+                        setWineSuggestions([]);
+                        setShowSuggestions(false);
                       }
-                    })}
+                    }}
                     onFocus={() => {
                       const value = form.getValues("wineName");
                       if (value && value.length > 0) {
                         const filtered = popularWines.filter(wine => 
-                          wine.toLowerCase().includes(value.toLowerCase())
+                          matchesWineName(wine, value)
                         ).slice(0, 8);
                         setWineSuggestions(filtered);
                         setShowSuggestions(filtered.length > 0);
