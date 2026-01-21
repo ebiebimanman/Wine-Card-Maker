@@ -26,6 +26,7 @@ import { useToast } from "@/hooks/use-toast";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { RatingInput } from "@/components/RatingInput";
 import { WineCardPreview } from "@/components/WineCardPreview";
+import { popularWines } from "@/data/popularWines";
 
 // ユニオン型の生成
 type FoodOption = typeof PAIRED_FOOD_OPTIONS[number];
@@ -175,6 +176,10 @@ export default function Home() {
   const cardRef = useRef<HTMLDivElement>(null);
   const [savedImageUrl, setSavedImageUrl] = useState<string | null>(null);
   const [isImageModalOpen, setIsImageModalOpen] = useState(false);
+  const [wineSuggestions, setWineSuggestions] = useState<string[]>([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const [selectedSuggestionIndex, setSelectedSuggestionIndex] = useState(-1);
+  const suggestionsRef = useRef<HTMLDivElement>(null);
 
   const form = useForm<InsertWineCard>({
     resolver: zodResolver(insertWineCardSchema),
@@ -662,19 +667,101 @@ export default function Home() {
                   </div>
                 </div>
 
-                {/* Wine Name */}
-                <div className="space-y-2">
+                {/* Wine Name with Autocomplete */}
+                <div className="space-y-2 relative">
                   <FloatingInput
                     id="wineName"
                     label="ワイン名"
-                    {...form.register("wineName")}
+                    {...form.register("wineName", {
+                      onChange: (e) => {
+                        const value = e.target.value;
+                        if (value.length > 0) {
+                          const filtered = popularWines.filter(wine => 
+                            wine.toLowerCase().includes(value.toLowerCase())
+                          ).slice(0, 8);
+                          setWineSuggestions(filtered);
+                          setShowSuggestions(filtered.length > 0);
+                          setSelectedSuggestionIndex(-1);
+                        } else {
+                          setWineSuggestions([]);
+                          setShowSuggestions(false);
+                        }
+                      }
+                    })}
+                    onFocus={() => {
+                      const value = form.getValues("wineName");
+                      if (value && value.length > 0) {
+                        const filtered = popularWines.filter(wine => 
+                          wine.toLowerCase().includes(value.toLowerCase())
+                        ).slice(0, 8);
+                        setWineSuggestions(filtered);
+                        setShowSuggestions(filtered.length > 0);
+                      }
+                    }}
+                    onBlur={() => {
+                      setTimeout(() => setShowSuggestions(false), 150);
+                    }}
                     onKeyDown={(e) => {
-                      if (e.key === "Enter") {
+                      if (showSuggestions && wineSuggestions.length > 0) {
+                        if (e.key === "ArrowDown") {
+                          e.preventDefault();
+                          setSelectedSuggestionIndex(prev => 
+                            prev < wineSuggestions.length - 1 ? prev + 1 : prev
+                          );
+                        } else if (e.key === "ArrowUp") {
+                          e.preventDefault();
+                          setSelectedSuggestionIndex(prev => prev > 0 ? prev - 1 : -1);
+                        } else if (e.key === "Enter" && selectedSuggestionIndex >= 0) {
+                          e.preventDefault();
+                          form.setValue("wineName", wineSuggestions[selectedSuggestionIndex]);
+                          setShowSuggestions(false);
+                          setSelectedSuggestionIndex(-1);
+                          document.getElementById("origin")?.focus();
+                        } else if (e.key === "Escape") {
+                          setShowSuggestions(false);
+                          setSelectedSuggestionIndex(-1);
+                        }
+                      } else if (e.key === "Enter") {
                         e.preventDefault();
                         document.getElementById("origin")?.focus();
                       }
                     }}
+                    autoComplete="off"
                   />
+                  <AnimatePresence>
+                    {showSuggestions && wineSuggestions.length > 0 && (
+                      <motion.div
+                        ref={suggestionsRef}
+                        initial={{ opacity: 0, y: -4 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -4 }}
+                        transition={{ duration: 0.15 }}
+                        className="absolute z-50 w-full mt-1 bg-popover border border-border rounded-lg shadow-lg overflow-hidden"
+                      >
+                        {wineSuggestions.map((suggestion, index) => (
+                          <button
+                            key={suggestion}
+                            type="button"
+                            className={cn(
+                              "w-full px-4 py-2.5 text-left text-sm font-body text-popover-foreground hover-elevate",
+                              index === selectedSuggestionIndex && "bg-accent text-accent-foreground"
+                            )}
+                            onMouseDown={(e) => {
+                              e.preventDefault();
+                              form.setValue("wineName", suggestion);
+                              setShowSuggestions(false);
+                              setSelectedSuggestionIndex(-1);
+                              document.getElementById("origin")?.focus();
+                            }}
+                            onMouseEnter={() => setSelectedSuggestionIndex(index)}
+                            data-testid={`suggestion-wine-${index}`}
+                          >
+                            {suggestion}
+                          </button>
+                        ))}
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                   {form.formState.errors.wineName && (
                     <p className="text-sm text-destructive font-body">{form.formState.errors.wineName.message}</p>
                   )}
