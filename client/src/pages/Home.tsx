@@ -752,15 +752,14 @@ export default function Home() {
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -4 }}
                         transition={{ duration: 0.15 }}
-                        className="absolute z-50 w-full mt-1 bg-card border border-border rounded-lg shadow-lg overflow-hidden"
-                        style={{ backgroundColor: 'hsl(var(--card))' }}
+                        className="absolute z-50 w-full mt-1 bg-popover border border-border rounded-lg shadow-lg overflow-hidden"
                       >
                         {wineSuggestions.map((suggestion, index) => (
                           <button
                             key={suggestion}
                             type="button"
                             className={cn(
-                              "w-full px-4 py-2.5 text-left text-sm font-body text-card-foreground hover:bg-muted",
+                              "w-full px-4 py-2.5 text-left text-sm font-body text-popover-foreground hover:bg-muted",
                               index === selectedSuggestionIndex && "bg-accent text-accent-foreground"
                             )}
                             onMouseDown={(e) => {
