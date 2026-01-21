@@ -2,7 +2,20 @@
 
 ## Overview
 
-A wine card generator web application that allows users to create elegant, shareable wine tasting cards. Users can input wine details (name, origin, variety, location, price), add food pairings, rate wines, and generate visually appealing cards with red or white wine themes. The cards can be exported as images for sharing.
+A wine card generator web application that allows users to create elegant, shareable wine tasting cards through an 11-step wizard interface. Users progress through steps for: image upload → wine name → wine type → variety → origin → location → price → rating → food pairings → comments → preview. Cards can be exported as images for sharing.
+
+### Wizard Flow (11 Steps)
+1. **Image Upload** (optional) - Upload wine bottle photo with background removal option
+2. **Wine Name** (required) - Autocomplete with Japanese flick input support
+3. **Wine Type** - Red/White/Rose/Other selector with cheers animation
+4. **Variety** (optional) - Grape variety with autocomplete
+5. **Origin** (optional) - Wine region with autocomplete (100+ regions)
+6. **Location** (optional) - Purchase location with localStorage history
+7. **Price** (optional) - Price slider (500-30,000 yen)
+8. **Rating** (required) - Star rating (1-5)
+9. **Food Pairings** (optional) - Multi-select buttons
+10. **Comments** (optional) - Multi-select comment buttons
+11. **Preview** - Final card preview with save/export options
 
 ## User Preferences
 
