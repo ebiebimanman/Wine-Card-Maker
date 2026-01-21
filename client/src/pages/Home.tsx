@@ -27,6 +27,8 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 import { RatingInput } from "@/components/RatingInput";
 import { WineCardPreview } from "@/components/WineCardPreview";
 import { popularWines } from "@/data/popularWines";
+import { wineOrigins } from "@/data/wineOrigins";
+import { wineVarieties } from "@/data/wineVarieties";
 
 // ユニオン型の生成
 type FoodOption = typeof PAIRED_FOOD_OPTIONS[number];
@@ -197,6 +199,16 @@ export default function Home() {
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [selectedSuggestionIndex, setSelectedSuggestionIndex] = useState(-1);
   const suggestionsRef = useRef<HTMLDivElement>(null);
+  
+  const [originSuggestions, setOriginSuggestions] = useState<string[]>([]);
+  const [showOriginSuggestions, setShowOriginSuggestions] = useState(false);
+  const [selectedOriginIndex, setSelectedOriginIndex] = useState(-1);
+  const originSuggestionsRef = useRef<HTMLDivElement>(null);
+  
+  const [varietySuggestions, setVarietySuggestions] = useState<string[]>([]);
+  const [showVarietySuggestions, setShowVarietySuggestions] = useState(false);
+  const [selectedVarietyIndex, setSelectedVarietyIndex] = useState(-1);
+  const varietySuggestionsRef = useRef<HTMLDivElement>(null);
 
   const form = useForm<InsertWineCard>({
     resolver: zodResolver(insertWineCardSchema),
@@ -785,34 +797,190 @@ export default function Home() {
 
                 {/* Origin and Variety */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
+                  <div className="space-y-2 relative">
                     <FloatingInput
                       id="origin"
                       label="産地"
                       {...form.register("origin")}
+                      onInput={(e) => {
+                        const value = (e.target as HTMLInputElement).value;
+                        if (value.length > 0) {
+                          const filtered = wineOrigins.filter(origin => 
+                            matchesWineName(origin, value)
+                          ).slice(0, 8);
+                          setOriginSuggestions(filtered);
+                          setShowOriginSuggestions(filtered.length > 0);
+                          setSelectedOriginIndex(-1);
+                        } else {
+                          setOriginSuggestions([]);
+                          setShowOriginSuggestions(false);
+                        }
+                      }}
+                      onFocus={() => {
+                        const value = form.getValues("origin");
+                        if (value && value.length > 0) {
+                          const filtered = wineOrigins.filter(origin => 
+                            matchesWineName(origin, value)
+                          ).slice(0, 8);
+                          setOriginSuggestions(filtered);
+                          setShowOriginSuggestions(filtered.length > 0);
+                        }
+                      }}
+                      onBlur={() => {
+                        setTimeout(() => setShowOriginSuggestions(false), 150);
+                      }}
                       onKeyDown={(e) => {
-                        if (e.key === "Enter") {
+                        if (showOriginSuggestions && originSuggestions.length > 0) {
+                          if (e.key === "ArrowDown") {
+                            e.preventDefault();
+                            setSelectedOriginIndex(prev => 
+                              prev < originSuggestions.length - 1 ? prev + 1 : prev
+                            );
+                          } else if (e.key === "ArrowUp") {
+                            e.preventDefault();
+                            setSelectedOriginIndex(prev => prev > 0 ? prev - 1 : -1);
+                          } else if (e.key === "Enter" && selectedOriginIndex >= 0) {
+                            e.preventDefault();
+                            form.setValue("origin", originSuggestions[selectedOriginIndex]);
+                            setShowOriginSuggestions(false);
+                            document.getElementById("variety")?.focus();
+                          } else if (e.key === "Escape") {
+                            setShowOriginSuggestions(false);
+                          } else if (e.key === "Enter") {
+                            e.preventDefault();
+                            document.getElementById("variety")?.focus();
+                          }
+                        } else if (e.key === "Enter") {
                           e.preventDefault();
                           document.getElementById("variety")?.focus();
                         }
                       }}
                     />
+                    <AnimatePresence>
+                      {showOriginSuggestions && originSuggestions.length > 0 && (
+                        <motion.div
+                          ref={originSuggestionsRef}
+                          initial={{ opacity: 0, y: -4 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: -4 }}
+                          transition={{ duration: 0.15 }}
+                          className="absolute z-50 w-full mt-1 bg-popover border border-border rounded-lg shadow-lg overflow-hidden"
+                        >
+                          {originSuggestions.map((suggestion, index) => (
+                            <button
+                              key={suggestion}
+                              type="button"
+                              className={cn(
+                                "w-full px-4 py-2.5 text-left text-sm font-body text-popover-foreground hover:bg-muted",
+                                index === selectedOriginIndex && "bg-accent text-accent-foreground"
+                              )}
+                              onMouseDown={(e) => {
+                                e.preventDefault();
+                                form.setValue("origin", suggestion);
+                                setShowOriginSuggestions(false);
+                                document.getElementById("variety")?.focus();
+                              }}
+                            >
+                              {suggestion}
+                            </button>
+                          ))}
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
                     {form.formState.errors.origin && (
                       <p className="text-sm text-destructive font-body">{form.formState.errors.origin.message}</p>
                     )}
                   </div>
-                  <div className="space-y-2">
+                  <div className="space-y-2 relative">
                     <FloatingInput
                       id="variety"
                       label="品種"
                       {...form.register("variety")}
+                      onInput={(e) => {
+                        const value = (e.target as HTMLInputElement).value;
+                        if (value.length > 0) {
+                          const filtered = wineVarieties.filter(variety => 
+                            matchesWineName(variety, value)
+                          ).slice(0, 8);
+                          setVarietySuggestions(filtered);
+                          setShowVarietySuggestions(filtered.length > 0);
+                          setSelectedVarietyIndex(-1);
+                        } else {
+                          setVarietySuggestions([]);
+                          setShowVarietySuggestions(false);
+                        }
+                      }}
+                      onFocus={() => {
+                        const value = form.getValues("variety");
+                        if (value && value.length > 0) {
+                          const filtered = wineVarieties.filter(variety => 
+                            matchesWineName(variety, value)
+                          ).slice(0, 8);
+                          setVarietySuggestions(filtered);
+                          setShowVarietySuggestions(filtered.length > 0);
+                        }
+                      }}
+                      onBlur={() => {
+                        setTimeout(() => setShowVarietySuggestions(false), 150);
+                      }}
                       onKeyDown={(e) => {
-                        if (e.key === "Enter") {
+                        if (showVarietySuggestions && varietySuggestions.length > 0) {
+                          if (e.key === "ArrowDown") {
+                            e.preventDefault();
+                            setSelectedVarietyIndex(prev => 
+                              prev < varietySuggestions.length - 1 ? prev + 1 : prev
+                            );
+                          } else if (e.key === "ArrowUp") {
+                            e.preventDefault();
+                            setSelectedVarietyIndex(prev => prev > 0 ? prev - 1 : -1);
+                          } else if (e.key === "Enter" && selectedVarietyIndex >= 0) {
+                            e.preventDefault();
+                            form.setValue("variety", varietySuggestions[selectedVarietyIndex]);
+                            setShowVarietySuggestions(false);
+                            document.getElementById("location")?.focus();
+                          } else if (e.key === "Escape") {
+                            setShowVarietySuggestions(false);
+                          } else if (e.key === "Enter") {
+                            e.preventDefault();
+                            document.getElementById("location")?.focus();
+                          }
+                        } else if (e.key === "Enter") {
                           e.preventDefault();
                           document.getElementById("location")?.focus();
                         }
                       }}
                     />
+                    <AnimatePresence>
+                      {showVarietySuggestions && varietySuggestions.length > 0 && (
+                        <motion.div
+                          ref={varietySuggestionsRef}
+                          initial={{ opacity: 0, y: -4 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: -4 }}
+                          transition={{ duration: 0.15 }}
+                          className="absolute z-50 w-full mt-1 bg-popover border border-border rounded-lg shadow-lg overflow-hidden"
+                        >
+                          {varietySuggestions.map((suggestion, index) => (
+                            <button
+                              key={suggestion}
+                              type="button"
+                              className={cn(
+                                "w-full px-4 py-2.5 text-left text-sm font-body text-popover-foreground hover:bg-muted",
+                                index === selectedVarietyIndex && "bg-accent text-accent-foreground"
+                              )}
+                              onMouseDown={(e) => {
+                                e.preventDefault();
+                                form.setValue("variety", suggestion);
+                                setShowVarietySuggestions(false);
+                                document.getElementById("location")?.focus();
+                              }}
+                            >
+                              {suggestion}
+                            </button>
+                          ))}
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
                     {form.formState.errors.variety && (
                       <p className="text-sm text-destructive font-body">{form.formState.errors.variety.message}</p>
                     )}
