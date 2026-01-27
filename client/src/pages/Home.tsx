@@ -20,7 +20,6 @@ import { useCreateWineCard } from "@/hooks/use-wine-cards";
 import { useToast } from "@/hooks/use-toast";
 import { RatingInput } from "@/components/RatingInput";
 import { WineCardPreview } from "@/components/WineCardPreview";
-import { CheersAnimation } from "@/components/ui/CheersAnimation";
 import { popularWines } from "@/data/popularWines";
 import { wineOrigins } from "@/data/wineOrigins";
 import { wineVarieties } from "@/data/wineVarieties";
@@ -785,19 +784,6 @@ export default function Home() {
 
     return (
       <div className="space-y-6">
-        <div className="h-32 flex items-center justify-center">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={theme}
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.8 }}
-              transition={{ duration: 0.3 }}
-            >
-              <CheersAnimation wineType={theme} />
-            </motion.div>
-          </AnimatePresence>
-        </div>
         <div className="grid grid-cols-4 gap-3">
           {wineTypes.map(({ value, label, color }) => (
             <button

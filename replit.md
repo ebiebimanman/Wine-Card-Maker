@@ -7,7 +7,7 @@ A wine card generator web application that allows users to create elegant, share
 ### Wizard Flow (11 Steps)
 1. **Image Upload** (optional) - Upload wine bottle photo with background removal option
 2. **Wine Name** (required) - Autocomplete with Japanese flick input support
-3. **Wine Type** - Red/White/Rose/Other selector with cheers animation
+3. **Wine Type** - Red/White/Rose/Other selector
 4. **Variety** (optional) - Grape variety with autocomplete
 5. **Origin** (optional) - Wine region with autocomplete (100+ regions)
 6. **Location** (optional) - Purchase location with localStorage history
