@@ -599,11 +599,8 @@ export default function Home() {
           onChange={handleImageChange}
           data-testid="input-wine-image"
         />
-        <label
-          htmlFor="wineImage"
-          className="flex flex-col items-center justify-center w-full h-48 border-2 border-dashed border-gray-300 rounded-xl cursor-pointer hover:border-[#722F37] transition-colors bg-gray-50"
-        >
-          {isImageLoading ? (
+        {isImageLoading ? (
+          <div className="flex flex-col items-center justify-center w-full h-48 border-2 border-dashed border-gray-300 rounded-xl bg-gray-50">
             <div className="flex flex-col items-center gap-3">
               <Loader2 className="w-8 h-8 animate-spin text-[#722F37]" />
               <span className="text-sm text-gray-500">背景を削除中...</span>
@@ -611,9 +608,7 @@ export default function Home() {
                 type="button"
                 variant="outline"
                 size="sm"
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
+                onClick={() => {
                   cancelBackgroundRemovalRef.current = true;
                   const imageToUse = originalImage || pendingOriginalImageRef.current;
                   if (imageToUse) {
@@ -631,7 +626,13 @@ export default function Home() {
                 キャンセル
               </Button>
             </div>
-          ) : watchedValues.wineImage ? (
+          </div>
+        ) : (
+          <label
+            htmlFor="wineImage"
+            className="flex flex-col items-center justify-center w-full h-48 border-2 border-dashed border-gray-300 rounded-xl cursor-pointer hover:border-[#722F37] transition-colors bg-gray-50"
+          >
+            {watchedValues.wineImage ? (
             <div className="relative w-full h-full flex items-center justify-center">
               <img
                 src={watchedValues.wineImage}
@@ -659,7 +660,8 @@ export default function Home() {
               <span className="text-sm">タップして画像を選択</span>
             </div>
           )}
-        </label>
+          </label>
+        )}
         
         {(originalImage || transparentImage) && (
           <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
