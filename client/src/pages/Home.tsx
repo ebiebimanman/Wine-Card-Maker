@@ -176,6 +176,8 @@ export default function Home() {
   const [originalImage, setOriginalImage] = useState<string | null>(null);
   const [transparentImage, setTransparentImage] = useState<string | null>(null);
   const [isImageLoading, setIsImageLoading] = useState(false);
+  const cancelBackgroundRemovalRef = useRef(false);
+  const pendingOriginalImageRef = useRef<string | null>(null);
   const createMutation = useCreateWineCard();
   const { toast } = useToast();
   const cardRef = useRef<HTMLDivElement>(null);
@@ -390,6 +392,7 @@ export default function Home() {
       const file = e.target.files?.[0];
       if (file) {
         setIsImageLoading(true);
+        cancelBackgroundRemovalRef.current = false;
         const maxSize = 10 * 1024 * 1024;
         if (file.size > maxSize) {
           toast({
@@ -485,6 +488,7 @@ export default function Home() {
         const reader = new FileReader();
         reader.onloadend = () => {
           const originalBase64 = reader.result as string;
+          pendingOriginalImageRef.current = originalBase64;
           saveOriginalImage(originalBase64);
           
           (async () => {
@@ -544,8 +548,18 @@ export default function Home() {
               const { removeBackground } = await import('@imgly/background-removal');
               
               const imageBlob = await removeBackground(resizedBlob);
+              
+              if (cancelBackgroundRemovalRef.current) {
+                setIsImageLoading(false);
+                return;
+              }
+              
               const blobReader = new FileReader();
               blobReader.onloadend = () => {
+                if (cancelBackgroundRemovalRef.current) {
+                  setIsImageLoading(false);
+                  return;
+                }
                 const transparentBase64 = blobReader.result as string;
                 processImage(transparentBase64);
               };
@@ -591,9 +605,32 @@ export default function Home() {
           className="flex flex-col items-center justify-center w-full h-48 border-2 border-dashed border-gray-300 rounded-xl cursor-pointer hover:border-[#722F37] transition-colors bg-gray-50"
         >
           {isImageLoading ? (
-            <div className="flex flex-col items-center gap-2">
+            <div className="flex flex-col items-center gap-3">
               <Loader2 className="w-8 h-8 animate-spin text-[#722F37]" />
               <span className="text-sm text-gray-500">背景を削除中...</span>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  cancelBackgroundRemovalRef.current = true;
+                  const imageToUse = originalImage || pendingOriginalImageRef.current;
+                  if (imageToUse) {
+                    form.setValue("wineImage", imageToUse);
+                    setOriginalImage(imageToUse);
+                  }
+                  setIsImageLoading(false);
+                  toast({
+                    title: "キャンセルしました",
+                    description: "元の画像を使用します。",
+                  });
+                }}
+                data-testid="button-cancel-background-removal"
+              >
+                キャンセル
+              </Button>
             </div>
           ) : watchedValues.wineImage ? (
             <div className="relative w-full h-full flex items-center justify-center">
