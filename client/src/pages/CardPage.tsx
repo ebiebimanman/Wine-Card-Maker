@@ -73,7 +73,7 @@ export default function CardPage() {
   } = params;
 
   const items: { label: string; value: string }[] = [];
-  if (_theme) items.push({ label: "テーマ", value: THEME_LABELS[_theme] ?? _theme });
+  if (_theme) items.push({ label: "種類", value: THEME_LABELS[_theme] ?? _theme });
   if (name) items.push({ label: "名前", value: name });
   if (variety) items.push({ label: "品種", value: variety });
   if (origin) items.push({ label: "産地", value: origin });

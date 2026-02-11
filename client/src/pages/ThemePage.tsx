@@ -22,7 +22,7 @@ export default function ThemePage() {
         if (window.history.length > 1) window.history.back();
         else setLocation("/");
       }}
-      title="テーマカラーは？"
+      title="ワインの種類は？"
       onNext={() => setLocation(`/name${buildFlowQuery({ theme })}`)}
       nextDisabled={!theme}
     >

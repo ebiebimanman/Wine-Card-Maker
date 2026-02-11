@@ -351,7 +351,7 @@
       "children": [
         {
           "type": "frame",
-          "id": "yeVcL",
+          "id": "yruRw",
           "name": "TopNav",
           "width": "fill_container",
           "padding": [
@@ -364,113 +364,132 @@
           "children": [
             {
               "type": "frame",
-              "id": "HQ40C",
+              "id": "9EMuB",
               "name": "backBtn",
               "width": 44,
               "height": 44,
               "fill": "transparent",
               "cornerRadius": 999,
               "justifyContent": "center",
-              "alignItems": "center"
-            },
-            {
-              "type": "frame",
-              "id": "LCemQ",
-              "name": "stepper",
-              "width": "fill_container",
-              "gap": 8,
-              "justifyContent": "center",
               "alignItems": "center",
               "children": [
                 {
                   "type": "icon_font",
-                  "id": "mqGIU",
-                  "name": "s1",
-                  "width": 20,
-                  "height": 20,
-                  "iconFontName": "palette",
+                  "id": "onssa",
+                  "width": 24,
+                  "height": 24,
+                  "iconFontName": "chevron-left",
                   "iconFontFamily": "lucide",
                   "fill": "#4b6c3d"
-                },
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "sJcab",
+              "name": "navCenter",
+              "width": "fill_container",
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
                 {
-                  "type": "icon_font",
-                  "id": "jONSm",
-                  "name": "s2",
-                  "width": 20,
-                  "height": 20,
-                  "iconFontName": "type",
-                  "iconFontFamily": "lucide",
-                  "fill": "#4b6c3d"
-                },
-                {
-                  "type": "icon_font",
-                  "id": "uOp5o",
-                  "name": "s3",
-                  "width": 20,
-                  "height": 20,
-                  "iconFontName": "wine",
-                  "iconFontFamily": "lucide",
-                  "fill": "#4b6c3d"
-                },
-                {
-                  "type": "icon_font",
-                  "id": "5Iujf",
-                  "name": "s4",
-                  "width": 20,
-                  "height": 20,
-                  "iconFontName": "map-pin",
-                  "iconFontFamily": "lucide",
-                  "fill": "#4b6c3d"
-                },
-                {
-                  "type": "icon_font",
-                  "id": "pCLnV",
-                  "name": "s5",
-                  "width": 20,
-                  "height": 20,
-                  "iconFontName": "store",
-                  "iconFontFamily": "lucide",
-                  "fill": "#4b6c3d"
-                },
-                {
-                  "type": "icon_font",
-                  "id": "jACRu",
-                  "name": "s6",
-                  "width": 20,
-                  "height": 20,
-                  "iconFontName": "japanese-yen",
-                  "iconFontFamily": "lucide",
-                  "fill": "#4b6c3d"
-                },
-                {
-                  "type": "icon_font",
-                  "id": "3uVQm",
-                  "name": "s7",
-                  "width": 20,
-                  "height": 20,
-                  "iconFontName": "star",
-                  "iconFontFamily": "lucide",
-                  "fill": "#4b6c3d"
-                },
-                {
-                  "type": "icon_font",
-                  "id": "Mj937",
-                  "name": "s8",
-                  "width": 20,
-                  "height": 20,
-                  "iconFontName": "message-square",
-                  "iconFontFamily": "lucide",
-                  "fill": "#4b6c3d"
-                },
-                {
-                  "type": "icon_font",
-                  "id": "TV9QU",
-                  "name": "s9",
-                  "width": 20,
-                  "height": 20,
-                  "iconFontName": "circle-check",
-                  "iconFontFamily": "lucide",
-                  "fill": "#4b6c3d"
+                  "type": "frame",
+                  "id": "bwHRy",
+                  "name": "stepper",
+                  "gap": 8,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon_font",
+                      "id": "LCOXg",
+                      "name": "icon1",
+                      "width": 20,
+                      "height": 20,
+                      "iconFontName": "palette",
+                      "iconFontFamily": "lucide",
+                      "fill": "#4b6c3d"
+                    },
+                    {
+                      "type": "icon_font",
+                      "id": "Tn0mh",
+                      "name": "icon2",
+                      "width": 20,
+                      "height": 20,
+                      "iconFontName": "type",
+                      "iconFontFamily": "lucide",
+                      "fill": "#4b6c3d"
+                    },
+                    {
+                      "type": "icon_font",
+                      "id": "jWmIU",
+                      "name": "icon3",
+                      "width": 20,
+                      "height": 20,
+                      "iconFontName": "wine",
+                      "iconFontFamily": "lucide",
+                      "fill": "#4b6c3d"
+                    },
+                    {
+                      "type": "icon_font",
+                      "id": "VH5Wc",
+                      "name": "icon4",
+                      "width": 20,
+                      "height": 20,
+                      "iconFontName": "map-pin",
+                      "iconFontFamily": "lucide",
+                      "fill": "#4b6c3d"
+                    },
+                    {
+                      "type": "icon_font",
+                      "id": "klie2",
+                      "name": "icon5",
+                      "width": 20,
+                      "height": 20,
+                      "iconFontName": "store",
+                      "iconFontFamily": "lucide",
+                      "fill": "#4b6c3d"
+                    },
+                    {
+                      "type": "icon_font",
+                      "id": "a3Skp",
+                      "name": "icon6",
+                      "width": 20,
+                      "height": 20,
+                      "iconFontName": "japanese-yen",
+                      "iconFontFamily": "lucide",
+                      "fill": "#4b6c3d"
+                    },
+                    {
+                      "type": "icon_font",
+                      "id": "Wb7aw",
+                      "name": "icon7",
+                      "width": 20,
+                      "height": 20,
+                      "iconFontName": "star",
+                      "iconFontFamily": "lucide",
+                      "fill": "#4b6c3d"
+                    },
+                    {
+                      "type": "icon_font",
+                      "id": "0m8Ba",
+                      "name": "icon8",
+                      "width": 20,
+                      "height": 20,
+                      "iconFontName": "message-square",
+                      "iconFontFamily": "lucide",
+                      "fill": "#4b6c3d"
+                    },
+                    {
+                      "type": "icon_font",
+                      "id": "IaUyS",
+                      "name": "icon9",
+                      "width": 20,
+                      "height": 20,
+                      "iconFontName": "circle-check",
+                      "iconFontFamily": "lucide",
+                      "fill": "#4b6c3d"
+                    }
+                  ]
                 }
               ]
             }
@@ -482,6 +501,7 @@
           "name": "BottomPanel",
           "clip": true,
           "width": "fill_container",
+          "height": "fill_container",
           "fill": "#4b6c3d",
           "cornerRadius": [
             32,
@@ -498,6 +518,7 @@
               "id": "dtzRN",
               "name": "DialogCard",
               "width": "fill_container",
+              "height": "fill_container",
               "fill": "#fffbf1",
               "layout": "vertical",
               "gap": 24,
@@ -505,17 +526,9 @@
                 48,
                 32
               ],
+              "justifyContent": "center",
+              "alignItems": "center",
               "children": [
-                {
-                  "type": "text",
-                  "id": "uD4bw",
-                  "name": "confirmTitle",
-                  "fill": "#2c2c2c",
-                  "content": "入力内容の確認",
-                  "fontFamily": "Inter",
-                  "fontSize": 20,
-                  "fontWeight": "700"
-                },
                 {
                   "type": "frame",
                   "id": "tysOa",
@@ -523,34 +536,9 @@
                   "width": "fill_container",
                   "height": 200,
                   "fill": "#f5f1e8",
-                  "cornerRadius": 16
-                },
-                {
-                  "type": "frame",
-                  "id": "oP7JS",
-                  "name": "saveImageBtn",
-                  "width": "fill_container",
-                  "height": 48,
                   "cornerRadius": 16,
-                  "stroke": {
-                    "align": "inside",
-                    "thickness": 2,
-                    "fill": "#4b6c3d"
-                  },
                   "justifyContent": "center",
-                  "alignItems": "center",
-                  "children": [
-                    {
-                      "type": "text",
-                      "id": "pbM2F",
-                      "name": "saveBtnText",
-                      "fill": "#4b6c3d",
-                      "content": "画像を保存",
-                      "fontFamily": "Inter",
-                      "fontSize": 14,
-                      "fontWeight": "700"
-                    }
-                  ]
+                  "alignItems": "center"
                 }
               ]
             },
@@ -571,9 +559,9 @@
                 {
                   "type": "text",
                   "id": "TkT3n",
-                  "name": "confirmNextText",
+                  "name": "SaveButton",
                   "fill": "#f5f1e8",
-                  "content": "つぎへ",
+                  "content": "画像を保存",
                   "fontFamily": "Inter",
                   "fontSize": 16,
                   "fontWeight": "700"
@@ -818,7 +806,7 @@
                   "id": "32Wqe",
                   "name": "titleText",
                   "fill": "#2c2c2c",
-                  "content": "テーマカラーを選んでください",
+                  "content": "ワインの種類は？",
                   "fontFamily": "Gothic A1",
                   "fontSize": 20,
                   "fontWeight": "700"
