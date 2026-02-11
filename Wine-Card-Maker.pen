@@ -4,8 +4,8 @@
     {
       "type": "frame",
       "id": "bi8Au",
-      "x": 0,
-      "y": 0,
+      "x": 3,
+      "y": -11,
       "name": "InputNameScreen",
       "clip": true,
       "width": 390,
@@ -21,12 +21,11 @@
           "name": "TopNav",
           "width": "fill_container",
           "padding": [
-            24,
+            13,
             24,
             0,
             24
           ],
-          "justifyContent": "center",
           "alignItems": "center",
           "children": [
             {
@@ -53,82 +52,92 @@
             },
             {
               "type": "frame",
-              "id": "Lz2qB",
-              "name": "stepper",
-              "gap": 8,
+              "id": "NbCPS",
+              "name": "navCenter",
+              "width": "fill_container",
+              "justifyContent": "center",
               "alignItems": "center",
               "children": [
                 {
-                  "type": "ellipse",
-                  "id": "q4k7r",
-                  "fill": "#4b6c3db3",
-                  "width": 8,
-                  "height": 8
-                },
-                {
-                  "type": "icon_font",
-                  "id": "oUXKG",
-                  "width": 20,
-                  "height": 20,
-                  "iconFontName": "wine",
-                  "iconFontFamily": "lucide",
-                  "fill": "#4b6c3d"
-                },
-                {
-                  "type": "ellipse",
-                  "id": "WXYZ4",
-                  "fill": "#4b6c3db3",
-                  "width": 8,
-                  "height": 8
-                },
-                {
-                  "type": "ellipse",
-                  "id": "bnbJl",
-                  "fill": "#4b6c3db3",
-                  "width": 8,
-                  "height": 8
-                },
-                {
-                  "type": "ellipse",
-                  "id": "HODcj",
-                  "fill": "#4b6c3db3",
-                  "width": 8,
-                  "height": 8
-                },
-                {
-                  "type": "ellipse",
-                  "id": "5hBsw",
-                  "fill": "#4b6c3db3",
-                  "width": 8,
-                  "height": 8
-                },
-                {
-                  "type": "ellipse",
-                  "id": "rxMtU",
-                  "fill": "#4b6c3db3",
-                  "width": 8,
-                  "height": 8
-                },
-                {
-                  "type": "ellipse",
-                  "id": "jPLbN",
-                  "fill": "#4b6c3db3",
-                  "width": 8,
-                  "height": 8
-                },
-                {
-                  "type": "ellipse",
-                  "id": "gxIOk",
-                  "fill": "#4b6c3db3",
-                  "width": 8,
-                  "height": 8
-                },
-                {
-                  "type": "ellipse",
-                  "id": "YCoCL",
-                  "fill": "#4b6c3db3",
-                  "width": 8,
-                  "height": 8
+                  "type": "frame",
+                  "id": "Lz2qB",
+                  "name": "stepper",
+                  "gap": 8,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "ellipse",
+                      "id": "q4k7r",
+                      "fill": "#4b6c3db3",
+                      "width": 8,
+                      "height": 8
+                    },
+                    {
+                      "type": "icon_font",
+                      "id": "oUXKG",
+                      "width": 20,
+                      "height": 20,
+                      "iconFontName": "wine",
+                      "iconFontFamily": "lucide",
+                      "fill": "#4b6c3d"
+                    },
+                    {
+                      "type": "ellipse",
+                      "id": "WXYZ4",
+                      "fill": "#4b6c3db3",
+                      "width": 8,
+                      "height": 8
+                    },
+                    {
+                      "type": "ellipse",
+                      "id": "bnbJl",
+                      "fill": "#4b6c3db3",
+                      "width": 8,
+                      "height": 8
+                    },
+                    {
+                      "type": "ellipse",
+                      "id": "HODcj",
+                      "fill": "#4b6c3db3",
+                      "width": 8,
+                      "height": 8
+                    },
+                    {
+                      "type": "ellipse",
+                      "id": "5hBsw",
+                      "fill": "#4b6c3db3",
+                      "width": 8,
+                      "height": 8
+                    },
+                    {
+                      "type": "ellipse",
+                      "id": "rxMtU",
+                      "fill": "#4b6c3db3",
+                      "width": 8,
+                      "height": 8
+                    },
+                    {
+                      "type": "ellipse",
+                      "id": "jPLbN",
+                      "fill": "#4b6c3db3",
+                      "width": 8,
+                      "height": 8
+                    },
+                    {
+                      "type": "ellipse",
+                      "id": "gxIOk",
+                      "fill": "#4b6c3db3",
+                      "width": 8,
+                      "height": 8
+                    },
+                    {
+                      "type": "ellipse",
+                      "id": "YCoCL",
+                      "fill": "#4b6c3db3",
+                      "width": 8,
+                      "height": 8
+                    }
+                  ]
                 }
               ]
             }
@@ -209,7 +218,7 @@
                   "name": "titleText",
                   "fill": "#2c2c2c",
                   "content": "このワインの名前は？",
-                  "fontFamily": "Inter",
+                  "fontFamily": "Gothic A1",
                   "fontSize": 20,
                   "fontWeight": "700"
                 },
@@ -239,7 +248,7 @@
                           "name": "labelInInput",
                           "fill": "#aca3a3",
                           "content": "ワイン名を入力",
-                          "fontFamily": "Inter",
+                          "fontFamily": "Gothic A1",
                           "fontSize": 14,
                           "fontWeight": "normal"
                         }
@@ -267,7 +276,6 @@
                   "type": "frame",
                   "id": "TBHpL",
                   "name": "nextBtn",
-                  "gap": 8,
                   "alignItems": "center",
                   "children": [
                     {
@@ -276,7 +284,7 @@
                       "name": "nextLabel",
                       "fill": "#f5f1e8",
                       "content": "つぎへ",
-                      "fontFamily": "Inter",
+                      "fontFamily": "Gothic A1",
                       "fontSize": 16,
                       "fontWeight": "700"
                     },

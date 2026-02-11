@@ -14,9 +14,8 @@ export default function Home() {
         }
       }}
       onNext={(name) => {
-        // TODO: 次のステップのパスが決まったらここで遷移
-        console.log("次へ: 入力されたワイン名", name);
-        alert("次の画面の遷移はまだ実装していません。\nコンソールにワイン名を出力しています。");
+        const q = new URLSearchParams({ name: name || "" }).toString();
+        setLocation(`/rating${q ? `?${q}` : ""}`);
       }}
     />
   );

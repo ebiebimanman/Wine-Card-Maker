@@ -46,13 +46,13 @@ export const InputNameScreen: React.FC<InputNameScreenProps> = ({
 
   return (
     <div className="min-h-screen w-full flex justify-center bg-[#f5f1e8]">
-      {/* 390px 幅のモバイルフレームを再現 */}
-      <div className="relative w-[390px] h-[844px] bg-[#f5f1e8] overflow-hidden">
-        {/* 上部ナビゲーション（戻る + ステッパー） - TopNav padding [24,24,0,24] */}
-        <div className="pt-6 px-6 pb-0 flex items-center justify-between w-full">
+      <div className="relative w-full h-[844px] bg-[#f5f1e8] overflow-hidden">
+        {/* 上部ナビゲーション（戻る + ステッパー） */}
+        <div className="relative pt-6 px-6 pb-0 flex items-center justify-center w-full">
+          {/* 戻るボタン: 絶対位置（top=13px, left=0） */}
           <button
             type="button"
-            className="w-11 h-11 flex items-center justify-center rounded-full text-[#4b6c3d]"
+            className="absolute top-[13px] left-0 w-11 h-11 flex items-center justify-center rounded-full text-[#4b6c3d]"
             aria-label="戻る"
             onClick={() => {
               if (onBack) {
@@ -96,14 +96,13 @@ export const InputNameScreen: React.FC<InputNameScreenProps> = ({
           </div>
         </div>
 
-        {/* ダイアログカード - DialogCard padding [48,32], gap 32, fill #fffbf1 */}
-        <div className="w-full px-0">
+        {/* ダイアログカード - 下部固定、角丸・overflow 指定 */}
+        <div className="absolute bottom-0 left-0 right-0 w-full h-fit overflow-hidden rounded-t-[32px] px-0">
           <div className="w-full bg-[#fffbf1] rounded-none shadow-[0_8px_24px_-8px_rgba(75,108,61,0.2)] px-8 py-12 flex flex-col gap-8 items-center">
             <p className="text-center text-[20px] font-bold text-[#2c2c2c]">
               このワインの名前は？
             </p>
             <div className="w-full gap-2 flex flex-col">
-              {/* inputBoxFrame: h-64 rounded-16 fill #f5f1e8 */}
               <div className="relative w-full h-16 rounded-[16px] bg-[#f5f1e8] flex items-center justify-center px-4">
                 <label
                   className={cn(
@@ -149,14 +148,12 @@ export const InputNameScreen: React.FC<InputNameScreenProps> = ({
                 />
               </div>
 
-              {/* サジェストリスト */}
               {isFocused && suggestions.length > 0 && (
                 <ul className="w-full max-h-48 overflow-y-auto rounded-2xl border border-[#e0d8c8] bg-[#fffbf1] shadow-sm">
                   {suggestions.map((name, index) => (
                     <li
                       key={`${name}-${index}`}
                       onMouseDown={(e) => {
-                        // blur より先に選択を確定させる
                         e.preventDefault();
                         handleSelect(name);
                       }}
@@ -174,28 +171,19 @@ export const InputNameScreen: React.FC<InputNameScreenProps> = ({
               )}
             </div>
           </div>
-        </div>
-
-        {/* 下部パネル - BottomPanel cornerRadius [32,32,0,0], fill #4b6c3d / buttonRow padding [16,32,64,32] */}
-        <div className="w-full px-0 overflow-hidden">
-          <div className="absolute inset-x-0 bottom-0 rounded-t-[32px] overflow-hidden">
-            <div className="w-full bg-[#4b6c3d] shadow-[0_8px_24px_-8px_rgba(75,108,61,0.2)] flex flex-col items-center">
-              <div className="w-full pt-4 px-8 pb-16 flex items-center justify-center gap-2 text-[#f5f1e8]">
-                <button
-                  type="button"
-                  className="inline-flex items-center gap-2 text-[16px] font-bold"
-                  onClick={() => {
-                    if (onNext) {
-                      onNext(wineName);
-                    }
-                  }}
-                >
-                  <span>つぎへ</span>
-                  <ChevronRight className="w-6 h-6 text-[#f5f1e8]" strokeWidth={2} />
-                </button>
-              </div>
-            </div>
-          </div>
+          {/* つぎへボタン行（緑バー全体がタップ可能） */}
+          <button
+            type="button"
+            className="w-full pt-4 px-8 pb-16 flex items-center justify-center gap-2 text-[#f5f1e8] bg-[#4b6c3d] cursor-pointer border-0"
+            onClick={() => {
+              if (onNext) {
+                onNext(wineName);
+              }
+            }}
+          >
+            <span className="text-[16px] font-bold">つぎへ</span>
+            <ChevronRight className="w-6 h-6 text-[#f5f1e8]" strokeWidth={2} />
+          </button>
         </div>
       </div>
     </div>
