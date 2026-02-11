@@ -1,0 +1,315 @@
+{
+  "version": "2.7",
+  "children": [
+    {
+      "type": "frame",
+      "id": "bi8Au",
+      "x": 0,
+      "y": 0,
+      "name": "InputNameScreen",
+      "clip": true,
+      "width": 390,
+      "height": 844,
+      "fill": "#f5f1e8",
+      "layout": "vertical",
+      "justifyContent": "space_between",
+      "alignItems": "center",
+      "children": [
+        {
+          "type": "frame",
+          "id": "mU2eF",
+          "name": "TopNav",
+          "width": "fill_container",
+          "padding": [
+            24,
+            24,
+            0,
+            24
+          ],
+          "justifyContent": "center",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "dAEkz",
+              "name": "backBtn",
+              "width": 44,
+              "height": 44,
+              "fill": "transparent",
+              "cornerRadius": 999,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon_font",
+                  "id": "Tjevm",
+                  "width": 24,
+                  "height": 24,
+                  "iconFontName": "chevron-left",
+                  "iconFontFamily": "lucide",
+                  "fill": "#4b6c3d"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "Lz2qB",
+              "name": "stepper",
+              "gap": 8,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "ellipse",
+                  "id": "q4k7r",
+                  "fill": "#4b6c3db3",
+                  "width": 8,
+                  "height": 8
+                },
+                {
+                  "type": "icon_font",
+                  "id": "oUXKG",
+                  "width": 20,
+                  "height": 20,
+                  "iconFontName": "wine",
+                  "iconFontFamily": "lucide",
+                  "fill": "#4b6c3d"
+                },
+                {
+                  "type": "ellipse",
+                  "id": "WXYZ4",
+                  "fill": "#4b6c3db3",
+                  "width": 8,
+                  "height": 8
+                },
+                {
+                  "type": "ellipse",
+                  "id": "bnbJl",
+                  "fill": "#4b6c3db3",
+                  "width": 8,
+                  "height": 8
+                },
+                {
+                  "type": "ellipse",
+                  "id": "HODcj",
+                  "fill": "#4b6c3db3",
+                  "width": 8,
+                  "height": 8
+                },
+                {
+                  "type": "ellipse",
+                  "id": "5hBsw",
+                  "fill": "#4b6c3db3",
+                  "width": 8,
+                  "height": 8
+                },
+                {
+                  "type": "ellipse",
+                  "id": "rxMtU",
+                  "fill": "#4b6c3db3",
+                  "width": 8,
+                  "height": 8
+                },
+                {
+                  "type": "ellipse",
+                  "id": "jPLbN",
+                  "fill": "#4b6c3db3",
+                  "width": 8,
+                  "height": 8
+                },
+                {
+                  "type": "ellipse",
+                  "id": "gxIOk",
+                  "fill": "#4b6c3db3",
+                  "width": 8,
+                  "height": 8
+                },
+                {
+                  "type": "ellipse",
+                  "id": "YCoCL",
+                  "fill": "#4b6c3db3",
+                  "width": 8,
+                  "height": 8
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "dzDoj",
+          "name": "WineBottleArea",
+          "width": "fill_container",
+          "height": 376,
+          "layout": "vertical",
+          "padding": [
+            16,
+            0,
+            0,
+            0
+          ],
+          "justifyContent": "center",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "43f29",
+              "name": "bottleWrap",
+              "width": 250,
+              "height": 340,
+              "layout": "vertical",
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "rectangle",
+                  "cornerRadius": 40,
+                  "id": "5uCoA",
+                  "name": "bottle",
+                  "fill": "#111827",
+                  "width": 130,
+                  "height": 330
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "O4fxe",
+          "name": "BottomPanel",
+          "clip": true,
+          "width": "fill_container",
+          "fill": "#4b6c3d",
+          "cornerRadius": [
+            32,
+            32,
+            0,
+            0
+          ],
+          "layout": "vertical",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "rcMMq",
+              "name": "DialogCard",
+              "width": "fill_container",
+              "fill": "#fffbf1",
+              "layout": "vertical",
+              "gap": 32,
+              "padding": [
+                48,
+                32
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "M9L1c",
+                  "name": "titleText",
+                  "fill": "#2c2c2c",
+                  "content": "このワインの名前は？",
+                  "fontFamily": "Inter",
+                  "fontSize": 20,
+                  "fontWeight": "700"
+                },
+                {
+                  "type": "frame",
+                  "id": "ERzja",
+                  "name": "inputArea",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 8,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "Xa682",
+                      "name": "inputBoxFrame",
+                      "width": "fill_container",
+                      "height": 64,
+                      "fill": "#f5f1e8",
+                      "cornerRadius": 16,
+                      "layout": "vertical",
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "jNASm",
+                          "name": "labelInInput",
+                          "fill": "#aca3a3",
+                          "content": "ワイン名を入力",
+                          "fontFamily": "Inter",
+                          "fontSize": 14,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "UvHZt",
+              "name": "buttonRow",
+              "width": "fill_container",
+              "padding": [
+                16,
+                32,
+                64,
+                32
+              ],
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "TBHpL",
+                  "name": "nextBtn",
+                  "gap": 8,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "7JbfC",
+                      "name": "nextLabel",
+                      "fill": "#f5f1e8",
+                      "content": "つぎへ",
+                      "fontFamily": "Inter",
+                      "fontSize": 16,
+                      "fontWeight": "700"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "ngdSC",
+                      "name": "backBtn",
+                      "width": 44,
+                      "height": 44,
+                      "fill": "transparent",
+                      "cornerRadius": 999,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon_font",
+                          "id": "JhSRO",
+                          "rotation": -180,
+                          "width": 24,
+                          "height": 24,
+                          "iconFontName": "chevron-left",
+                          "iconFontFamily": "lucide",
+                          "fill": "#fffbf1ff"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

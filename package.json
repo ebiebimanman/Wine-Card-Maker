@@ -5,6 +5,8 @@
   "license": "MIT",
   "scripts": {
     "dev": "NODE_ENV=development tsx server/index.ts",
+    "dev:with-pen": "npx concurrently -n pen,dev -c blue,green \"npm run pen:watch\" \"npm run dev\"",
+    "pen:watch": "tsx script/pen-watch.ts",
     "build": "tsx script/build.ts",
     "start": "NODE_ENV=production node dist/index.cjs",
     "check": "tsc",

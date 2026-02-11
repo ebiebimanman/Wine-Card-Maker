@@ -1,0 +1,23 @@
+---
+description: Pencil .pen の変更を client に同期するルール
+alwaysApply: true
+---
+
+# Pencil デザイン同期
+
+## トリガー
+
+- プロジェクトルートに `.pen-pending-sync` が存在する
+- ユーザーが「反映して」「.pen を同期して」「Pencil の変更を反映して」などと依頼した
+
+## やること
+
+1. **Pencil MCP** で `Wine-Card-Maker.pen` を読み、デザイン構造を把握する（`batch_get` など）。
+2. **code ガイドライン**（Pencil の code / tailwind トピック）に従い、既存の React コンポーネント（`client/src/`）をデザインに合わせて更新する。新規コンポーネントが必要な場合のみ作成する。
+3. 同期が終わったら **`.pen-pending-sync` を削除**する。
+
+## 注意
+
+- 既存のロジック（onNext, onBack など）は壊さない。
+- プロジェクトは React + Tailwind + Vite。既存の UI ライブラリ（shadcn 等）を利用する。
+- 変更はコードのみ行い、説明用の Markdown は出力しない。
