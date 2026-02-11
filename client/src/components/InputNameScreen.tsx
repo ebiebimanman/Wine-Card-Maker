@@ -1,7 +1,8 @@
 import React, { useState, useMemo } from "react";
-import { ChevronLeft, ChevronRight, Wine } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { popularWines } from "@/data/popularWines";
+import { QuestionStepper } from "./QuestionStepper";
 
 interface InputNameScreenProps {
   /**
@@ -9,6 +10,8 @@ interface InputNameScreenProps {
    * 例: "/wine-bottle.png"
    */
   wineImageSrc?: string;
+  /** 現在のステップ（1〜9）。指定時は QuestionStepper を表示 */
+  stepIndex?: number;
   /** 戻るボタン押下時のハンドラ */
   onBack?: () => void;
   /** つぎへボタン押下時のハンドラ（入力されたワイン名を渡す） */
@@ -17,6 +20,7 @@ interface InputNameScreenProps {
 
 export const InputNameScreen: React.FC<InputNameScreenProps> = ({
   wineImageSrc = "/wine-bottle.png",
+  stepIndex = 1,
   onBack,
   onNext,
 }) => {
@@ -65,17 +69,7 @@ export const InputNameScreen: React.FC<InputNameScreenProps> = ({
             <ChevronLeft className="w-6 h-6" strokeWidth={2} />
           </button>
 
-          {/* ステッパー: ドット + ワインアイコン + ドット×8（デザイン準拠） */}
-          <div className="flex items-center gap-2">
-            <div className="w-2 h-2 rounded-full bg-[#4b6c3d]/70" />
-            <Wine className="w-5 h-5 text-[#4b6c3d]" strokeWidth={2} />
-            {Array.from({ length: 8 }).map((_, index) => (
-              <div
-                key={index}
-                className="w-2 h-2 rounded-full bg-[#4b6c3d]/70"
-              />
-            ))}
-          </div>
+          <QuestionStepper currentStep={stepIndex} totalSteps={9} />
         </div>
 
         {/* ワインボトル画像エリア - WineBottleArea padding [16,0,0,0], height 376 */}
