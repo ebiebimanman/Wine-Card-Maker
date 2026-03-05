@@ -12,14 +12,23 @@ import {
 } from "lucide-react";
 
 const STEPPER_ICONS = [
-  { Icon: Palette },
+  // 1: ワインの名前
   { Icon: Type },
-  { Icon: Wine },
+  // 2: 種類
+  { Icon: Palette },
+  // 3: 産地
   { Icon: MapPin },
+  // 4: 品種
+  { Icon: Wine },
+  // 5: 買った場所
   { Icon: Store },
+  // 6: 値段
   { Icon: JapaneseYen },
+  // 7: 評価
   { Icon: Star },
+  // 8: メモ
   { Icon: MessageSquare },
+  // 9: 最終確認
   { Icon: CircleCheck },
 ] as const;
 

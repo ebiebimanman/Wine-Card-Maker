@@ -1,5 +1,5 @@
-import ThemePage from "@/pages/ThemePage";
+import NamePage from "@/pages/NamePage";
 
 export default function Home() {
-  return <ThemePage />;
+  return <NamePage />;
 }

@@ -4,11 +4,11 @@ import { useFlowParams, buildFlowQuery } from "@/hooks/useFlowParams";
 
 export default function NamePage() {
   const [, setLocation] = useLocation();
-  const { theme } = useFlowParams();
+  const { name } = useFlowParams();
 
   return (
     <InputNameScreen
-      stepIndex={2}
+      stepIndex={1}
       onBack={() => {
         if (window.history.length > 1) {
           window.history.back();
@@ -17,7 +17,7 @@ export default function NamePage() {
         }
       }}
       onNext={(name) => {
-        setLocation(`/variety${buildFlowQuery({ theme, name })}`);
+        setLocation(`/theme${buildFlowQuery({ name })}`);
       }}
     />
   );

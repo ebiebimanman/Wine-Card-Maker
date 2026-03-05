@@ -7,7 +7,7 @@ import { wineOrigins } from "@/data/wineOrigins";
 
 export default function OriginPage() {
   const [, setLocation] = useLocation();
-  const { theme, name, variety } = useFlowParams();
+  const { theme, name } = useFlowParams();
   const [origin, setOrigin] = useState("");
   const [search, setSearch] = useState("");
   const [isFocused, setIsFocused] = useState(false);
@@ -26,14 +26,14 @@ export default function OriginPage() {
 
   return (
     <QuestionScreenLayout
-      stepIndex={4}
+      stepIndex={3}
       onBack={() => {
         if (window.history.length > 1) window.history.back();
         else setLocation("/");
       }}
       title="産地は？"
       onNext={() => {
-        setLocation(`/location${buildFlowQuery({ theme, name, variety, origin })}`);
+        setLocation(`/variety${buildFlowQuery({ theme, name, origin })}`);
       }}
       nextDisabled={!origin.trim()}
     >

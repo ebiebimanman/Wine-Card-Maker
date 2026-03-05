@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useLocation } from "wouter";
 import { QuestionScreenLayout } from "@/components/QuestionScreenLayout";
-import { buildFlowQuery } from "@/hooks/useFlowParams";
+import { useFlowParams, buildFlowQuery } from "@/hooks/useFlowParams";
 import { cn } from "@/lib/utils";
 
 const THEMES = [
@@ -13,17 +13,18 @@ const THEMES = [
 
 export default function ThemePage() {
   const [, setLocation] = useLocation();
+  const { name } = useFlowParams();
   const [theme, setTheme] = useState<string>("");
 
   return (
     <QuestionScreenLayout
-      stepIndex={1}
+      stepIndex={2}
       onBack={() => {
         if (window.history.length > 1) window.history.back();
         else setLocation("/");
       }}
       title="ワインの種類は？"
-      onNext={() => setLocation(`/name${buildFlowQuery({ theme })}`)}
+      onNext={() => setLocation(`/origin${buildFlowQuery({ theme, name })}`)}
       nextDisabled={!theme}
     >
       <div className="w-full flex flex-wrap justify-center gap-3">

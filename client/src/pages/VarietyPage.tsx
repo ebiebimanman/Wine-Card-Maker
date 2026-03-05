@@ -7,7 +7,7 @@ import { wineVarieties } from "@/data/wineVarieties";
 
 export default function VarietyPage() {
   const [, setLocation] = useLocation();
-  const { theme, name } = useFlowParams();
+  const { theme, name, origin } = useFlowParams();
   const [variety, setVariety] = useState("");
   const [search, setSearch] = useState("");
   const [isFocused, setIsFocused] = useState(false);
@@ -26,14 +26,21 @@ export default function VarietyPage() {
 
   return (
     <QuestionScreenLayout
-      stepIndex={3}
+      stepIndex={4}
       onBack={() => {
         if (window.history.length > 1) window.history.back();
         else setLocation("/");
       }}
       title="品種は？"
       onNext={() => {
-        setLocation(`/origin${buildFlowQuery({ theme, name, variety })}`);
+        setLocation(
+          `/location${buildFlowQuery({
+            theme,
+            name,
+            origin,
+            variety,
+          })}`
+        );
       }}
       nextDisabled={!variety.trim()}
     >
