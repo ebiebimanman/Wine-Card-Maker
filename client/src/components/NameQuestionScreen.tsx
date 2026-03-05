@@ -80,7 +80,7 @@ export const NameQuestionScreen: React.FC<NameQuestionScreenProps> = ({
 
   return (
     <div className="min-h-screen w-full flex justify-center bg-[#f5f1e8]">
-      <div className="relative w-full h-[844px] bg-[#f5f1e8] overflow-hidden">
+      <div className="relative w-full h-screen bg-[#f5f1e8] overflow-hidden">
         {/* 上部ナビゲーション（戻る + プログレスドット） */}
         <div className="relative flex items-center justify-center py-1">
           {/* Back button - absolutely positioned at left 32px */}
