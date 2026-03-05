@@ -1,13 +1,12 @@
 import { useLocation } from "wouter";
-import { InputNameScreen } from "@/components/InputNameScreen";
-import { useFlowParams, buildFlowQuery } from "@/hooks/useFlowParams";
+import { NameQuestionScreen } from "@/components/NameQuestionScreen";
+import { buildFlowQuery } from "@/hooks/useFlowParams";
 
 export default function NamePage() {
   const [, setLocation] = useLocation();
-  const { name } = useFlowParams();
 
   return (
-    <InputNameScreen
+    <NameQuestionScreen
       stepIndex={1}
       onBack={() => {
         if (window.history.length > 1) {
