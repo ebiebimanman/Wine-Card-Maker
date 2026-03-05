@@ -28,8 +28,8 @@ export function QuestionScreenLayout({
   const currentStep = Math.max(0, Math.min(totalSteps - 1, stepIndex - 1));
 
   return (
-    <div className="min-h-screen w-full flex justify-center bg-[#f5f1e8]">
-      <div className="relative w-full h-screen bg-[#f5f1e8] overflow-hidden">
+    <div className="min-h-screen w-full flex justify-center sm:py-6 sm:px-4 bg-[#f5f1e8]">
+      <div className="relative w-full h-screen bg-[#f5f1e8] overflow-hidden sm:max-w-[480px] sm:mx-auto sm:rounded-[24px] sm:shadow-2xl">
         {/* 上部ナビゲーション（戻る + プログレスドット） */}
         <div className="relative flex items-center justify-center py-1">
           {/* Back button - absolutely positioned at left 32px */}

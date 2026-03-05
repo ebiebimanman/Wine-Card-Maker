@@ -30,7 +30,6 @@ export default function RatingPage() {
           })}`
         );
       }}
-      nextDisabled={rating === 0}
     >
       {name && (
         <p className="text-center text-[14px] text-[#5c5246] w-full">{name}</p>

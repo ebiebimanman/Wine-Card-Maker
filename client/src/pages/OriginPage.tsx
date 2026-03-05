@@ -35,7 +35,6 @@ export default function OriginPage() {
       onNext={() => {
         setLocation(`/variety${buildFlowQuery({ theme, name, origin })}`);
       }}
-      nextDisabled={!origin.trim()}
     >
       <div className="w-full gap-2 flex flex-col">
         <div className="relative w-full h-16 rounded-[16px] bg-[#f5f1e8] flex items-center justify-center px-4">

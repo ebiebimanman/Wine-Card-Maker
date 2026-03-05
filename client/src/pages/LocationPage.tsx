@@ -27,7 +27,6 @@ export default function LocationPage() {
           })}`
         );
       }}
-      nextDisabled={!locationValue.trim()}
     >
       <div className="w-full">
         <div className="relative w-full h-16 rounded-[16px] bg-[#f5f1e8] flex items-center justify-center px-4">

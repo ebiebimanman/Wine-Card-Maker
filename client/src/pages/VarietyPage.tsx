@@ -42,7 +42,6 @@ export default function VarietyPage() {
           })}`
         );
       }}
-      nextDisabled={!variety.trim()}
     >
       <div className="w-full gap-2 flex flex-col">
         <div className="relative w-full h-16 rounded-[16px] bg-[#f5f1e8] flex items-center justify-center px-4">

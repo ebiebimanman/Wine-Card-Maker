@@ -8,9 +8,6 @@ export default function PricePage() {
   const { theme, name, variety, origin, location } = useFlowParams();
   const [price, setPrice] = useState("");
 
-  const priceNum = price.trim() === "" ? null : parseInt(price, 10);
-  const isValid = price.trim() === "" || (Number.isFinite(priceNum) && (priceNum ?? 0) >= 0);
-
   return (
     <QuestionScreenLayout
       stepIndex={6}
@@ -31,7 +28,6 @@ export default function PricePage() {
           })}`
         );
       }}
-      nextDisabled={!isValid}
     >
       <div className="w-full">
         <div className="relative w-full h-16 rounded-[16px] bg-[#f5f1e8] flex items-center justify-center px-4">

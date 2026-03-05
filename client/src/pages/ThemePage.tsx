@@ -25,7 +25,6 @@ export default function ThemePage() {
       }}
       title="ワインの種類は？"
       onNext={() => setLocation(`/origin${buildFlowQuery({ theme, name })}`)}
-      nextDisabled={!theme}
     >
       <div className="w-full flex flex-wrap justify-center gap-3">
         {THEMES.map(({ value, label }) => (
