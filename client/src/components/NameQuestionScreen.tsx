@@ -86,7 +86,7 @@ export const NameQuestionScreen: React.FC<NameQuestionScreenProps> = ({
           {/* Back button - absolutely positioned at left 32px */}
           <button
             onClick={handleBack}
-            className="text-[#4b6c3d] absolute left-0 flex items-center justify-center p-1 transition-colors hover:opacity-70"
+            className="text-[#4b6c3d] absolute left-8 flex items-center justify-center p-1 transition-colors hover:opacity-70"
             aria-label="戻る"
           >
             <ChevronLeft className="size-6" />
