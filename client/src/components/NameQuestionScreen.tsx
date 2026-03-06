@@ -143,13 +143,13 @@ export const NameQuestionScreen: React.FC<NameQuestionScreenProps> = ({
         </div>
 
         {/* 下部パネル（カード + つぎへボタン） */}
-        <motion.div
-          layout
-          layoutId="name-bottom-panel"
-          className="absolute bottom-0 left-0 right-0 w-full h-fit overflow-hidden rounded-t-[32px] px-0"
-          transition={{ layout: { duration: 0.4, ease: "easeOut" } }}
-        >
-          <div className="w-full bg-[#fffbf1] rounded-none shadow-[0_8px_24px_-8px_rgba(75,108,61,0.2)] px-8 py-12 flex flex-col gap-8 items-center">
+        <div className="absolute bottom-0 left-0 right-0 w-full h-fit overflow-hidden rounded-t-[32px] px-0">
+          <motion.div
+            layout
+            layoutId="name-bottom-panel"
+            className="w-full bg-[#fffbf1] rounded-none shadow-[0_8px_24px_-8px_rgba(75,108,61,0.2)] px-8 py-12 flex flex-col gap-8 items-center"
+            transition={{ layout: { duration: 0.4, ease: "easeOut" } }}
+          >
             {isOpen ? (
               <div className="w-full flex flex-col gap-2 flex-1 min-h-0">
                 <div className="relative w-full h-16 shrink-0 rounded-[16px] bg-[#f5f1e8] flex items-center justify-center px-4">
@@ -246,9 +246,9 @@ export const NameQuestionScreen: React.FC<NameQuestionScreenProps> = ({
                 </div>
               </>
             )}
-          </div>
+          </motion.div>
           <NextFooterButton onNext={handleNext} />
-        </motion.div>
+        </div>
       </div>
     </div>
   );
