@@ -10,7 +10,7 @@ export default function LocationPage() {
 
   return (
     <QuestionScreenLayout
-      stepIndex={5}
+      stepIndex={6}
       onBack={() => {
         if (window.history.length > 1) window.history.back();
         else setLocation("/");

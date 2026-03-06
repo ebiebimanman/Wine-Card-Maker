@@ -4,11 +4,12 @@ import { ChevronLeft, ChevronRight, Wine } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { popularWines } from "@/data/popularWines";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { useBottomInset } from "@/hooks/useBottomInset";
 
 interface NameQuestionScreenProps {
   /** ワインボトル画像のパス */
   wineImageSrc?: string;
-  /** 現在のステップ番号（1〜9） */
+  /** 現在のステップ番号（1〜10） */
   stepIndex?: number;
   /** 戻るボタン押下時 */
   onBack?: () => void;
@@ -18,7 +19,7 @@ interface NameQuestionScreenProps {
 
 export const NameQuestionScreen: React.FC<NameQuestionScreenProps> = ({
   wineImageSrc = "/wine-bottle.png",
-  stepIndex = 1,
+  stepIndex = 2,
   onBack,
   onNext,
 }) => {
@@ -81,9 +82,11 @@ export const NameQuestionScreen: React.FC<NameQuestionScreenProps> = ({
     onNext(wineName.trim());
   };
 
-  const totalSteps = 9;
+  const totalSteps = 10;
   const currentStep =
     stepIndex != null ? Math.max(0, Math.min(totalSteps - 1, stepIndex - 1)) : 0;
+
+  useBottomInset();
 
   return (
     <div className="min-h-screen w-full flex justify-center sm:py-6 sm:px-4 bg-[#f5f1e8]">
@@ -264,7 +267,7 @@ export const NameQuestionScreen: React.FC<NameQuestionScreenProps> = ({
 
           <button
             type="button"
-            className="w-full pt-4 px-8 pb-16 flex items-center justify-center gap-2 text-[#f5f1e8] bg-[#4b6c3d] cursor-pointer border-0"
+            className="w-full min-h-[64px] py-4 px-8 flex items-center justify-center gap-2 text-[#f5f1e8] bg-[#4b6c3d] cursor-pointer border-0 pb-[max(1rem,env(safe-area-inset-bottom,0px),var(--browser-bottom-inset,0px))]"
             onClick={handleNext}
           >
             <span className="text-[16px] font-bold">つぎへ</span>

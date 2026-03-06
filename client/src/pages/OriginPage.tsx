@@ -26,7 +26,7 @@ export default function OriginPage() {
 
   return (
     <QuestionScreenLayout
-      stepIndex={3}
+      stepIndex={4}
       onBack={() => {
         if (window.history.length > 1) window.history.back();
         else setLocation("/");

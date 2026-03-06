@@ -5,6 +5,7 @@ import type { InsertWineCard } from "@shared/schema";
 import { QuestionScreenLayout } from "@/components/QuestionScreenLayout";
 import { WineCardPreview } from "@/components/WineCardPreview";
 import { useFlowParams } from "@/hooks/useFlowParams";
+import { getWineCardImage } from "@/hooks/useWineCardImage";
 
 const RATING_LABELS: Record<string, string> = {
   "1": "にがて",
@@ -49,7 +50,7 @@ function flowParamsToCardData(params: ReturnType<typeof useFlowParams>): {
     pairedFood: [],
     myComment: params.comment?.trim() ? [params.comment.trim()] : [],
     partnerComment: [],
-    wineImage: undefined,
+    wineImage: getWineCardImage() ?? undefined,
   };
 
   return { cardData, theme };
@@ -107,7 +108,7 @@ export default function CardPage() {
 
   return (
     <QuestionScreenLayout
-      stepIndex={9}
+      stepIndex={10}
       onBack={() => {
         if (window.history.length > 1) window.history.back();
         else setLocation("/");

@@ -11,7 +11,7 @@ export default function RatingPage() {
 
   return (
     <QuestionScreenLayout
-      stepIndex={7}
+      stepIndex={8}
       onBack={() => {
         if (window.history.length > 1) window.history.back();
         else setLocation("/");

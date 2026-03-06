@@ -12,7 +12,7 @@ export default function CommentPage() {
 
   return (
     <QuestionScreenLayout
-      stepIndex={8}
+      stepIndex={9}
       onBack={() => {
         if (window.history.length > 1) window.history.back();
         else setLocation("/");

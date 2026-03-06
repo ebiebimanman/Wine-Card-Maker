@@ -1,5 +1,10 @@
-import NamePage from "@/pages/NamePage";
+import { useEffect } from "react";
+import { useLocation } from "wouter";
 
 export default function Home() {
-  return <NamePage />;
+  const [, setLocation] = useLocation();
+  useEffect(() => {
+    setLocation("/image");
+  }, [setLocation]);
+  return null;
 }

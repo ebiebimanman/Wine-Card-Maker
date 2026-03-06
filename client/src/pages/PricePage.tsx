@@ -10,7 +10,7 @@ export default function PricePage() {
 
   return (
     <QuestionScreenLayout
-      stepIndex={6}
+      stepIndex={7}
       onBack={() => {
         if (window.history.length > 1) window.history.back();
         else setLocation("/");

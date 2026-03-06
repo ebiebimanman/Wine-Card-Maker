@@ -1,11 +1,14 @@
 import React from "react";
 import { ChevronLeft, ChevronRight, Wine } from "lucide-react";
+import { useBottomInset } from "@/hooks/useBottomInset";
 
 interface QuestionScreenLayoutProps {
-  /** 現在のステップ（1〜9、ステッパーのハイライトに使用） */
+  /** 現在のステップ（1〜10、ステッパーのハイライトに使用） */
   stepIndex: number;
-  /** 戻るボタン押下時 */
+  /** 戻るボタン押下時（hideBackButton のときは不要） */
   onBack: () => void;
+  /** 1ページ目など戻るボタンを非表示にする */
+  hideBackButton?: boolean;
   /** 白カード内の質問タイトル */
   title: string;
   /** 白カード内のコンテンツ */
@@ -21,13 +24,15 @@ interface QuestionScreenLayoutProps {
 export function QuestionScreenLayout({
   stepIndex,
   onBack,
+  hideBackButton = false,
   title,
   children,
   onNext,
   nextDisabled = false,
   wineImageSrc = "/wine-bottle.png",
 }: QuestionScreenLayoutProps) {
-  const totalSteps = 9;
+  useBottomInset();
+  const totalSteps = 10;
   const currentStep = Math.max(0, Math.min(totalSteps - 1, stepIndex - 1));
 
   return (
@@ -35,13 +40,15 @@ export function QuestionScreenLayout({
       <div className="relative w-full h-screen bg-[#f5f1e8] overflow-hidden sm:max-w-[480px] sm:mx-auto sm:rounded-[24px] sm:shadow-2xl">
         {/* 上部ナビゲーション（戻る + プログレスドット） */}
         <div className="relative flex items-center justify-center pt-8 pb-1">
-          <button
-            onClick={onBack}
-            className="text-[#4b6c3d] absolute left-8 flex items-center justify-center p-1 transition-colors hover:opacity-70"
-            aria-label="戻る"
-          >
-            <ChevronLeft className="size-6" />
-          </button>
+          {!hideBackButton && (
+            <button
+              onClick={onBack}
+              className="text-[#4b6c3d] absolute left-8 flex items-center justify-center p-1 transition-colors hover:opacity-70"
+              aria-label="戻る"
+            >
+              <ChevronLeft className="size-6" />
+            </button>
+          )}
 
           <div className="flex items-center gap-1.5">
             {Array.from({ length: totalSteps }).map((_, index) => (
@@ -93,7 +100,7 @@ export function QuestionScreenLayout({
           </div>
           <button
             type="button"
-            className="w-full pt-4 px-8 pb-16 flex items-center justify-center gap-2 text-[#f5f1e8] bg-[#4b6c3d] cursor-pointer border-0 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full min-h-[64px] py-4 px-8 flex items-center justify-center gap-2 text-[#f5f1e8] bg-[#4b6c3d] cursor-pointer border-0 disabled:opacity-50 disabled:cursor-not-allowed pb-[max(1rem,env(safe-area-inset-bottom,0px),var(--browser-bottom-inset,0px))]"
             onClick={onNext}
             disabled={nextDisabled}
           >

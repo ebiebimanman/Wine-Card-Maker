@@ -18,7 +18,7 @@ export default function ThemePage() {
 
   return (
     <QuestionScreenLayout
-      stepIndex={2}
+      stepIndex={3}
       onBack={() => {
         if (window.history.length > 1) window.history.back();
         else setLocation("/");

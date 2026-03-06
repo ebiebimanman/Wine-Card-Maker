@@ -26,7 +26,7 @@ export default function VarietyPage() {
 
   return (
     <QuestionScreenLayout
-      stepIndex={4}
+      stepIndex={5}
       onBack={() => {
         if (window.history.length > 1) window.history.back();
         else setLocation("/");
