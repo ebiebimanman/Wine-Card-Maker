@@ -37,7 +37,7 @@ export function QuestionScreenLayout({
 
   return (
     <div className="min-h-screen w-full flex justify-center sm:py-6 sm:px-4 bg-[#f5f1e8]">
-      <div className="relative w-full h-screen bg-[#f5f1e8] overflow-hidden sm:max-w-[480px] sm:mx-auto sm:rounded-[24px] sm:shadow-2xl">
+      <div className="relative w-full h-screen bg-[#f5f1e8] overflow-hidden sm:max-w-[480px] sm:mx-auto sm:rounded-[24px] sm:shadow-2xl sm:max-h-[844px] sm:my-auto">
         {/* 上部ナビゲーション（戻る + プログレスドット） */}
         <div className="relative flex items-center justify-center pt-8 pb-1">
           {!hideBackButton && (
