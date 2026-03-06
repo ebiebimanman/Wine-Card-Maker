@@ -14,6 +14,8 @@ interface QuestionScreenLayoutProps {
   onNext: () => void;
   /** つぎへを無効にするか（未入力時など） */
   nextDisabled?: boolean;
+  /** ワインボトル画像のパス（NameQuestionScreen と同じデザイン用） */
+  wineImageSrc?: string;
 }
 
 export function QuestionScreenLayout({
@@ -23,6 +25,7 @@ export function QuestionScreenLayout({
   children,
   onNext,
   nextDisabled = false,
+  wineImageSrc = "/wine-bottle.png",
 }: QuestionScreenLayoutProps) {
   const totalSteps = 9;
   const currentStep = Math.max(0, Math.min(totalSteps - 1, stepIndex - 1));
@@ -31,8 +34,7 @@ export function QuestionScreenLayout({
     <div className="min-h-screen w-full flex justify-center sm:py-6 sm:px-4 bg-[#f5f1e8]">
       <div className="relative w-full h-screen bg-[#f5f1e8] overflow-hidden sm:max-w-[480px] sm:mx-auto sm:rounded-[24px] sm:shadow-2xl">
         {/* 上部ナビゲーション（戻る + プログレスドット） */}
-        <div className="relative flex items-center justify-center py-1">
-          {/* Back button - absolutely positioned at left 32px */}
+        <div className="relative flex items-center justify-center pt-8 pb-1">
           <button
             onClick={onBack}
             className="text-[#4b6c3d] absolute left-8 flex items-center justify-center p-1 transition-colors hover:opacity-70"
@@ -41,7 +43,6 @@ export function QuestionScreenLayout({
             <ChevronLeft className="size-6" />
           </button>
 
-          {/* Centered progress dots */}
           <div className="flex items-center gap-1.5">
             {Array.from({ length: totalSteps }).map((_, index) => (
               <div key={index}>
@@ -60,6 +61,23 @@ export function QuestionScreenLayout({
                 )}
               </div>
             ))}
+          </div>
+        </div>
+
+        {/* ワインボトル画像エリア（NameQuestionScreen と同じデザイン） */}
+        <div className="pt-4 flex justify-center w-full">
+          <div className="h-[376px] flex items-center justify-center w-full">
+            <div className="w-[250px] h-[340px] flex items-center justify-center">
+              <div className="-rotate-[23deg]">
+                <div className="w-[130px] h-[330px] bg-[#111827] rounded-[40px] overflow-hidden shadow-xl flex items-center justify-center">
+                  <img
+                    src={wineImageSrc}
+                    alt="Wine bottle"
+                    className="h-full w-auto object-contain"
+                  />
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
