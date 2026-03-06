@@ -151,22 +151,14 @@ export const NameQuestionScreen: React.FC<NameQuestionScreenProps> = ({
             transition={{ layout: { duration: 0.4, ease: "easeOut" } }}
           >
             {/* 固定ヘッダー（タイトル + TextInput） */}
-            <div className="w-full shrink-0 relative h-[96px]">
-              <motion.p
-                className="absolute top-0 inset-x-0 text-center text-[20px] font-bold text-[#2c2c2c]"
-                animate={{ opacity: isOpen ? 0 : 1 }}
-                transition={{ duration: 0.25, ease: "easeOut" }}
-              >
+            <div className="w-full shrink-0 relative h-[96px] min-h-[96px]">
+              <p className="absolute top-0 inset-x-0 text-center text-[20px] font-bold text-[#2c2c2c]">
                 このワインの名前は？
-              </motion.p>
+              </p>
 
               <div
                 className="absolute left-0 right-0 flex justify-center"
-                style={{
-                  // シート展開時はカード上端から 32px 下になるように調整（py-12=48px なので -16）
-                  top: isOpen ? -16 : 40,
-                  transition: "top 0.25s ease-out",
-                }}
+                style={{ top: 40 }}
               >
                 <div className="relative w-full h-16 rounded-[16px] bg-[#f5f1e8] flex items-center justify-center px-4">
                   <label
