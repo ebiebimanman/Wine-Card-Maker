@@ -21,6 +21,28 @@ interface QuestionScreenLayoutProps {
   wineImageSrc?: string;
 }
 
+interface NextFooterButtonProps {
+  onNext: () => void;
+  disabled?: boolean;
+}
+
+export function NextFooterButton({
+  onNext,
+  disabled = false,
+}: NextFooterButtonProps) {
+  return (
+    <button
+      type="button"
+      className="w-full min-h-[64px] py-4 px-8 flex items-center justify-center gap-2 text-[#f5f1e8] bg-[#4b6c3d] cursor-pointer border-0 disabled:opacity-50 disabled:cursor-not-allowed pb-[max(1rem,env(safe-area-inset-bottom,0px),var(--browser-bottom-inset,0px))]"
+      onClick={onNext}
+      disabled={disabled}
+    >
+      <span className="text-[16px] font-bold">つぎへ</span>
+      <ChevronRight className="w-6 h-6 text-[#f5f1e8]" strokeWidth={2} />
+    </button>
+  );
+}
+
 export function QuestionScreenLayout({
   stepIndex,
   onBack,
@@ -98,15 +120,7 @@ export function QuestionScreenLayout({
               {children}
             </div>
           </div>
-          <button
-            type="button"
-            className="w-full min-h-[64px] py-4 px-8 flex items-center justify-center gap-2 text-[#f5f1e8] bg-[#4b6c3d] cursor-pointer border-0 disabled:opacity-50 disabled:cursor-not-allowed pb-[max(1rem,env(safe-area-inset-bottom,0px),var(--browser-bottom-inset,0px))]"
-            onClick={onNext}
-            disabled={nextDisabled}
-          >
-            <span className="text-[16px] font-bold">つぎへ</span>
-            <ChevronRight className="w-6 h-6 text-[#f5f1e8]" strokeWidth={2} />
-          </button>
+          <NextFooterButton onNext={onNext} disabled={nextDisabled} />
         </div>
       </div>
     </div>

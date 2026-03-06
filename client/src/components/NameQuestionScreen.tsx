@@ -1,10 +1,11 @@
 import React, { useMemo, useState, useRef, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { ChevronLeft, ChevronRight, Wine } from "lucide-react";
+import { motion } from "framer-motion";
+import { ChevronLeft, Wine } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { popularWines } from "@/data/popularWines";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useBottomInset } from "@/hooks/useBottomInset";
+import { NextFooterButton } from "@/components/QuestionScreenLayout";
 
 interface NameQuestionScreenProps {
   /** ワインボトル画像のパス */
@@ -90,83 +91,6 @@ export const NameQuestionScreen: React.FC<NameQuestionScreenProps> = ({
 
   return (
     <div className="min-h-screen w-full flex justify-center sm:py-6 sm:px-4 bg-[#f5f1e8]">
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            role="dialog"
-            aria-label="ワイン名を入力"
-            initial={{ y: "100%" }}
-            animate={{ y: 0 }}
-            exit={{ y: "100%", transition: { duration: 0.2, ease: "easeIn" } }}
-            transition={{ duration: 0.4, ease: "easeOut" }}
-            className="fixed inset-0 z-50 flex justify-center bg-[#f5f1e8] sm:py-6 sm:px-4 overflow-hidden"
-          >
-            <div className="w-full sm:max-w-[480px] sm:rounded-[24px] sm:shadow-2xl bg-[#fffbf1] overflow-hidden flex flex-col pt-12 px-8 h-full sm:h-[calc(100vh-3rem)]">
-            <div className="w-full flex flex-col gap-2 flex-1 min-h-0">
-              <div className="relative w-full h-16 shrink-0 rounded-[16px] bg-[#f5f1e8] flex items-center justify-center px-4">
-                <label
-                  className={cn(
-                    "absolute left-1/2 -translate-x-1/2 text-center text-[#aca3a3] pointer-events-none transition-all duration-200 text-[14px] font-normal",
-                    hasText ? "top-1 text-[11px] tracking-wide" : "top-1/2 -translate-y-1/2",
-                  )}
-                >
-                  ワイン名を入力
-                </label>
-                <input
-                  ref={sheetInputRef}
-                  type="text"
-                  value={wineName}
-                  onChange={(e) => {
-                    setWineName(e.target.value);
-                    setActiveIndex(0);
-                  }}
-                  onBlur={() => setTimeout(() => setIsOpen(false), 100)}
-                  onKeyDown={handleKeyDown}
-                  placeholder=""
-                  className="w-full bg-transparent text-center text-[16px] text-[#2c2c2c] outline-none"
-                />
-              </div>
-              {suggestions.length > 0 && (
-                <div className="mt-4 flex-1 min-h-0 flex flex-col overflow-hidden self-start w-full max-h-[calc(100vh-9.5rem)] px-3 py-1 pb-6">
-                  <ScrollArea className="h-full w-full">
-                    <div className="rounded-2xl bg-[#fffbf1] ring-1 ring-[#e0d8c8]/50 shadow-[0_8px_24px_-8px_rgba(75,108,61,0.2)]">
-                      <ul
-                        id="suggestions-list"
-                        role="listbox"
-                        className="flex flex-col py-2"
-                      >
-                        {suggestions.map((name, index) => (
-                          <li
-                            key={`${name}-${index}`}
-                            role="option"
-                            aria-selected={index === activeIndex}
-                          >
-                            <button
-                              type="button"
-                              onMouseDown={(e) => e.preventDefault()}
-                              onClick={() => handleSelect(name)}
-                              onMouseEnter={() => setActiveIndex(index)}
-                              className={cn(
-                                "w-full min-h-[44px] flex items-center justify-center px-6 py-4 text-base transition-colors duration-150",
-                                index === activeIndex
-                                  ? "bg-[#f5f1e8] text-[#2c2c2c] rounded-xl mx-2 w-[calc(100%-16px)]"
-                                  : "text-[#5c5246] hover:bg-[#f5f1e8]/50"
-                              )}
-                            >
-                              {name}
-                            </button>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  </ScrollArea>
-                </div>
-              )}
-            </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
       <div className="relative w-full h-screen bg-[#f5f1e8] overflow-hidden sm:max-w-[480px] sm:mx-auto sm:rounded-[24px] sm:shadow-2xl sm:max-h-[844px] sm:my-auto">
         {/* 上部ナビゲーション（戻る + プログレスドット） */}
         <div className="relative flex items-center justify-center pt-8 pb-1">
@@ -218,62 +142,113 @@ export const NameQuestionScreen: React.FC<NameQuestionScreenProps> = ({
           </div>
         </div>
 
-        {/* 下部カード + つぎへボタン */}
-        <div className="absolute bottom-0 left-0 right-0 w-full h-fit overflow-hidden rounded-t-[32px] px-0">
+        {/* 下部パネル（カード + つぎへボタン） */}
+        <motion.div
+          layout
+          layoutId="name-bottom-panel"
+          className="absolute bottom-0 left-0 right-0 w-full h-fit overflow-hidden rounded-t-[32px] px-0"
+          transition={{ layout: { duration: 0.4, ease: "easeOut" } }}
+        >
           <div className="w-full bg-[#fffbf1] rounded-none shadow-[0_8px_24px_-8px_rgba(75,108,61,0.2)] px-8 py-12 flex flex-col gap-8 items-center">
-            <p className="text-center text-[20px] font-bold text-[#2c2c2c]">
-              このワインの名前は？
-            </p>
-
-            <div className="w-full gap-2 flex flex-col">
-              {isOpen ? (
-                <div
-                  className="relative w-full h-16 rounded-[16px] bg-[#f5f1e8] flex items-center justify-center px-4"
-                  aria-hidden
-                >
-                  <span className="text-center text-[16px] text-[#2c2c2c]">
-                    {wineName || "タップして入力"}
-                  </span>
-                </div>
-              ) : (
-                <div className="relative w-full h-16 rounded-[16px] bg-[#f5f1e8] flex items-center justify-center px-4">
+            {isOpen ? (
+              <div className="w-full flex flex-col gap-2 flex-1 min-h-0">
+                <div className="relative w-full h-16 shrink-0 rounded-[16px] bg-[#f5f1e8] flex items-center justify-center px-4">
                   <label
                     className={cn(
                       "absolute left-1/2 -translate-x-1/2 text-center text-[#aca3a3] pointer-events-none transition-all duration-200 text-[14px] font-normal",
-                      "origin-center",
-                      hasText
-                        ? "top-1 text-[11px] tracking-wide"
-                        : "top-1/2 -translate-y-1/2",
+                      hasText ? "top-1 text-[11px] tracking-wide" : "top-1/2 -translate-y-1/2",
                     )}
                   >
                     ワイン名を入力
                   </label>
                   <input
+                    ref={sheetInputRef}
                     type="text"
                     value={wineName}
                     onChange={(e) => {
                       setWineName(e.target.value);
                       setActiveIndex(0);
                     }}
-                    onFocus={() => setIsOpen(true)}
+                    onBlur={() => setTimeout(() => setIsOpen(false), 100)}
                     onKeyDown={handleKeyDown}
                     placeholder=""
                     className="w-full bg-transparent text-center text-[16px] text-[#2c2c2c] outline-none"
                   />
                 </div>
-              )}
-            </div>
+                {suggestions.length > 0 && (
+                  <div className="mt-4 flex-1 min-h-0 flex flex-col overflow-hidden self-start w-full max-h-[calc(100vh-9.5rem)] px-3 py-1 pb-6">
+                    <ScrollArea className="h-full w-full">
+                      <div className="rounded-2xl bg-[#fffbf1] ring-1 ring-[#e0d8c8]/50 shadow-[0_8px_24px_-8px_rgba(75,108,61,0.2)]">
+                        <ul
+                          id="suggestions-list"
+                          role="listbox"
+                          className="flex flex-col py-2"
+                        >
+                          {suggestions.map((name, index) => (
+                            <li
+                              key={`${name}-${index}`}
+                              role="option"
+                              aria-selected={index === activeIndex}
+                            >
+                              <button
+                                type="button"
+                                onMouseDown={(e) => e.preventDefault()}
+                                onClick={() => handleSelect(name)}
+                                onMouseEnter={() => setActiveIndex(index)}
+                                className={cn(
+                                  "w-full min-h-[44px] flex items-center justify-center px-6 py-4 text-base transition-colors duration-150",
+                                  index === activeIndex
+                                    ? "bg-[#f5f1e8] text-[#2c2c2c] rounded-xl mx-2 w-[calc(100%-16px)]"
+                                    : "text-[#5c5246] hover:bg-[#f5f1e8]/50"
+                                )}
+                              >
+                                {name}
+                              </button>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    </ScrollArea>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <>
+                <p className="text-center text-[20px] font-bold text-[#2c2c2c]">
+                  このワインの名前は？
+                </p>
+                <div className="w-full gap-2 flex flex-col">
+                  <div className="relative w-full h-16 rounded-[16px] bg-[#f5f1e8] flex items-center justify-center px-4">
+                    <label
+                      className={cn(
+                        "absolute left-1/2 -translate-x-1/2 text-center text-[#aca3a3] pointer-events-none transition-all duration-200 text-[14px] font-normal",
+                        "origin-center",
+                        hasText
+                          ? "top-1 text-[11px] tracking-wide"
+                          : "top-1/2 -translate-y-1/2",
+                      )}
+                    >
+                      ワイン名を入力
+                    </label>
+                    <input
+                      type="text"
+                      value={wineName}
+                      onChange={(e) => {
+                        setWineName(e.target.value);
+                        setActiveIndex(0);
+                      }}
+                      onFocus={() => setIsOpen(true)}
+                      onKeyDown={handleKeyDown}
+                      placeholder=""
+                      className="w-full bg-transparent text-center text-[16px] text-[#2c2c2c] outline-none"
+                    />
+                  </div>
+                </div>
+              </>
+            )}
           </div>
-
-          <button
-            type="button"
-            className="w-full min-h-[64px] py-4 px-8 flex items-center justify-center gap-2 text-[#f5f1e8] bg-[#4b6c3d] cursor-pointer border-0 pb-[max(1rem,env(safe-area-inset-bottom,0px),var(--browser-bottom-inset,0px))]"
-            onClick={handleNext}
-          >
-            <span className="text-[16px] font-bold">つぎへ</span>
-            <ChevronRight className="w-6 h-6 text-[#f5f1e8]" strokeWidth={2} />
-          </button>
-        </div>
+          <NextFooterButton onNext={handleNext} />
+        </motion.div>
       </div>
     </div>
   );
