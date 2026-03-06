@@ -147,104 +147,89 @@ export const NameQuestionScreen: React.FC<NameQuestionScreenProps> = ({
           <motion.div
             layout
             layoutId="name-bottom-panel"
-            className="w-full bg-[#fffbf1] rounded-none shadow-[0_8px_24px_-8px_rgba(75,108,61,0.2)] px-8 py-12 flex flex-col gap-8 items-center"
+            className="w-full bg-[#fffbf1] rounded-none shadow-[0_8px_24px_-8px_rgba(75,108,61,0.2)] px-8 py-12 flex flex-col gap-6 items-center"
             transition={{ layout: { duration: 0.4, ease: "easeOut" } }}
           >
-            {isOpen ? (
-              <div className="w-full flex flex-col gap-2 flex-1 min-h-0">
-                <div className="relative w-full h-16 shrink-0 rounded-[16px] bg-[#f5f1e8] flex items-center justify-center px-4">
-                  <label
-                    className={cn(
-                      "absolute left-1/2 -translate-x-1/2 text-center text-[#aca3a3] pointer-events-none transition-all duration-200 text-[14px] font-normal",
-                      hasText ? "top-1 text-[11px] tracking-wide" : "top-1/2 -translate-y-1/2",
-                    )}
-                  >
-                    ワイン名を入力
-                  </label>
-                  <input
-                    ref={sheetInputRef}
-                    type="text"
-                    value={wineName}
-                    onChange={(e) => {
-                      setWineName(e.target.value);
-                      setActiveIndex(0);
-                    }}
-                    onBlur={() => setTimeout(() => setIsOpen(false), 100)}
-                    onKeyDown={handleKeyDown}
-                    placeholder=""
-                    className="w-full bg-transparent text-center text-[16px] text-[#2c2c2c] outline-none"
-                  />
-                </div>
-                {suggestions.length > 0 && (
-                  <div className="mt-4 flex-1 min-h-0 flex flex-col overflow-hidden self-start w-full max-h-[calc(100vh-9.5rem)] px-3 py-1 pb-6">
-                    <ScrollArea className="h-full w-full">
-                      <div className="rounded-2xl bg-[#fffbf1] ring-1 ring-[#e0d8c8]/50 shadow-[0_8px_24px_-8px_rgba(75,108,61,0.2)]">
-                        <ul
-                          id="suggestions-list"
-                          role="listbox"
-                          className="flex flex-col py-2"
-                        >
-                          {suggestions.map((name, index) => (
-                            <li
-                              key={`${name}-${index}`}
-                              role="option"
-                              aria-selected={index === activeIndex}
-                            >
-                              <button
-                                type="button"
-                                onMouseDown={(e) => e.preventDefault()}
-                                onClick={() => handleSelect(name)}
-                                onMouseEnter={() => setActiveIndex(index)}
-                                className={cn(
-                                  "w-full min-h-[44px] flex items-center justify-center px-6 py-4 text-base transition-colors duration-150",
-                                  index === activeIndex
-                                    ? "bg-[#f5f1e8] text-[#2c2c2c] rounded-xl mx-2 w-[calc(100%-16px)]"
-                                    : "text-[#5c5246] hover:bg-[#f5f1e8]/50"
-                                )}
-                              >
-                                {name}
-                              </button>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    </ScrollArea>
-                  </div>
-                )}
+            {/* 固定ヘッダー（タイトル + TextInput） */}
+            <div className="w-full shrink-0 flex flex-col items-center gap-2">
+              <motion.p
+                className="text-center text-[20px] font-bold text-[#2c2c2c]"
+                animate={{ opacity: isOpen ? 0 : 1 }}
+                transition={{ duration: 0.25, ease: "easeOut" }}
+              >
+                このワインの名前は？
+              </motion.p>
+              <div className="mt-2 relative w-full h-16 rounded-[16px] bg-[#f5f1e8] flex items-center justify-center px-4">
+                <label
+                  className={cn(
+                    "absolute left-1/2 -translate-x-1/2 text-center text-[#aca3a3] pointer-events-none transition-all duration-200 text-[14px] font-normal",
+                    "origin-center",
+                    hasText || isOpen
+                      ? "top-1 text-[11px] tracking-wide"
+                      : "top-1/2 -translate-y-1/2",
+                  )}
+                >
+                  ワイン名を入力
+                </label>
+                <input
+                  ref={sheetInputRef}
+                  type="text"
+                  value={wineName}
+                  onChange={(e) => {
+                    setWineName(e.target.value);
+                    setActiveIndex(0);
+                  }}
+                  onFocus={() => setIsOpen(true)}
+                  onBlur={() => setTimeout(() => setIsOpen(false), 100)}
+                  onKeyDown={handleKeyDown}
+                  placeholder=""
+                  className="w-full bg-transparent text-center text-[16px] text-[#2c2c2c] outline-none"
+                />
               </div>
-            ) : (
-              <>
-                <p className="text-center text-[20px] font-bold text-[#2c2c2c]">
-                  このワインの名前は？
-                </p>
-                <div className="w-full gap-2 flex flex-col">
-                  <div className="relative w-full h-16 rounded-[16px] bg-[#f5f1e8] flex items-center justify-center px-4">
-                    <label
-                      className={cn(
-                        "absolute left-1/2 -translate-x-1/2 text-center text-[#aca3a3] pointer-events-none transition-all duration-200 text-[14px] font-normal",
-                        "origin-center",
-                        hasText
-                          ? "top-1 text-[11px] tracking-wide"
-                          : "top-1/2 -translate-y-1/2",
-                      )}
+            </div>
+
+            {/* 可変コンテンツ（サジェスト） */}
+            {isOpen && suggestions.length > 0 && (
+              <motion.div
+                layout
+                className="mt-4 w-full flex-1 min-h-0 flex flex-col overflow-hidden self-start max-h-[calc(100vh-9.5rem)] px-3 py-1 pb-6"
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.25, ease: "easeOut" }}
+              >
+                <ScrollArea className="h-full w-full">
+                  <div className="rounded-2xl bg-[#fffbf1] ring-1 ring-[#e0d8c8]/50 shadow-[0_8px_24px_-8px_rgba(75,108,61,0.2)]">
+                    <ul
+                      id="suggestions-list"
+                      role="listbox"
+                      className="flex flex-col py-2"
                     >
-                      ワイン名を入力
-                    </label>
-                    <input
-                      type="text"
-                      value={wineName}
-                      onChange={(e) => {
-                        setWineName(e.target.value);
-                        setActiveIndex(0);
-                      }}
-                      onFocus={() => setIsOpen(true)}
-                      onKeyDown={handleKeyDown}
-                      placeholder=""
-                      className="w-full bg-transparent text-center text-[16px] text-[#2c2c2c] outline-none"
-                    />
+                      {suggestions.map((name, index) => (
+                        <li
+                          key={`${name}-${index}`}
+                          role="option"
+                          aria-selected={index === activeIndex}
+                        >
+                          <button
+                            type="button"
+                            onMouseDown={(e) => e.preventDefault()}
+                            onClick={() => handleSelect(name)}
+                            onMouseEnter={() => setActiveIndex(index)}
+                            className={cn(
+                              "w-full min-h-[44px] flex items-center justify-center px-6 py-4 text-base transition-colors duration-150",
+                              index === activeIndex
+                                ? "bg-[#f5f1e8] text-[#2c2c2c] rounded-xl mx-2 w-[calc(100%-16px)]"
+                                : "text-[#5c5246] hover:bg-[#f5f1e8]/50"
+                            )}
+                          >
+                            {name}
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
                   </div>
-                </div>
-              </>
+                </ScrollArea>
+              </motion.div>
             )}
           </motion.div>
           <NextFooterButton onNext={handleNext} />
