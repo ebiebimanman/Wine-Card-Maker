@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight, Wine } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { popularWines } from "@/data/popularWines";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface NameQuestionScreenProps {
   /** ワインボトル画像のパス */
@@ -123,25 +124,40 @@ export const NameQuestionScreen: React.FC<NameQuestionScreenProps> = ({
                 />
               </div>
               {suggestions.length > 0 && (
-                <ul className="w-full max-h-[calc(100vh-9.5rem)] overflow-y-auto rounded-2xl border border-[#e0d8c8] bg-[#fffbf1] shadow-sm self-start">
-                  {suggestions.map((name, index) => (
-                    <li
-                      key={`${name}-${index}`}
-                      onMouseDown={(e) => {
-                        e.preventDefault();
-                        handleSelect(name);
-                      }}
-                      className={cn(
-                        "min-h-[44px] flex items-center px-4 py-2 text-sm cursor-pointer text-left transition-colors",
-                        index === activeIndex
-                          ? "bg-[#f5f1e8] text-[#2c2c2c]"
-                          : "text-[#5c5246] hover:bg-[#f5f1e8]",
-                      )}
-                    >
-                      {name}
-                    </li>
-                  ))}
-                </ul>
+                <div className="mt-4 flex-1 min-h-0 flex flex-col overflow-hidden self-start w-full max-h-[calc(100vh-9.5rem)] px-3 py-1 pb-6">
+                  <ScrollArea className="h-full w-full">
+                    <div className="rounded-2xl bg-[#fffbf1] ring-1 ring-[#e0d8c8]/50 shadow-[0_8px_24px_-8px_rgba(75,108,61,0.2)]">
+                      <ul
+                        id="suggestions-list"
+                        role="listbox"
+                        className="flex flex-col py-2"
+                      >
+                        {suggestions.map((name, index) => (
+                          <li
+                            key={`${name}-${index}`}
+                            role="option"
+                            aria-selected={index === activeIndex}
+                          >
+                            <button
+                              type="button"
+                              onMouseDown={(e) => e.preventDefault()}
+                              onClick={() => handleSelect(name)}
+                              onMouseEnter={() => setActiveIndex(index)}
+                              className={cn(
+                                "w-full min-h-[44px] flex items-center justify-center px-6 py-4 text-base transition-colors duration-150",
+                                index === activeIndex
+                                  ? "bg-[#f5f1e8] text-[#2c2c2c] rounded-xl mx-2 w-[calc(100%-16px)]"
+                                  : "text-[#5c5246] hover:bg-[#f5f1e8]/50"
+                              )}
+                            >
+                              {name}
+                            </button>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </ScrollArea>
+                </div>
               )}
             </div>
             </div>
