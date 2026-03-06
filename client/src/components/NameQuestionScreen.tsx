@@ -97,8 +97,8 @@ export const NameQuestionScreen: React.FC<NameQuestionScreenProps> = ({
             aria-label="ワイン名を入力"
             initial={{ y: "100%" }}
             animate={{ y: 0 }}
-            exit={{ y: "100%" }}
-            transition={{ duration: 0.28, ease: [0.32, 0.72, 0, 1] }}
+            exit={{ y: "100%", transition: { duration: 0.2, ease: "easeIn" } }}
+            transition={{ duration: 0.4, ease: "easeOut" }}
             className="fixed inset-0 z-50 flex justify-center bg-[#f5f1e8] sm:py-6 sm:px-4 overflow-hidden"
           >
             <div className="w-full sm:max-w-[480px] sm:rounded-[24px] sm:shadow-2xl bg-[#fffbf1] overflow-hidden flex flex-col pt-12 px-8 h-full sm:h-[calc(100vh-3rem)]">
