@@ -403,7 +403,7 @@ export const NameQuestionScreen: React.FC<NameQuestionScreenProps> = ({
             layout
             layoutId="name-bottom-panel"
             className={cn(
-              "relative z-10 w-full bg-[#fffbf1] rounded-none shadow-[0_8px_24px_-8px_rgba(75,108,61,0.2)] px-8 pt-12 pb-0 flex flex-col gap-2 items-center",
+              "relative w-full bg-[#fffbf1] rounded-none shadow-[0_8px_24px_-8px_rgba(75,108,61,0.2)] px-8 pt-12 pb-0 flex flex-col gap-2 items-center",
               isOpen ? "flex-1 min-h-0" : "",
             )}
             transition={{ layout: { duration: 0.35, ease: "easeOut" } }}
@@ -503,7 +503,9 @@ export const NameQuestionScreen: React.FC<NameQuestionScreenProps> = ({
               </motion.div>
             )}
           </motion.div>
-          <NextFooterButton onNext={handleNext} />
+          <motion.div layout="position" className="relative z-10">
+            <NextFooterButton onNext={handleNext} />
+          </motion.div>
         </motion.div>
       </div>
     </div>
