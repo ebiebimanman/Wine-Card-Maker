@@ -394,7 +394,7 @@ export const NameQuestionScreen: React.FC<NameQuestionScreenProps> = ({
         <motion.div
           layout
           className={cn(
-            "absolute left-0 right-0 w-full overflow-hidden rounded-t-[32px] px-0 flex flex-col",
+            "absolute left-0 right-0 w-full overflow-hidden rounded-t-[32px] px-0 flex flex-col bg-[#fffbf1] shadow-[0_8px_24px_-8px_rgba(75,108,61,0.2)]",
             isOpen ? "top-0 bottom-0" : "bottom-0 h-fit",
           )}
           transition={{ layout: { duration: 0.4, ease: "easeOut" } }}
@@ -403,7 +403,7 @@ export const NameQuestionScreen: React.FC<NameQuestionScreenProps> = ({
             layout
             layoutId="name-bottom-panel"
             className={cn(
-              "relative w-full bg-[#fffbf1] rounded-none shadow-[0_8px_24px_-8px_rgba(75,108,61,0.2)] px-8 pt-12 pb-0 flex flex-col gap-2 items-center",
+              "relative w-full rounded-none px-8 pt-12 pb-6 flex flex-col gap-2 items-center",
               isOpen ? "flex-1 min-h-0" : "",
             )}
             transition={{ layout: { duration: 0.35, ease: "easeOut" } }}
@@ -458,7 +458,7 @@ export const NameQuestionScreen: React.FC<NameQuestionScreenProps> = ({
             {isOpen && suggestions.length > 0 && (
               <motion.div
                 layout
-                className="w-full flex-1 min-h-0 flex flex-col self-stretch pb-6"
+                className="w-full flex-1 min-h-0 flex flex-col self-stretch"
                 initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: 8 }}
