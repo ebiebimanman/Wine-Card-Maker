@@ -403,7 +403,7 @@ export const NameQuestionScreen: React.FC<NameQuestionScreenProps> = ({
             layout
             layoutId="name-bottom-panel"
             className={cn(
-              "w-full bg-[#fffbf1] rounded-none shadow-[0_8px_24px_-8px_rgba(75,108,61,0.2)] px-8 pt-12 pb-0 flex flex-col gap-2 items-center",
+              "relative z-10 w-full mx-2 bg-[#fffbf1] rounded-none shadow-[0_8px_24px_-8px_rgba(75,108,61,0.2)] px-8 pt-12 pb-0 flex flex-col gap-2 items-center",
               isOpen ? "flex-1 min-h-0" : "",
             )}
             transition={{ layout: { duration: 0.35, ease: "easeOut" } }}
@@ -451,17 +451,17 @@ export const NameQuestionScreen: React.FC<NameQuestionScreenProps> = ({
             {isOpen && suggestions.length > 0 && (
               <motion.div
                 layout
-                className="w-full flex-1 min-h-0 flex flex-col overflow-hidden self-stretch py-1"
+                className="w-full flex-1 min-h-0 flex flex-col self-stretch pt-2 pb-6"
                 initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: 8 }}
                 transition={{ duration: 0.25, ease: "easeOut" }}
               >
-                <ScrollArea
-                  className="flex-1 min-h-0 w-full overflow-visible [&>[data-radix-scroll-area-viewport]]:h-full [&>[data-radix-scroll-area-viewport]]:min-h-0"
-                >
-                  <div className="pt-2 pb-0">
-                    <div className="mb-4 rounded-2xl bg-[#fffbf1] ring-1 ring-[#e0d8c8]/50 shadow-[0_8px_24px_-8px_rgba(75,108,61,0.2)]">
+                {/* 1. シャドウ付きカードを ScrollArea の外側に出す */}
+                <div className="pt-2 pb-0">
+                  <div className="mb-4 flex-1 min-h-0 overflow-hidden rounded-2xl bg-[#fffbf1] ring-1 ring-[#e0d8c8]/50 shadow-[0_8px_24px_-8px_rgba(75,108,61,0.2)]">
+                    {/* 2. 内側だけを ScrollArea でスクロールさせる */}
+                    <ScrollArea className="flex-1 w-full">
                       <ul
                         id="suggestions-list"
                         role="listbox"
@@ -490,9 +490,9 @@ export const NameQuestionScreen: React.FC<NameQuestionScreenProps> = ({
                           </li>
                         ))}
                       </ul>
-                    </div>
+                    </ScrollArea>
                   </div>
-                </ScrollArea>
+                </div>
               </motion.div>
             )}
           </motion.div>
