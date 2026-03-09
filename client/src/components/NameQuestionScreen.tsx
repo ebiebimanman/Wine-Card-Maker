@@ -446,7 +446,7 @@ export const NameQuestionScreen: React.FC<NameQuestionScreenProps> = ({
             </div>
 
             {/* 可変コンテンツ（サジェスト） */}
-            {isOpen && (
+            {isOpen && suggestions.length > 0 && (
               <motion.div
                 layout
                 className="w-full flex-1 min-h-0 flex flex-col overflow-hidden self-start px-3 py-1"
