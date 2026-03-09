@@ -451,44 +451,46 @@ export const NameQuestionScreen: React.FC<NameQuestionScreenProps> = ({
             {isOpen && suggestions.length > 0 && (
               <motion.div
                 layout
-                className="w-full flex-1 min-h-0 flex flex-col overflow-hidden self-start px-3 py-1"
+                className="w-full flex-1 min-h-0 flex flex-col overflow-hidden self-stretch py-1"
                 initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: 8 }}
                 transition={{ duration: 0.25, ease: "easeOut" }}
               >
                 <ScrollArea
-                  className="flex-1 min-h-0 w-full [&>[data-radix-scroll-area-viewport]]:h-full [&>[data-radix-scroll-area-viewport]]:min-h-0"
+                  className="flex-1 min-h-0 w-full overflow-visible [&>[data-radix-scroll-area-viewport]]:h-full [&>[data-radix-scroll-area-viewport]]:min-h-0"
                 >
-                  <div className="mb-4 rounded-2xl bg-[#fffbf1] ring-1 ring-[#e0d8c8]/50 shadow-[0_8px_24px_-8px_rgba(75,108,61,0.2)]">
-                    <ul
-                      id="suggestions-list"
-                      role="listbox"
-                      className="flex flex-col py-2"
-                    >
-                      {suggestions.map((name, index) => (
-                        <li
-                          key={`${name}-${index}`}
-                          role="option"
-                          aria-selected={index === activeIndex}
-                        >
-                          <button
-                            type="button"
-                            onMouseDown={(e) => e.preventDefault()}
-                            onClick={() => handleSelect(name)}
-                            onMouseEnter={() => setActiveIndex(index)}
-                            className={cn(
-                              "w-full min-h-[44px] flex items-center justify-center px-6 py-4 text-base transition-colors duration-150",
-                              index === activeIndex
-                                ? "bg-[#f5f1e8] text-[#2c2c2c] rounded-xl mx-2 w-[calc(100%-16px)]"
-                                : "text-[#5c5246] hover:bg-[#f5f1e8]/50"
-                            )}
+                  <div className="pt-2 pb-0">
+                    <div className="mb-4 rounded-2xl bg-[#fffbf1] ring-1 ring-[#e0d8c8]/50 shadow-[0_8px_24px_-8px_rgba(75,108,61,0.2)]">
+                      <ul
+                        id="suggestions-list"
+                        role="listbox"
+                        className="flex flex-col py-2"
+                      >
+                        {suggestions.map((name, index) => (
+                          <li
+                            key={`${name}-${index}`}
+                            role="option"
+                            aria-selected={index === activeIndex}
                           >
-                            {name}
-                          </button>
-                        </li>
-                      ))}
-                    </ul>
+                            <button
+                              type="button"
+                              onMouseDown={(e) => e.preventDefault()}
+                              onClick={() => handleSelect(name)}
+                              onMouseEnter={() => setActiveIndex(index)}
+                              className={cn(
+                                "w-full min-h-[44px] flex items-center justify-center px-6 py-4 text-base transition-colors duration-150",
+                                index === activeIndex
+                                  ? "bg-[#f5f1e8] text-[#2c2c2c] rounded-xl mx-2 w-[calc(100%-16px)]"
+                                  : "text-[#5c5246] hover:bg-[#f5f1e8]/50"
+                              )}
+                            >
+                              {name}
+                            </button>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
                   </div>
                 </ScrollArea>
               </motion.div>
