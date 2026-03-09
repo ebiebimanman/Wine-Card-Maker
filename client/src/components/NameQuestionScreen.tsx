@@ -93,7 +93,13 @@ export const NameQuestionScreen: React.FC<NameQuestionScreenProps> = ({
     <div className="min-h-screen w-full flex justify-center sm:py-6 sm:px-4 bg-[#f5f1e8]">
       <div className="relative w-full h-screen bg-[#f5f1e8] overflow-hidden sm:max-w-[480px] sm:mx-auto sm:rounded-[24px] sm:shadow-2xl sm:max-h-[844px] sm:my-auto">
         {/* 上部ナビゲーション（戻る + プログレスドット） */}
-        <div className="relative flex items-center justify-center pt-8 pb-1">
+        <motion.div
+          layout
+          className="relative flex items-center justify-center pt-8 pb-1"
+          initial={false}
+          animate={{ opacity: isOpen ? 0 : 1 }}
+          transition={{ duration: 0.25, ease: "easeOut" }}
+        >
           {/* Back button - absolutely positioned at left 32px */}
           <button
             onClick={handleBack}
@@ -123,10 +129,16 @@ export const NameQuestionScreen: React.FC<NameQuestionScreenProps> = ({
               </div>
             ))}
           </div>
-        </div>
+        </motion.div>
 
         {/* ワインボトル画像エリア */}
-        <div className="pt-4 flex justify-center w-full">
+        <motion.div
+          layout
+          className="pt-4 flex justify-center w-full"
+          initial={false}
+          animate={{ opacity: isOpen ? 0 : 1 }}
+          transition={{ duration: 0.25, ease: "easeOut" }}
+        >
           <div className="h-[376px] flex items-center justify-center w-full">
             <div className="w-[250px] h-[340px] flex items-center justify-center">
               <div className="-rotate-[23deg]">
@@ -140,15 +152,27 @@ export const NameQuestionScreen: React.FC<NameQuestionScreenProps> = ({
               </div>
             </div>
           </div>
-        </div>
+        </motion.div>
 
         {/* 下部パネル（カード + つぎへボタン） */}
-        <div className="absolute bottom-0 left-0 right-0 w-full h-fit overflow-hidden rounded-t-[32px] px-0">
+        <motion.div
+          layout
+          className={cn(
+            "absolute left-0 right-0 w-full overflow-hidden rounded-t-[32px] px-0",
+            isOpen && suggestions.length > 0
+              ? "top-0 bottom-0 flex flex-col"
+              : "bottom-0 h-fit",
+          )}
+          transition={{ layout: { duration: 0.4, ease: "easeOut" } }}
+        >
           <motion.div
             layout
             layoutId="name-bottom-panel"
-            className="w-full bg-[#fffbf1] rounded-none shadow-[0_8px_24px_-8px_rgba(75,108,61,0.2)] px-8 py-12 flex flex-col gap-6 items-center"
-            transition={{ layout: { duration: 0.4, ease: "easeOut" } }}
+            className={cn(
+              "w-full bg-[#fffbf1] rounded-none shadow-[0_8px_24px_-8px_rgba(75,108,61,0.2)] px-8 py-12 flex flex-col gap-6 items-center",
+              isOpen && suggestions.length > 0 ? "pb-10 flex-1 min-h-0" : "",
+            )}
+            transition={{ layout: { duration: 0.35, ease: "easeOut" } }}
           >
             {/* 固定ヘッダー（タイトル + TextInput）— flex + gap で間隔 32px を明示 */}
             <div className="w-full shrink-0 flex flex-col items-center gap-8">
@@ -191,6 +215,7 @@ export const NameQuestionScreen: React.FC<NameQuestionScreenProps> = ({
                 className="mt-4 w-full flex-1 min-h-0 flex flex-col overflow-hidden self-start max-h-[calc(100vh-9.5rem)] px-3 py-1 pb-6"
                 initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 8 }}
                 transition={{ duration: 0.25, ease: "easeOut" }}
               >
                 <ScrollArea className="h-full w-full">
@@ -229,7 +254,7 @@ export const NameQuestionScreen: React.FC<NameQuestionScreenProps> = ({
             )}
           </motion.div>
           <NextFooterButton onNext={handleNext} />
-        </div>
+        </motion.div>
       </div>
     </div>
   );
