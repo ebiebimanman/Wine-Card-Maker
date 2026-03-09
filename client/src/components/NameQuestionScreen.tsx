@@ -38,7 +38,7 @@ export const NameQuestionScreen: React.FC<NameQuestionScreenProps> = ({
   const suggestions = useMemo(() => {
     const q = wineName.trim();
     if (!q) {
-      return popularWines.slice(0, 6);
+      return popularWines.slice(0, 10);
     }
     const lower = q.toLowerCase();
     return popularWines
@@ -154,14 +154,12 @@ export const NameQuestionScreen: React.FC<NameQuestionScreenProps> = ({
           </div>
         </motion.div>
 
-        {/* 下部パネル（カード + つぎへボタン） */}
+        {/* 下部パネル（カード + 16px スペーサ + つぎへボタン） */}
         <motion.div
           layout
           className={cn(
-            "absolute left-0 right-0 w-full overflow-hidden rounded-t-[32px] px-0",
-            isOpen && suggestions.length > 0
-              ? "top-0 bottom-0 flex flex-col"
-              : "bottom-0 h-fit",
+            "absolute left-0 right-0 w-full overflow-hidden rounded-t-[32px] px-0 flex flex-col",
+            isOpen && suggestions.length > 0 ? "top-0 bottom-0" : "bottom-0 h-fit",
           )}
           transition={{ layout: { duration: 0.4, ease: "easeOut" } }}
         >
@@ -169,13 +167,18 @@ export const NameQuestionScreen: React.FC<NameQuestionScreenProps> = ({
             layout
             layoutId="name-bottom-panel"
             className={cn(
-              "w-full bg-[#fffbf1] rounded-none shadow-[0_8px_24px_-8px_rgba(75,108,61,0.2)] px-8 py-12 flex flex-col gap-6 items-center",
-              isOpen && suggestions.length > 0 ? "pb-10 flex-1 min-h-0" : "",
+              "w-full bg-[#fffbf1] rounded-none shadow-[0_8px_24px_-8px_rgba(75,108,61,0.2)] px-8 pt-12 pb-0 flex flex-col gap-2 items-center",
+              isOpen && suggestions.length > 0 ? "flex-1 min-h-0" : "",
             )}
             transition={{ layout: { duration: 0.35, ease: "easeOut" } }}
           >
             {/* 固定ヘッダー（タイトル + TextInput）— flex + gap で間隔 32px を明示 */}
-            <div className="w-full shrink-0 flex flex-col items-center gap-8">
+            <div
+              className={cn(
+                "w-full shrink-0 flex flex-col items-center gap-8",
+                isOpen && suggestions.length > 0 ? "pb-0" : "pb-12",
+              )}
+            >
               <p className="text-center text-[20px] font-bold text-[#2c2c2c]">
                 このワインの名前は？
               </p>
@@ -212,14 +215,16 @@ export const NameQuestionScreen: React.FC<NameQuestionScreenProps> = ({
             {isOpen && suggestions.length > 0 && (
               <motion.div
                 layout
-                className="mt-4 w-full flex-1 min-h-0 flex flex-col overflow-hidden self-start max-h-[calc(100vh-9.5rem)] px-3 py-1 pb-6"
+                className="w-full flex-1 min-h-0 flex flex-col overflow-hidden self-start px-3 py-1"
                 initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: 8 }}
                 transition={{ duration: 0.25, ease: "easeOut" }}
               >
-                <ScrollArea className="h-full w-full">
-                  <div className="rounded-2xl bg-[#fffbf1] ring-1 ring-[#e0d8c8]/50 shadow-[0_8px_24px_-8px_rgba(75,108,61,0.2)]">
+                <ScrollArea
+                  className="flex-1 min-h-0 w-full [&>[data-radix-scroll-area-viewport]]:h-full [&>[data-radix-scroll-area-viewport]]:min-h-0"
+                >
+                  <div className="mb-4 rounded-2xl bg-[#fffbf1] ring-1 ring-[#e0d8c8]/50 shadow-[0_8px_24px_-8px_rgba(75,108,61,0.2)]">
                     <ul
                       id="suggestions-list"
                       role="listbox"
