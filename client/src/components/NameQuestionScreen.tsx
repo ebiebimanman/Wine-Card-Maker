@@ -281,6 +281,8 @@ export const NameQuestionScreen: React.FC<NameQuestionScreenProps> = ({
   }, [wineName]);
 
   const handleSelect = (name: string) => {
+    // IME の未確定文字が後ろにくっつかないように、先にフォーカスを外す
+    sheetInputRef.current?.blur();
     setWineName(name);
     setIsOpen(false);
   };
