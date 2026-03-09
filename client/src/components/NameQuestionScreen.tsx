@@ -150,43 +150,37 @@ export const NameQuestionScreen: React.FC<NameQuestionScreenProps> = ({
             className="w-full bg-[#fffbf1] rounded-none shadow-[0_8px_24px_-8px_rgba(75,108,61,0.2)] px-8 py-12 flex flex-col gap-6 items-center"
             transition={{ layout: { duration: 0.4, ease: "easeOut" } }}
           >
-            {/* 固定ヘッダー（タイトル + TextInput） */}
-            <div className="w-full shrink-0 relative h-[96px] min-h-[96px]">
-              <p className="absolute top-0 inset-x-0 text-center text-[20px] font-bold text-[#2c2c2c]">
+            {/* 固定ヘッダー（タイトル + TextInput）— flex + gap で間隔 32px を明示 */}
+            <div className="w-full shrink-0 flex flex-col items-center gap-8">
+              <p className="text-center text-[20px] font-bold text-[#2c2c2c]">
                 このワインの名前は？
               </p>
-
-              <div
-                className="absolute left-0 right-0 flex justify-center"
-                style={{ top: 40 }}
-              >
-                <div className="relative w-full h-16 rounded-[16px] bg-[#f5f1e8] flex items-center justify-center px-4">
-                  <label
-                    className={cn(
-                      "absolute left-1/2 -translate-x-1/2 text-center text-[#aca3a3] pointer-events-none transition-all duration-200 text-[14px] font-normal",
-                      "origin-center",
-                      hasText || isOpen
-                        ? "top-1 text-[11px] tracking-wide"
-                        : "top-1/2 -translate-y-1/2",
-                    )}
-                  >
-                    ワイン名を入力
-                  </label>
-                  <input
-                    ref={sheetInputRef}
-                    type="text"
-                    value={wineName}
-                    onChange={(e) => {
-                      setWineName(e.target.value);
-                      setActiveIndex(0);
-                    }}
-                    onFocus={() => setIsOpen(true)}
-                    onBlur={() => setTimeout(() => setIsOpen(false), 100)}
-                    onKeyDown={handleKeyDown}
-                    placeholder=""
-                    className="w-full bg-transparent text-center text-[16px] text-[#2c2c2c] outline-none"
-                  />
-                </div>
+              <div className="relative w-full h-16 rounded-[16px] bg-[#f5f1e8] flex items-center justify-center px-4">
+                <label
+                  className={cn(
+                    "absolute left-1/2 -translate-x-1/2 text-center text-[#aca3a3] pointer-events-none transition-all duration-200 text-[14px] font-normal",
+                    "origin-center",
+                    hasText || isOpen
+                      ? "top-1 text-[11px] tracking-wide"
+                      : "top-1/2 -translate-y-1/2",
+                  )}
+                >
+                  ワイン名を入力
+                </label>
+                <input
+                  ref={sheetInputRef}
+                  type="text"
+                  value={wineName}
+                  onChange={(e) => {
+                    setWineName(e.target.value);
+                    setActiveIndex(0);
+                  }}
+                  onFocus={() => setIsOpen(true)}
+                  onBlur={() => setTimeout(() => setIsOpen(false), 100)}
+                  onKeyDown={handleKeyDown}
+                  placeholder=""
+                  className="w-full bg-transparent text-center text-[16px] text-[#2c2c2c] outline-none"
+                />
               </div>
             </div>
 
