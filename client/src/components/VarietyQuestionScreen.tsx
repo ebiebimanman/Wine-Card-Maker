@@ -38,9 +38,7 @@ export const VarietyQuestionScreen: React.FC<VarietyQuestionScreenProps> = ({
   }, [varietyInput]);
 
   const handleSelect = (value: string) => {
-    inputRef.current?.blur();
     setVarietyInput(value);
-    setIsOpen(false);
   };
 
   const handleKeyDown: React.KeyboardEventHandler<HTMLInputElement> = (e) => {
@@ -104,7 +102,6 @@ export const VarietyQuestionScreen: React.FC<VarietyQuestionScreenProps> = ({
             setActiveIndex(0);
           }}
           onFocus={() => setIsOpen(true)}
-          onBlur={() => setTimeout(() => setIsOpen(false), 100)}
           onKeyDown={handleKeyDown}
           placeholder=""
           className="w-full bg-transparent text-center text-[16px] text-[#2c2c2c] outline-none"

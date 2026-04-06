@@ -122,17 +122,25 @@ export const BottomSheetQuestionLayout: React.FC<
           transition={{ duration: 0.25, ease: "easeOut" }}
         >
           <div className="h-[376px] flex items-center justify-center w-full">
-            <div className="w-[250px] h-[340px] flex items-center justify-center">
-              <div className="-rotate-[23deg]">
-                <div className="w-[130px] h-[330px] bg-[#111827] rounded-[40px] overflow-hidden shadow-xl flex items-center justify-center">
-                  <img
-                    src={wineImageSrc}
-                    alt="Wine bottle"
-                    className="h-full w-auto object-contain"
-                  />
+            {wineImageSrc === "/wine-glass.png" ? (
+              <img
+                src={wineImageSrc}
+                alt="Wine glass"
+                className="h-[280px] w-auto object-contain"
+              />
+            ) : (
+              <div className="w-[250px] h-[340px] flex items-center justify-center">
+                <div className="-rotate-[23deg]">
+                  <div className="w-[130px] h-[330px] bg-[#111827] rounded-[40px] overflow-hidden shadow-xl flex items-center justify-center">
+                    <img
+                      src={wineImageSrc}
+                      alt="Wine bottle"
+                      className="h-full w-auto object-contain"
+                    />
+                  </div>
                 </div>
               </div>
-            </div>
+            )}
           </div>
         </motion.div>
 

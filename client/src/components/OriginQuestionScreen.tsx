@@ -38,10 +38,7 @@ export const OriginQuestionScreen: React.FC<OriginQuestionScreenProps> = ({
   }, [originInput]);
 
   const handleSelect = (value: string) => {
-    // IME の未確定文字が後ろにくっつかないように、先にフォーカスを外す
-    inputRef.current?.blur();
     setOriginInput(value);
-    setIsOpen(false);
   };
 
   const handleKeyDown: React.KeyboardEventHandler<HTMLInputElement> = (e) => {
@@ -105,7 +102,6 @@ export const OriginQuestionScreen: React.FC<OriginQuestionScreenProps> = ({
             setActiveIndex(0);
           }}
           onFocus={() => setIsOpen(true)}
-          onBlur={() => setTimeout(() => setIsOpen(false), 100)}
           onKeyDown={handleKeyDown}
           placeholder=""
           className="w-full bg-transparent text-center text-[16px] text-[#2c2c2c] outline-none"

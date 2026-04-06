@@ -1,46 +1,8 @@
 import { useRef } from "react";
 import { useLocation } from "wouter";
-import { Camera, ChevronRight } from "lucide-react";
+import { Camera, ArrowRight } from "lucide-react";
 import { setWineCardImage } from "@/hooks/useWineCardImage";
 
-// Figmaデザインに基づくワイングラスSVGイラスト
-function WineGlassIllustration() {
-  return (
-    <svg
-      width="160"
-      height="200"
-      viewBox="0 0 160 200"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      aria-hidden="true"
-    >
-      {/* ボウル部分 */}
-      <path
-        d="M30 20 Q28 80 80 100 Q132 80 130 20 Z"
-        fill="#c8c0b0"
-        opacity="0.5"
-      />
-      {/* ワインの液面 */}
-      <path
-        d="M42 55 Q40 90 80 100 Q120 90 118 55 Z"
-        fill="#2c2c2c"
-        opacity="0.7"
-      />
-      {/* ステム */}
-      <rect x="74" y="100" width="12" height="70" fill="#2c2c2c" opacity="0.6" rx="6" />
-      {/* ベース */}
-      <ellipse cx="80" cy="175" rx="40" ry="10" fill="#2c2c2c" opacity="0.4" />
-      {/* ハイライト */}
-      <path
-        d="M50 35 Q48 70 75 85"
-        stroke="white"
-        strokeWidth="3"
-        strokeLinecap="round"
-        opacity="0.4"
-      />
-    </svg>
-  );
-}
 
 export default function ImageUploadPage() {
   const [, setLocation] = useLocation();
@@ -59,7 +21,7 @@ export default function ImageUploadPage() {
   };
 
   const handleSkip = () => {
-    setWineCardImage(null);
+    setWineCardImage("/wine-glass.png");
     setLocation("/name");
   };
 
@@ -78,7 +40,7 @@ export default function ImageUploadPage() {
 
         {/* ワイングラスイラスト */}
         <div className="flex items-center justify-center flex-1">
-          <WineGlassIllustration />
+          <img src="/wine-glass.png" alt="Wine glass" className="h-[220px] w-auto object-contain" />
         </div>
 
         {/* DIARY テキスト */}
@@ -115,7 +77,7 @@ export default function ImageUploadPage() {
             className="flex items-center gap-2 py-3 px-4 text-[14px] font-bold text-[#2c2c2c] hover:opacity-70 transition-opacity"
           >
             写真はないよ
-            <ChevronRight className="w-4 h-4" />
+            <ArrowRight className="w-4 h-4" />
           </button>
         </div>
       </div>

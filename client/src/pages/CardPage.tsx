@@ -1,7 +1,6 @@
-import { useRef, type ElementType } from "react";
+import { type ElementType } from "react";
 import { useLocation } from "wouter";
-import { toPng } from "html-to-image";
-import { MapPin, Grape, ShoppingCart, JapaneseYen, MessageSquare, Star, Wine, ChevronLeft } from "lucide-react";
+import { MapPin, Grape, ShoppingCart, JapaneseYen, MessageSquare, Star, Wine } from "lucide-react";
 import { useFlowParams } from "@/hooks/useFlowParams";
 import { getWineCardImage } from "@/hooks/useWineCardImage";
 import { useBottomInset } from "@/hooks/useBottomInset";
@@ -24,18 +23,10 @@ const THEME_BG: Record<ThemeKey, string> = {
 };
 
 // Figmaデザインに合わせたステッパー（完了状態）
-function CompleteStepper({ onBack }: { onBack: () => void }) {
+function CompleteStepper() {
   const totalSteps = 9;
   return (
-    <div className="relative flex items-center justify-center pt-8 pb-1">
-      <button
-        onClick={onBack}
-        className="text-[#4b6c3d] absolute left-8 flex items-center gap-1 p-1 transition-colors hover:opacity-70 text-[14px] font-bold"
-        aria-label="修正する"
-      >
-        <ChevronLeft className="size-5" />
-        修正する
-      </button>
+    <div className="flex items-center justify-center pt-8 pb-1">
       <div className="flex items-center gap-1.5">
         {Array.from({ length: totalSteps }).map((_, index) => (
           <div key={index}>
@@ -163,7 +154,6 @@ function WineInfoCard({
 
 export default function CardPage() {
   const [, setLocation] = useLocation();
-  const cardRef = useRef<HTMLDivElement>(null);
   const params = useFlowParams();
   const wineImageSrc = getWineCardImage();
   useBottomInset();
@@ -176,30 +166,6 @@ export default function CardPage() {
   const ratingNum = params.rating ? parseInt(params.rating, 10) : 0;
   const validRating = Number.isFinite(ratingNum) && ratingNum >= 1 && ratingNum <= 5 ? ratingNum : 0;
 
-  const handleSaveImage = async () => {
-    const node = cardRef.current;
-    if (!node) return;
-    try {
-      const isTouchDevice = "ontouchstart" in window || navigator.maxTouchPoints > 0;
-      const dataUrl = await toPng(node, { pixelRatio: 2, cacheBust: true });
-      if (isTouchDevice) {
-        // スマホ: 新しいタブで開く
-        const w = window.open();
-        if (w) {
-          w.document.write(`<img src="${dataUrl}" style="max-width:100%" />`);
-          w.document.title = "wine-card";
-        }
-      } else {
-        const a = document.createElement("a");
-        a.href = dataUrl;
-        a.download = `wine-card-${params.name || "untitled"}.png`;
-        a.click();
-      }
-    } catch {
-      alert("保存に失敗しました。");
-    }
-  };
-
   const handleBack = () => {
     if (window.history.length > 1) window.history.back();
     else setLocation("/comment");
@@ -208,13 +174,13 @@ export default function CardPage() {
   return (
     <div className="min-h-screen w-full flex justify-center sm:py-6 sm:px-4 bg-[#f5f1e8]">
       <div className="relative w-full h-screen bg-[#f5f1e8] overflow-hidden sm:max-w-[480px] sm:mx-auto sm:rounded-[24px] sm:shadow-2xl sm:max-h-[844px] sm:my-auto flex flex-col">
-        {/* ステッパー + 修正するボタン */}
-        <CompleteStepper onBack={handleBack} />
+        {/* ステッパー */}
+        <CompleteStepper />
 
         {/* カード表示エリア（スクロール可） */}
         <div className="flex-1 overflow-y-auto px-6 py-4 flex flex-col gap-4">
-          {/* ワインカード（画像保存対象） */}
-          <div ref={cardRef} className="w-full">
+          {/* ワインカード */}
+          <div className="w-full">
             <WineInfoCard
               name={params.name || "ワイン名未入力"}
               rating={validRating}
@@ -228,21 +194,13 @@ export default function CardPage() {
             />
           </div>
 
-          {/* 画像を保存ボタン */}
-          <button
-            type="button"
-            onClick={handleSaveImage}
-            className="w-full py-3 px-4 rounded-[16px] border-2 border-[#4b6c3d] text-[#4b6c3d] font-bold text-[14px] hover:bg-[#4b6c3d]/10 transition-colors"
-          >
-            画像を保存
-          </button>
         </div>
 
         {/* 底部: 最初からボタン */}
         <div className="flex-shrink-0">
           <NextFooterButton
-            onNext={() => setLocation("/")}
-            label="最初から"
+            onNext={handleBack}
+            label="修正する"
           />
         </div>
       </div>

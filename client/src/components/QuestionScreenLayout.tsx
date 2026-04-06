@@ -137,15 +137,23 @@ export function QuestionScreenLayout({
         {/* ワインボトル画像エリア */}
         <div className="pt-4 flex justify-center w-full">
           <div className="h-[340px] flex items-center justify-center w-full">
-            <div className="-rotate-[23deg]">
-              <div className="w-[110px] h-[300px] rounded-[32px] overflow-hidden shadow-xl flex items-center justify-center bg-[#1a1a2e]">
-                <img
-                  src={wineImageSrc}
-                  alt="Wine bottle"
-                  className="h-full w-auto object-contain"
-                />
+            {wineImageSrc === "/wine-glass.png" ? (
+              <img
+                src={wineImageSrc}
+                alt="Wine glass"
+                className="h-[260px] w-auto object-contain"
+              />
+            ) : (
+              <div className="-rotate-[23deg]">
+                <div className="w-[110px] h-[300px] rounded-[32px] overflow-hidden shadow-xl flex items-center justify-center bg-[#1a1a2e]">
+                  <img
+                    src={wineImageSrc}
+                    alt="Wine bottle"
+                    className="h-full w-auto object-contain"
+                  />
+                </div>
               </div>
-            </div>
+            )}
           </div>
         </div>
 
