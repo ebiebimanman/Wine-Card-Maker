@@ -1,144 +1,251 @@
-import { useRef } from "react";
+import { useRef, type ElementType } from "react";
 import { useLocation } from "wouter";
 import { toPng } from "html-to-image";
-import type { InsertWineCard } from "@shared/schema";
-import { QuestionScreenLayout } from "@/components/QuestionScreenLayout";
-import { WineCardPreview } from "@/components/WineCardPreview";
+import { MapPin, Grape, ShoppingCart, JapaneseYen, MessageSquare, Star, Wine, ChevronLeft } from "lucide-react";
 import { useFlowParams } from "@/hooks/useFlowParams";
 import { getWineCardImage } from "@/hooks/useWineCardImage";
-
-const RATING_LABELS: Record<string, string> = {
-  "1": "にがて",
-  "2": "リピなし",
-  "3": "ふつう",
-  "4": "また飲みたい",
-  "5": "殿堂入り",
-};
-
-const THEME_LABELS: Record<string, string> = {
-  red: "赤",
-  white: "白",
-  rose: "ロゼ",
-  other: "その他",
-};
+import { useBottomInset } from "@/hooks/useBottomInset";
+import { NextFooterButton } from "@/components/QuestionScreenLayout";
 
 type ThemeKey = "red" | "white" | "rose" | "other";
 
-function flowParamsToCardData(params: ReturnType<typeof useFlowParams>): {
-  cardData: InsertWineCard;
+const THEME_ACCENT: Record<ThemeKey, string> = {
+  red: "#ad1e1e",
+  white: "#8b7355",
+  rose: "#db7093",
+  other: "#6b7280",
+};
+
+const THEME_BG: Record<ThemeKey, string> = {
+  red: "#fdf6f6",
+  white: "#fffdf5",
+  rose: "#fff5f8",
+  other: "#f5f5f5",
+};
+
+// Figmaデザインに合わせたステッパー（完了状態）
+function CompleteStepper({ onBack }: { onBack: () => void }) {
+  const totalSteps = 9;
+  return (
+    <div className="relative flex items-center justify-center pt-8 pb-1">
+      <button
+        onClick={onBack}
+        className="text-[#4b6c3d] absolute left-8 flex items-center gap-1 p-1 transition-colors hover:opacity-70 text-[14px] font-bold"
+        aria-label="修正する"
+      >
+        <ChevronLeft className="size-5" />
+        修正する
+      </button>
+      <div className="flex items-center gap-1.5">
+        {Array.from({ length: totalSteps }).map((_, index) => (
+          <div key={index}>
+            {index === totalSteps - 1 ? (
+              <div className="bg-[#4b6c3d] flex size-8 items-center justify-center rounded-full border-[3px] border-[#f5f1e8] shadow-sm">
+                <Wine className="text-[#f5f1e8] size-4" />
+              </div>
+            ) : (
+              <div className="size-2.5 rounded-full bg-[#4b6c3d]/40" />
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// Figmaデザインに合わせたワインカード表示
+function WineInfoCard({
+  name,
+  rating,
+  origin,
+  variety,
+  location,
+  price,
+  comment,
+  theme,
+  imageSrc,
+}: {
+  name: string;
+  rating: number;
+  origin?: string;
+  variety?: string;
+  location?: string;
+  price?: string;
+  comment?: string;
   theme: ThemeKey;
-} {
-  const ratingNum = params.rating ? parseInt(params.rating, 10) : 0;
-  const validRating = Number.isFinite(ratingNum) && ratingNum >= 1 && ratingNum <= 5 ? ratingNum : 0;
-  const priceNum = params.price ? parseInt(params.price, 10) : undefined;
-  const validPrice =
-    priceNum != null && Number.isFinite(priceNum) && priceNum >= 0 ? priceNum : undefined;
-  const theme: ThemeKey =
-    params.theme === "red" || params.theme === "white" || params.theme === "rose" || params.theme === "other"
-      ? params.theme
-      : "other";
+  imageSrc?: string | null;
+}) {
+  const accentColor = THEME_ACCENT[theme];
+  const bgColor = THEME_BG[theme];
 
-  const cardData: InsertWineCard = {
-    wineName: params.name?.trim() || "ワイン名未入力",
-    myRating: validRating,
-    partnerRating: validRating,
-    themeColor: theme,
-    origin: params.origin?.trim() || undefined,
-    variety: params.variety?.trim() || undefined,
-    location: params.location?.trim() || undefined,
-    price: validPrice,
-    pairedFood: [],
-    myComment: params.comment?.trim() ? [params.comment.trim()] : [],
-    partnerComment: [],
-    wineImage: getWineCardImage() ?? undefined,
-  };
+  const infoRows = [
+    origin ? { icon: MapPin, text: origin } : null,
+    variety ? { icon: Grape, text: variety } : null,
+    location ? { icon: ShoppingCart, text: location } : null,
+    price
+      ? {
+          icon: JapaneseYen,
+          text: `${Number(price).toLocaleString()}円`,
+        }
+      : null,
+    comment ? { icon: MessageSquare, text: comment } : null,
+  ].filter(Boolean) as { icon: ElementType; text: string }[];
 
-  return { cardData, theme };
+  return (
+    <div
+      className="w-full rounded-[16px] overflow-hidden shadow-[0_8px_24px_rgba(75,108,61,0.15)] flex"
+      style={{ backgroundColor: bgColor }}
+    >
+      {/* 左: ワインボトル画像 */}
+      <div
+        className="w-[35%] flex-shrink-0 flex items-stretch overflow-hidden rounded-l-[16px]"
+        style={{ backgroundColor: "#e8e0d0", minHeight: 240 }}
+      >
+        {imageSrc ? (
+          <img
+            src={imageSrc}
+            alt="Wine"
+            className="w-full h-full object-cover"
+          />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center opacity-30">
+            <Wine className="w-12 h-12" style={{ color: accentColor }} />
+          </div>
+        )}
+      </div>
+
+      {/* 右: ワイン情報 */}
+      <div className="flex-1 p-4 flex flex-col gap-3">
+        {/* ワイン名 */}
+        <div>
+          <p
+            className="text-[18px] font-black leading-tight"
+            style={{ color: accentColor, fontFamily: "'Noto Sans JP', sans-serif" }}
+          >
+            {name}
+          </p>
+          {/* 評価スター */}
+          {rating > 0 && (
+            <div className="flex gap-1 mt-1">
+              {Array.from({ length: 5 }).map((_, i) => (
+                <Star
+                  key={i}
+                  className="w-4 h-4"
+                  fill={i < rating ? accentColor : "transparent"}
+                  stroke={i < rating ? accentColor : "#ddd"}
+                />
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* 情報行 */}
+        <div className="flex flex-col gap-1.5">
+          {infoRows.map(({ icon: Icon, text }, i) => (
+            <div key={i} className="flex items-start gap-1.5">
+              <Icon
+                className="w-4 h-4 flex-shrink-0 mt-0.5"
+                style={{ color: accentColor }}
+              />
+              <span
+                className="text-[12px] leading-snug break-words"
+                style={{ color: accentColor, fontFamily: "'Noto Sans JP', sans-serif" }}
+              >
+                {text}
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
 }
 
 export default function CardPage() {
   const [, setLocation] = useLocation();
   const cardRef = useRef<HTMLDivElement>(null);
   const params = useFlowParams();
-  const { cardData, theme } = flowParamsToCardData(params);
+  const wineImageSrc = getWineCardImage();
+  useBottomInset();
 
-  const {
-    theme: _theme,
-    name,
-    variety,
-    origin,
-    location: locationValue,
-    price,
-    rating,
-    comment,
-  } = params;
+  const theme: ThemeKey =
+    params.theme === "red" || params.theme === "white" || params.theme === "rose" || params.theme === "other"
+      ? params.theme
+      : "other";
 
-  const items: { label: string; value: string }[] = [];
-  if (_theme) items.push({ label: "種類", value: THEME_LABELS[_theme] ?? _theme });
-  if (name) items.push({ label: "名前", value: name });
-  if (variety) items.push({ label: "品種", value: variety });
-  if (origin) items.push({ label: "産地", value: origin });
-  if (locationValue) items.push({ label: "場所", value: locationValue });
-  if (price) {
-    const n = Number(price);
-    items.push({
-      label: "値段",
-      value: Number.isFinite(n) ? `${n.toLocaleString()}円` : price,
-    });
-  }
-  if (rating) items.push({ label: "評価", value: RATING_LABELS[rating] ?? rating });
-  if (comment) items.push({ label: "コメント", value: comment });
+  const ratingNum = params.rating ? parseInt(params.rating, 10) : 0;
+  const validRating = Number.isFinite(ratingNum) && ratingNum >= 1 && ratingNum <= 5 ? ratingNum : 0;
 
   const handleSaveImage = async () => {
     const node = cardRef.current;
-    if (!node) {
-      alert("保存に失敗しました。");
-      return;
-    }
+    if (!node) return;
     try {
-      const dataUrl = await toPng(node, { pixelRatio: 2 });
-      const a = document.createElement("a");
-      a.href = dataUrl;
-      a.download = "wine-card.png";
-      a.click();
+      const isTouchDevice = "ontouchstart" in window || navigator.maxTouchPoints > 0;
+      const dataUrl = await toPng(node, { pixelRatio: 2, cacheBust: true });
+      if (isTouchDevice) {
+        // スマホ: 新しいタブで開く
+        const w = window.open();
+        if (w) {
+          w.document.write(`<img src="${dataUrl}" style="max-width:100%" />`);
+          w.document.title = "wine-card";
+        }
+      } else {
+        const a = document.createElement("a");
+        a.href = dataUrl;
+        a.download = `wine-card-${params.name || "untitled"}.png`;
+        a.click();
+      }
     } catch {
       alert("保存に失敗しました。");
     }
   };
 
+  const handleBack = () => {
+    if (window.history.length > 1) window.history.back();
+    else setLocation("/comment");
+  };
+
   return (
-    <QuestionScreenLayout
-      stepIndex={10}
-      onBack={() => {
-        if (window.history.length > 1) window.history.back();
-        else setLocation("/");
-      }}
-      title="入力内容の確認"
-      onNext={() => setLocation("/")}
-    >
-      <div ref={cardRef} className="w-full flex justify-center bg-white rounded-[16px] p-4">
-        <WineCardPreview data={cardData} theme={theme} isTransparent={false} />
+    <div className="min-h-screen w-full flex justify-center sm:py-6 sm:px-4 bg-[#f5f1e8]">
+      <div className="relative w-full h-screen bg-[#f5f1e8] overflow-hidden sm:max-w-[480px] sm:mx-auto sm:rounded-[24px] sm:shadow-2xl sm:max-h-[844px] sm:my-auto flex flex-col">
+        {/* ステッパー + 修正するボタン */}
+        <CompleteStepper onBack={handleBack} />
+
+        {/* カード表示エリア（スクロール可） */}
+        <div className="flex-1 overflow-y-auto px-6 py-4 flex flex-col gap-4">
+          {/* ワインカード（画像保存対象） */}
+          <div ref={cardRef} className="w-full">
+            <WineInfoCard
+              name={params.name || "ワイン名未入力"}
+              rating={validRating}
+              origin={params.origin}
+              variety={params.variety}
+              location={params.location}
+              price={params.price}
+              comment={params.comment}
+              theme={theme}
+              imageSrc={wineImageSrc}
+            />
+          </div>
+
+          {/* 画像を保存ボタン */}
+          <button
+            type="button"
+            onClick={handleSaveImage}
+            className="w-full py-3 px-4 rounded-[16px] border-2 border-[#4b6c3d] text-[#4b6c3d] font-bold text-[14px] hover:bg-[#4b6c3d]/10 transition-colors"
+          >
+            画像を保存
+          </button>
+        </div>
+
+        {/* 底部: 最初からボタン */}
+        <div className="flex-shrink-0">
+          <NextFooterButton
+            onNext={() => setLocation("/")}
+            label="最初から"
+          />
+        </div>
       </div>
-      <button
-        type="button"
-        onClick={handleSaveImage}
-        className="w-full py-3 px-4 rounded-[16px] border-2 border-[#4b6c3d] text-[#4b6c3d] font-bold text-[14px] hover:bg-[#4b6c3d]/10 transition-colors"
-      >
-        画像を保存
-      </button>
-      <div className="w-full space-y-3 text-[14px] text-[#2c2c2c]">
-        {items.map(({ label, value }) => (
-          <p key={label} className="flex justify-between gap-4">
-            <span className="text-[#5c5246]">{label}</span>
-            <span className="font-medium text-right break-words max-w-[60%]">
-              {value}
-            </span>
-          </p>
-        ))}
-      </div>
-      <p className="text-center text-[12px] text-[#5c5246]">
-        つぎへでトップに戻ります
-      </p>
-    </QuestionScreenLayout>
+    </div>
   );
 }

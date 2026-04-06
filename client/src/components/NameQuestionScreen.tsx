@@ -1,11 +1,9 @@
 import React, { useMemo, useState, useRef, useEffect } from "react";
 import { motion } from "framer-motion";
-import { ChevronLeft, Wine } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { popularWines } from "@/data/popularWines";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { useBottomInset } from "@/hooks/useBottomInset";
-import { NextFooterButton } from "@/components/QuestionScreenLayout";
+import { BottomSheetQuestionLayout } from "@/components/BottomSheetQuestionLayout";
 
 // ローマ字 → ひらがなの簡易変換（主要なパターンのみ対応）
 const romanToHiragana = (input: string): string => {
@@ -323,192 +321,109 @@ export const NameQuestionScreen: React.FC<NameQuestionScreenProps> = ({
   const currentStep =
     stepIndex != null ? Math.max(0, Math.min(totalSteps - 1, stepIndex - 1)) : 0;
 
-  useBottomInset();
+  const header = (
+    <motion.div
+      layout
+      className={cn(
+        "w-full shrink-0 flex flex-col items-center gap-8",
+        isOpen ? "pb-0" : "pb-12",
+      )}
+    >
+      <motion.p
+        layout="position"
+        className="text-center text-[20px] font-bold text-[#2c2c2c]"
+      >
+        このワインの名前は？
+      </motion.p>
+      <motion.div
+        layout
+        className="relative w-full h-16 rounded-[16px] bg-[#f5f1e8] flex items-center justify-center px-4"
+      >
+        <label
+          className={cn(
+            "absolute left-1/2 -translate-x-1/2 text-center text-[#aca3a3] pointer-events-none transition-all duration-200 text-[14px] font-normal",
+            "origin-center",
+            hasText || isOpen
+              ? "top-1 text-[11px] tracking-wide"
+              : "top-1/2 -translate-y-1/2",
+          )}
+        >
+          ワイン名を入力
+        </label>
+        <input
+          ref={sheetInputRef}
+          type="text"
+          value={wineName}
+          onChange={(e) => {
+            setWineName(e.target.value);
+            setActiveIndex(0);
+          }}
+          onFocus={() => setIsOpen(true)}
+          onBlur={() => setTimeout(() => setIsOpen(false), 100)}
+          onKeyDown={handleKeyDown}
+          placeholder=""
+          className="w-full bg-transparent text-center text-[16px] text-[#2c2c2c] outline-none"
+        />
+      </motion.div>
+    </motion.div>
+  );
 
   return (
-    <div className="min-h-screen w-full flex justify-center sm:py-6 sm:px-4 bg-[#f5f1e8]">
-      <div className="relative w-full h-screen bg-[#f5f1e8] overflow-hidden sm:max-w-[480px] sm:mx-auto sm:rounded-[24px] sm:shadow-2xl sm:max-h-[844px] sm:my-auto">
-        {/* 上部ナビゲーション（戻る + プログレスドット） */}
+    <BottomSheetQuestionLayout
+      stepIndex={currentStep + 1}
+      onBack={handleBack}
+      isOpen={isOpen}
+      wineImageSrc={wineImageSrc}
+      onNext={handleNext}
+      header={header}
+    >
+      {/* 可変コンテンツ（サジェスト） */}
+      {isOpen && suggestions.length > 0 && (
         <motion.div
           layout
-          className="relative flex items-center justify-center pt-8 pb-1"
-          initial={false}
-          animate={{ opacity: isOpen ? 0 : 1 }}
+          className="w-full flex-1 min-h-0 flex flex-col self-stretch pb-4"
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: 8 }}
           transition={{ duration: 0.25, ease: "easeOut" }}
         >
-          {/* Back button - absolutely positioned at left 32px */}
-          <button
-            onClick={handleBack}
-            className="text-[#4b6c3d] absolute left-8 flex items-center justify-center p-1 transition-colors hover:opacity-70"
-            aria-label="戻る"
-          >
-            <ChevronLeft className="size-6" />
-          </button>
-
-          {/* Centered progress dots */}
-          <div className="flex items-center gap-1.5">
-            {Array.from({ length: totalSteps }).map((_, index) => (
-              <div key={index}>
-                {index === currentStep ? (
-                  <div className="bg-[#4b6c3d] flex size-8 items-center justify-center rounded-full">
-                    <Wine className="text-[#f5f1e8] size-4" />
-                  </div>
-                ) : (
-                  <div
-                    className={`size-2.5 rounded-full ${
-                      index < currentStep
-                        ? "bg-[#4b6c3d]/40"
-                        : "bg-[#4b6c3d]/10"
-                    }`}
-                  />
-                )}
-              </div>
-            ))}
-          </div>
-        </motion.div>
-
-        {/* ワインボトル画像エリア */}
-        <motion.div
-          layout
-          className="pt-4 flex justify-center w-full"
-          initial={false}
-          animate={{ opacity: isOpen ? 0 : 1 }}
-          transition={{ duration: 0.25, ease: "easeOut" }}
-        >
-          <div className="h-[376px] flex items-center justify-center w-full">
-            <div className="w-[250px] h-[340px] flex items-center justify-center">
-              <div className="-rotate-[23deg]">
-                <div className="w-[130px] h-[330px] bg-[#111827] rounded-[40px] overflow-hidden shadow-xl flex items-center justify-center">
-                  <img
-                    src={wineImageSrc}
-                    alt="Wine bottle"
-                    className="h-full w-auto object-contain"
-                  />
-                </div>
-              </div>
+          <div className="pt-2">
+            <div className="flex-1 min-h-0 overflow-hidden rounded-2xl bg-[#fffbf1] ring-1 ring-[#e0d8c8]/50 shadow-[0_8px_24px_-8px_rgba(75,108,61,0.2)]">
+              <ScrollArea className="flex-1 w-full">
+                <ul
+                  id="suggestions-list"
+                  role="listbox"
+                  className="flex flex-col py-2"
+                >
+                  {suggestions.map((name, index) => (
+                    <li
+                      key={`${name}-${index}`}
+                      role="option"
+                      aria-selected={index === activeIndex}
+                    >
+                      <button
+                        type="button"
+                        onMouseDown={(e) => e.preventDefault()}
+                        onClick={() => handleSelect(name)}
+                        onMouseEnter={() => setActiveIndex(index)}
+                        className={cn(
+                          "w-full min-h-[44px] flex items-center justify-center px-6 py-4 text-base transition-colors duration-150",
+                          index === activeIndex
+                            ? "bg-[#f5f1e8] text-[#2c2c2c] rounded-xl mx-2 w-[calc(100%-16px)]"
+                            : "text-[#5c5246] hover:bg-[#f5f1e8]/50"
+                        )}
+                      >
+                        {name}
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              </ScrollArea>
             </div>
           </div>
         </motion.div>
-
-        {/* 下部パネル（カード + 16px スペーサ + つぎへボタン） */}
-        <motion.div
-          layout
-          className={cn(
-            "absolute left-0 right-0 w-full overflow-hidden rounded-t-[32px] px-0 flex flex-col bg-[#fffbf1] shadow-[0_8px_24px_-8px_rgba(75,108,61,0.2)]",
-            isOpen ? "top-0 bottom-0" : "bottom-0 h-fit",
-          )}
-          transition={{ layout: { duration: 0.4, ease: "easeOut" } }}
-        >
-          <motion.div
-            layout
-            layoutId="name-bottom-panel"
-            className={cn(
-              "relative w-full rounded-none px-8 pt-12 pb-6 flex flex-col gap-2 items-center",
-              isOpen ? "flex-1 min-h-0" : "",
-            )}
-            transition={{ layout: { duration: 0.35, ease: "easeOut" } }}
-          >
-            {/* 固定ヘッダー（タイトル + TextInput）— flex + gap で間隔 32px を明示 */}
-            <motion.div
-              layout
-              className={cn(
-                "w-full shrink-0 flex flex-col items-center gap-8",
-                isOpen ? "pb-0" : "pb-12",
-              )}
-            >
-              <motion.p
-                layout="position"
-                className="text-center text-[20px] font-bold text-[#2c2c2c]"
-              >
-                このワインの名前は？
-              </motion.p>
-              <motion.div
-                layout
-                className="relative w-full h-16 rounded-[16px] bg-[#f5f1e8] flex items-center justify-center px-4"
-              >
-                <label
-                  className={cn(
-                    "absolute left-1/2 -translate-x-1/2 text-center text-[#aca3a3] pointer-events-none transition-all duration-200 text-[14px] font-normal",
-                    "origin-center",
-                    hasText || isOpen
-                      ? "top-1 text-[11px] tracking-wide"
-                      : "top-1/2 -translate-y-1/2",
-                  )}
-                >
-                  ワイン名を入力
-                </label>
-                <input
-                  ref={sheetInputRef}
-                  type="text"
-                  value={wineName}
-                  onChange={(e) => {
-                    setWineName(e.target.value);
-                    setActiveIndex(0);
-                  }}
-                  onFocus={() => setIsOpen(true)}
-                  onBlur={() => setTimeout(() => setIsOpen(false), 100)}
-                  onKeyDown={handleKeyDown}
-                  placeholder=""
-                  className="w-full bg-transparent text-center text-[16px] text-[#2c2c2c] outline-none"
-                />
-              </motion.div>
-            </motion.div>
-
-            {/* 可変コンテンツ（サジェスト） */}
-            {isOpen && suggestions.length > 0 && (
-              <motion.div
-                layout
-                className="w-full flex-1 min-h-0 flex flex-col self-stretch"
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 8 }}
-                transition={{ duration: 0.25, ease: "easeOut" }}
-              >
-                {/* 1. シャドウ付きカードを ScrollArea の外側に出す */}
-                <div className="pt-2 pb-0">
-                  <div className="mb-4 flex-1 min-h-0 overflow-hidden rounded-2xl bg-[#fffbf1] ring-1 ring-[#e0d8c8]/50 shadow-[0_8px_24px_-8px_rgba(75,108,61,0.2)]">
-                    {/* 2. 内側だけを ScrollArea でスクロールさせる */}
-                    <ScrollArea className="flex-1 w-full">
-                      <ul
-                        id="suggestions-list"
-                        role="listbox"
-                        className="flex flex-col py-2"
-                      >
-                        {suggestions.map((name, index) => (
-                          <li
-                            key={`${name}-${index}`}
-                            role="option"
-                            aria-selected={index === activeIndex}
-                          >
-                            <button
-                              type="button"
-                              onMouseDown={(e) => e.preventDefault()}
-                              onClick={() => handleSelect(name)}
-                              onMouseEnter={() => setActiveIndex(index)}
-                              className={cn(
-                                "w-full min-h-[44px] flex items-center justify-center px-6 py-4 text-base transition-colors duration-150",
-                                index === activeIndex
-                                  ? "bg-[#f5f1e8] text-[#2c2c2c] rounded-xl mx-2 w-[calc(100%-16px)]"
-                                  : "text-[#5c5246] hover:bg-[#f5f1e8]/50"
-                              )}
-                            >
-                              {name}
-                            </button>
-                          </li>
-                        ))}
-                      </ul>
-                    </ScrollArea>
-                  </div>
-                </div>
-              </motion.div>
-            )}
-          </motion.div>
-          <motion.div layout="position" className="relative z-10">
-            <NextFooterButton onNext={handleNext} />
-          </motion.div>
-        </motion.div>
-      </div>
-    </div>
+      )}
+    </BottomSheetQuestionLayout>
   );
 };
 
