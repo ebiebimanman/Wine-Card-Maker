@@ -63,7 +63,7 @@ export function NextFooterButton({
   return (
     <button
       type="button"
-      className="w-full min-h-[64px] py-4 px-8 flex items-center justify-center gap-2 text-[#f5f1e8] bg-[#4b6c3d] cursor-pointer border-0 pb-[max(1rem,env(safe-area-inset-bottom,0px),var(--browser-bottom-inset,0px))]"
+      className="w-full min-h-[64px] py-4 px-8 flex items-center justify-center gap-2 text-[#f5f1e8] bg-[#4b6c3d] cursor-pointer border-0 pb-[max(1rem,env(safe-area-inset-bottom,0px))]"
       onClick={onNext}
     >
       <span className="text-[16px] font-bold">{label}</span>

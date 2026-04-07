@@ -129,9 +129,9 @@ export const VarietyQuestionScreen: React.FC<VarietyQuestionScreenProps> = ({
           exit={{ opacity: 0, y: 8 }}
           transition={{ duration: 0.25, ease: "easeOut" }}
         >
-          <div className="pt-2">
+          <div className="pt-2 flex flex-col flex-1 min-h-0">
             <div className="flex-1 min-h-0 overflow-hidden rounded-2xl bg-[#fffbf1] ring-1 ring-[#e0d8c8]/50 shadow-[0_8px_24px_-8px_rgba(75,108,61,0.2)]">
-              <ScrollArea className="flex-1 w-full">
+              <ScrollArea className="h-full w-full">
                 <ul
                   id="variety-suggestions-list"
                   role="listbox"
