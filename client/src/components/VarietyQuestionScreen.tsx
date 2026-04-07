@@ -19,7 +19,7 @@ export const VarietyQuestionScreen: React.FC<VarietyQuestionScreenProps> = ({
   onNext,
 }) => {
   const [varietyInput, setVarietyInput] = useState("");
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(true);
   const [activeIndex, setActiveIndex] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
 

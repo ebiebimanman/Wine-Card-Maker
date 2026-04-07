@@ -19,7 +19,7 @@ export const LocationQuestionScreen: React.FC<
   onNext,
 }) => {
   const [locationInput, setLocationInput] = useState("");
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(true);
   const inputRef = useRef<HTMLInputElement>(null);
 
   const hasText = locationInput.trim().length > 0;
@@ -67,7 +67,6 @@ export const LocationQuestionScreen: React.FC<
           value={locationInput}
           onChange={(e) => setLocationInput(e.target.value)}
           onFocus={() => setIsOpen(true)}
-          onBlur={() => setTimeout(() => setIsOpen(false), 100)}
           placeholder=""
           className="w-full bg-transparent text-center text-[16px] text-[#2c2c2c] outline-none placeholder:text-[#aca3a3]"
         />

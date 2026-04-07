@@ -245,7 +245,7 @@ export const NameQuestionScreen: React.FC<NameQuestionScreenProps> = ({
   onNext,
 }) => {
   const [wineName, setWineName] = useState("");
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(true);
   const [activeIndex, setActiveIndex] = useState(0);
   const sheetInputRef = useRef<HTMLInputElement>(null);
 

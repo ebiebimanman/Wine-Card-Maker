@@ -19,7 +19,7 @@ export const OriginQuestionScreen: React.FC<OriginQuestionScreenProps> = ({
   onNext,
 }) => {
   const [originInput, setOriginInput] = useState("");
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(true);
   const [activeIndex, setActiveIndex] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
 

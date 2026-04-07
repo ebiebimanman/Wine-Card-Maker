@@ -196,6 +196,16 @@ export const BottomSheetQuestionLayout: React.FC<
             )}
             transition={{ layout: { duration: 0.35, ease: "easeOut" } }}
           >
+            {/* シート内の戻るボタン（isOpen時のみ表示） */}
+            {isOpen && !hideBackButton && (
+              <button
+                onClick={onBack}
+                className="absolute top-3 left-4 text-[#4b6c3d] flex items-center justify-center p-1 transition-colors hover:opacity-70"
+                aria-label="戻る"
+              >
+                <ChevronLeft className="size-6" />
+              </button>
+            )}
             {header}
             {children}
           </motion.div>
