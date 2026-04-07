@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   ChevronLeft,
   ChevronRight,
@@ -13,7 +13,6 @@ import {
   Camera,
   type LucideIcon,
 } from "lucide-react";
-import { useBottomInset } from "@/hooks/useBottomInset";
 
 // Figmaデザインに合わせたステップ別アイコン
 // stepIndex: 1=画像, 2=名前, 3=種類, 4=産地, 5=品種, 6=場所, 7=価格, 8=評価, 9=コメント, 10=完了
@@ -72,6 +71,26 @@ export function NextFooterButton({
   );
 }
 
+function useVisualViewport() {
+  const [vp, setVp] = useState(() => ({
+    top: 0,
+    height: typeof window !== "undefined" ? window.innerHeight : 812,
+  }));
+  useEffect(() => {
+    const vv = window.visualViewport;
+    if (!vv) return;
+    const update = () => setVp({ top: vv.offsetTop, height: vv.height });
+    update();
+    vv.addEventListener("resize", update);
+    vv.addEventListener("scroll", update);
+    return () => {
+      vv.removeEventListener("resize", update);
+      vv.removeEventListener("scroll", update);
+    };
+  }, []);
+  return vp;
+}
+
 export function QuestionScreenLayout({
   stepIndex,
   onBack,
@@ -82,7 +101,7 @@ export function QuestionScreenLayout({
   nextDisabled = false,
   wineImageSrc = "/wine-bottle.png",
 }: QuestionScreenLayoutProps) {
-  useBottomInset();
+  const vp = useVisualViewport();
   const totalSteps = 9;
   // stepIndexは1始まり、内部のドット配列は0始まり
   // ステッパーはstepIndex 2〜10の9ステップ（画像は除外）
@@ -91,8 +110,11 @@ export function QuestionScreenLayout({
   const ActiveIcon = STEP_ICONS[stepIndex] ?? Wine;
 
   return (
-    <div className="min-h-screen w-full flex justify-center sm:py-6 sm:px-4 bg-[#f5f1e8]">
-      <div className="relative w-full h-dvh bg-[#f5f1e8] overflow-hidden sm:max-w-[480px] sm:mx-auto sm:rounded-[24px] sm:shadow-2xl sm:max-h-[844px] sm:my-auto">
+    <div
+      className="fixed left-0 right-0 w-full flex justify-center sm:py-6 sm:px-4 bg-[#f5f1e8]"
+      style={{ top: vp.top, height: vp.height }}
+    >
+      <div className="relative w-full h-full bg-[#f5f1e8] overflow-hidden sm:max-w-[480px] sm:mx-auto sm:rounded-[24px] sm:shadow-2xl sm:max-h-[844px] sm:my-auto">
         {/* 上部ナビゲーション（戻る + プログレスドット） */}
         <div className="relative flex items-center justify-center pt-8 pb-1">
           {!hideBackButton && (

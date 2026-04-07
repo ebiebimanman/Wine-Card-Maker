@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import {
   ChevronLeft,
@@ -14,7 +14,6 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useBottomInset } from "@/hooks/useBottomInset";
 import { NextFooterButton } from "@/components/QuestionScreenLayout";
 
 const STEP_ICONS: Record<number, LucideIcon> = {
@@ -51,6 +50,33 @@ interface BottomSheetQuestionLayoutProps {
   nextDisabled?: boolean;
 }
 
+/** visualViewport を追跡して、キーボード表示時でも正確なビューポート位置・高さを返す */
+function useVisualViewport() {
+  const [vp, setVp] = useState(() => ({
+    top: 0,
+    height: typeof window !== "undefined" ? window.innerHeight : 812,
+  }));
+
+  useEffect(() => {
+    const vv = window.visualViewport;
+    if (!vv) return;
+
+    const update = () => {
+      setVp({ top: vv.offsetTop, height: vv.height });
+    };
+
+    update();
+    vv.addEventListener("resize", update);
+    vv.addEventListener("scroll", update);
+    return () => {
+      vv.removeEventListener("resize", update);
+      vv.removeEventListener("scroll", update);
+    };
+  }, []);
+
+  return vp;
+}
+
 export const BottomSheetQuestionLayout: React.FC<
   BottomSheetQuestionLayoutProps
 > = ({
@@ -64,15 +90,23 @@ export const BottomSheetQuestionLayout: React.FC<
   onNext,
   nextDisabled = false,
 }) => {
-  useBottomInset();
+  const vp = useVisualViewport();
 
   const totalSteps = 9;
   const currentDot = Math.max(0, Math.min(totalSteps - 1, stepIndex - 2));
   const ActiveIcon = STEP_ICONS[stepIndex] ?? Wine;
 
   return (
-    <div className="min-h-screen w-full flex justify-center sm:py-6 sm:px-4 bg-[#f5f1e8]">
-      <div className="relative w-full h-dvh bg-[#f5f1e8] overflow-hidden sm:max-w-[480px] sm:mx-auto sm:rounded-[24px] sm:shadow-2xl sm:max-h-[844px] sm:my-auto">
+    /*
+     * position: fixed + visualViewport による top/height 指定で、
+     * iOS Safari のキーボード表示時にも正確にビューポートを埋める。
+     * sm: ブレークポイント以上は中央揃え・最大幅でデスクトップ表示。
+     */
+    <div
+      className="fixed left-0 right-0 w-full flex justify-center sm:py-6 sm:px-4 bg-[#f5f1e8]"
+      style={{ top: vp.top, height: vp.height }}
+    >
+      <div className="relative w-full bg-[#f5f1e8] overflow-hidden sm:max-w-[480px] sm:mx-auto sm:rounded-[24px] sm:shadow-2xl sm:max-h-[844px] sm:my-auto h-full">
         {/* 上部ナビゲーション（戻る + プログレスドット） */}
         <motion.div
           layout
@@ -173,4 +207,3 @@ export const BottomSheetQuestionLayout: React.FC<
     </div>
   );
 };
-

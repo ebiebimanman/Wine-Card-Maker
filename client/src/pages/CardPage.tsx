@@ -1,10 +1,9 @@
-import { type ElementType, useRef, useState, useCallback } from "react";
+import { type ElementType, useRef, useState, useCallback, useEffect } from "react";
 import { useLocation } from "wouter";
 import { MapPin, Grape, ShoppingCart, JapaneseYen, MessageSquare, Star, Wine } from "lucide-react";
 import { toPng } from "html-to-image";
 import { useFlowParams } from "@/hooks/useFlowParams";
 import { getWineCardImage } from "@/hooks/useWineCardImage";
-import { useBottomInset } from "@/hooks/useBottomInset";
 import { NextFooterButton } from "@/components/QuestionScreenLayout";
 import {
   Dialog,
@@ -160,11 +159,31 @@ function WineInfoCard({
   );
 }
 
+function useVisualViewport() {
+  const [vp, setVp] = useState(() => ({
+    top: 0,
+    height: typeof window !== "undefined" ? window.innerHeight : 812,
+  }));
+  useEffect(() => {
+    const vv = window.visualViewport;
+    if (!vv) return;
+    const update = () => setVp({ top: vv.offsetTop, height: vv.height });
+    update();
+    vv.addEventListener("resize", update);
+    vv.addEventListener("scroll", update);
+    return () => {
+      vv.removeEventListener("resize", update);
+      vv.removeEventListener("scroll", update);
+    };
+  }, []);
+  return vp;
+}
+
 export default function CardPage() {
   const [, setLocation] = useLocation();
   const params = useFlowParams();
   const wineImageSrc = getWineCardImage();
-  useBottomInset();
+  const vp = useVisualViewport();
 
   const cardRef = useRef<HTMLDivElement>(null);
   const longPressTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -230,8 +249,11 @@ export default function CardPage() {
   };
 
   return (
-    <div className="min-h-screen w-full flex justify-center sm:py-6 sm:px-4 bg-[#f5f1e8]">
-      <div className="relative w-full h-dvh bg-[#f5f1e8] overflow-hidden sm:max-w-[480px] sm:mx-auto sm:rounded-[24px] sm:shadow-2xl sm:max-h-[844px] sm:my-auto flex flex-col">
+    <div
+      className="fixed left-0 right-0 w-full flex justify-center sm:py-6 sm:px-4 bg-[#f5f1e8]"
+      style={{ top: vp.top, height: vp.height }}
+    >
+      <div className="relative w-full h-full bg-[#f5f1e8] overflow-hidden sm:max-w-[480px] sm:mx-auto sm:rounded-[24px] sm:shadow-2xl sm:max-h-[844px] sm:my-auto flex flex-col">
         {/* ステッパー */}
         <CompleteStepper />
 
