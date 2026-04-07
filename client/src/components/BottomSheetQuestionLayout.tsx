@@ -72,7 +72,7 @@ export const BottomSheetQuestionLayout: React.FC<
 
   return (
     <div className="min-h-screen w-full flex justify-center sm:py-6 sm:px-4 bg-[#f5f1e8]">
-      <div className="relative w-full h-screen bg-[#f5f1e8] overflow-hidden sm:max-w-[480px] sm:mx-auto sm:rounded-[24px] sm:shadow-2xl sm:max-h-[844px] sm:my-auto">
+      <div className="relative w-full h-dvh bg-[#f5f1e8] overflow-hidden sm:max-w-[480px] sm:mx-auto sm:rounded-[24px] sm:shadow-2xl sm:max-h-[844px] sm:my-auto">
         {/* 上部ナビゲーション（戻る + プログレスドット） */}
         <motion.div
           layout
@@ -166,7 +166,7 @@ export const BottomSheetQuestionLayout: React.FC<
             {children}
           </motion.div>
           <motion.div layout="position" className="relative z-10">
-            <NextFooterButton onNext={onNext} disabled={nextDisabled} />
+            <NextFooterButton onNext={onNext} />
           </motion.div>
         </motion.div>
       </div>

@@ -117,7 +117,7 @@ export const VarietyQuestionScreen: React.FC<VarietyQuestionScreenProps> = ({
       isOpen={isOpen}
       wineImageSrc={wineImageSrc}
       onNext={handleNext}
-      nextDisabled={!varietyInput.trim()}
+      nextDisabled={false}
       header={header}
     >
       {isOpen && suggestions.length > 0 && (

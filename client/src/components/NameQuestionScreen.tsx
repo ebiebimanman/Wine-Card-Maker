@@ -279,10 +279,7 @@ export const NameQuestionScreen: React.FC<NameQuestionScreenProps> = ({
   }, [wineName]);
 
   const handleSelect = (name: string) => {
-    // IME の未確定文字が後ろにくっつかないように、先にフォーカスを外す
-    sheetInputRef.current?.blur();
     setWineName(name);
-    setIsOpen(false);
   };
 
   const handleKeyDown: React.KeyboardEventHandler<HTMLInputElement> = (e) => {
@@ -359,7 +356,6 @@ export const NameQuestionScreen: React.FC<NameQuestionScreenProps> = ({
             setActiveIndex(0);
           }}
           onFocus={() => setIsOpen(true)}
-          onBlur={() => setTimeout(() => setIsOpen(false), 100)}
           onKeyDown={handleKeyDown}
           placeholder=""
           className="w-full bg-transparent text-center text-[16px] text-[#2c2c2c] outline-none"

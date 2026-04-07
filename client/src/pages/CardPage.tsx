@@ -1,10 +1,18 @@
-import { type ElementType } from "react";
+import { type ElementType, useRef, useState, useCallback } from "react";
 import { useLocation } from "wouter";
 import { MapPin, Grape, ShoppingCart, JapaneseYen, MessageSquare, Star, Wine } from "lucide-react";
+import { toPng } from "html-to-image";
 import { useFlowParams } from "@/hooks/useFlowParams";
 import { getWineCardImage } from "@/hooks/useWineCardImage";
 import { useBottomInset } from "@/hooks/useBottomInset";
 import { NextFooterButton } from "@/components/QuestionScreenLayout";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
 
 type ThemeKey = "red" | "white" | "rose" | "other";
 
@@ -158,6 +166,56 @@ export default function CardPage() {
   const wineImageSrc = getWineCardImage();
   useBottomInset();
 
+  const cardRef = useRef<HTMLDivElement>(null);
+  const longPressTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [savedImageUrl, setSavedImageUrl] = useState<string | null>(null);
+  const [isImageModalOpen, setIsImageModalOpen] = useState(false);
+  const [isGenerating, setIsGenerating] = useState(false);
+
+  const generateAndShowCard = useCallback(async () => {
+    if (!cardRef.current || isGenerating) return;
+    setIsGenerating(true);
+    try {
+      const images = cardRef.current.querySelectorAll("img");
+      await Promise.all(
+        Array.from(images).map((img) => {
+          if (img.complete) return Promise.resolve();
+          return new Promise<void>((resolve) => {
+            img.onload = () => resolve();
+            img.onerror = () => resolve();
+            setTimeout(() => resolve(), 5000);
+          });
+        })
+      );
+      const dataUrl = await toPng(cardRef.current, {
+        backgroundColor: "#f5f1e8",
+        quality: 1.0,
+        pixelRatio: 2,
+        cacheBust: true,
+      });
+      setSavedImageUrl(dataUrl);
+      setIsImageModalOpen(true);
+    } catch (e) {
+      console.error("Card image generation failed:", e);
+    } finally {
+      setIsGenerating(false);
+    }
+  }, [isGenerating]);
+
+  const handleCardTouchStart = () => {
+    longPressTimerRef.current = setTimeout(() => {
+      longPressTimerRef.current = null;
+      generateAndShowCard();
+    }, 600);
+  };
+
+  const handleCardTouchCancel = () => {
+    if (longPressTimerRef.current) {
+      clearTimeout(longPressTimerRef.current);
+      longPressTimerRef.current = null;
+    }
+  };
+
   const theme: ThemeKey =
     params.theme === "red" || params.theme === "white" || params.theme === "rose" || params.theme === "other"
       ? params.theme
@@ -173,14 +231,20 @@ export default function CardPage() {
 
   return (
     <div className="min-h-screen w-full flex justify-center sm:py-6 sm:px-4 bg-[#f5f1e8]">
-      <div className="relative w-full h-screen bg-[#f5f1e8] overflow-hidden sm:max-w-[480px] sm:mx-auto sm:rounded-[24px] sm:shadow-2xl sm:max-h-[844px] sm:my-auto flex flex-col">
+      <div className="relative w-full h-dvh bg-[#f5f1e8] overflow-hidden sm:max-w-[480px] sm:mx-auto sm:rounded-[24px] sm:shadow-2xl sm:max-h-[844px] sm:my-auto flex flex-col">
         {/* ステッパー */}
         <CompleteStepper />
 
         {/* カード表示エリア（スクロール可） */}
         <div className="flex-1 overflow-y-auto px-6 py-4 flex flex-col gap-4">
-          {/* ワインカード */}
-          <div className="w-full">
+          {/* ワインカード（長押しで保存） */}
+          <div
+            ref={cardRef}
+            className="w-full select-none"
+            onTouchStart={handleCardTouchStart}
+            onTouchEnd={handleCardTouchCancel}
+            onTouchMove={handleCardTouchCancel}
+          >
             <WineInfoCard
               name={params.name || "ワイン名未入力"}
               rating={validRating}
@@ -193,10 +257,10 @@ export default function CardPage() {
               imageSrc={wineImageSrc}
             />
           </div>
-
+          <p className="text-center text-xs text-[#a09080]">長押しで画像を保存</p>
         </div>
 
-        {/* 底部: 最初からボタン */}
+        {/* 底部: 修正するボタン */}
         <div className="flex-shrink-0">
           <NextFooterButton
             onNext={handleBack}
@@ -204,6 +268,28 @@ export default function CardPage() {
           />
         </div>
       </div>
+
+      {/* 画像保存モーダル */}
+      <Dialog open={isImageModalOpen} onOpenChange={setIsImageModalOpen}>
+        <DialogContent className="max-w-[92vw] max-h-[92vh] p-4">
+          <DialogHeader>
+            <DialogTitle>ワインカード</DialogTitle>
+            <DialogDescription>
+              画像を長押しして「写真に保存」を選択してください
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex flex-col items-center gap-4">
+            {savedImageUrl && (
+              <img
+                src={savedImageUrl}
+                alt="ワインカード"
+                className="max-w-full max-h-[65vh] object-contain rounded-xl"
+                draggable={false}
+              />
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

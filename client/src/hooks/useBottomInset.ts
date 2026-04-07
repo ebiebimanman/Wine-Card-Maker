@@ -24,9 +24,12 @@ export function useBottomInset() {
     const vv = window.visualViewport;
     vv.addEventListener("resize", updateBottomInset);
     vv.addEventListener("scroll", updateBottomInset);
+    // ウィンドウリサイズ（アドレスバー出入り含む）でも更新
+    window.addEventListener("resize", updateBottomInset);
     return () => {
       vv.removeEventListener("resize", updateBottomInset);
       vv.removeEventListener("scroll", updateBottomInset);
+      window.removeEventListener("resize", updateBottomInset);
     };
   }, []);
 }

@@ -7,7 +7,7 @@ import { useFlowParams, buildFlowQuery } from "@/hooks/useFlowParams";
 export default function RatingPage() {
   const [, setLocation] = useLocation();
   const { theme, name, variety, origin, location, price } = useFlowParams();
-  const [rating, setRating] = useState(0);
+  const [rating, setRating] = useState(3);
 
   return (
     <QuestionScreenLayout

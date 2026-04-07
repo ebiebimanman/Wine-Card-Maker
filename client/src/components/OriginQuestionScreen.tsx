@@ -117,7 +117,7 @@ export const OriginQuestionScreen: React.FC<OriginQuestionScreenProps> = ({
       isOpen={isOpen}
       wineImageSrc={wineImageSrc}
       onNext={handleNext}
-      nextDisabled={!originInput.trim()}
+      nextDisabled={false}
       header={header}
     >
       {isOpen && suggestions.length > 0 && (

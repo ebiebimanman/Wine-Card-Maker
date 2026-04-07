@@ -82,7 +82,7 @@ export const LocationQuestionScreen: React.FC<
       isOpen={isOpen}
       wineImageSrc={wineImageSrc}
       onNext={handleNext}
-      nextDisabled={!locationInput.trim()}
+      nextDisabled={false}
       header={header}
     >
       {/* 場所は現状サジェストなしなので可変コンテンツは空 */}
