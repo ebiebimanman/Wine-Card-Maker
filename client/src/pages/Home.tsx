@@ -29,6 +29,7 @@ import { WineCardPreview } from "@/components/WineCardPreview";
 import { popularWines } from "@/data/popularWines";
 import { wineOrigins } from "@/data/wineOrigins";
 import { wineVarieties } from "@/data/wineVarieties";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 // ユニオン型の生成
 type FoodOption = typeof PAIRED_FOOD_OPTIONS[number];
@@ -216,6 +217,80 @@ export default function Home() {
   const [selectedLocationIndex, setSelectedLocationIndex] = useState(-1);
   const locationSuggestionsRef = useRef<HTMLDivElement>(null);
 
+  const isMobile = useIsMobile();
+  const [keyboardHeight, setKeyboardHeight] = useState(0);
+  const longPressTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    if (!window.visualViewport) return;
+    const handler = () => {
+      const vv = window.visualViewport!;
+      // キーボードおよびアドレスバーの両方を吸収：ビジュアルビューポートの下端がレイアウトビューポートの下端より上にある分だけ bottom をずらす
+      const offsetFromBottom = window.innerHeight - vv.height - vv.offsetTop;
+      setKeyboardHeight(Math.max(0, offsetFromBottom));
+    };
+    handler(); // 初回即時実行
+    window.visualViewport.addEventListener("resize", handler);
+    window.visualViewport.addEventListener("scroll", handler);
+    window.addEventListener("resize", handler); // アドレスバー出入り時にも発火
+    return () => {
+      window.visualViewport!.removeEventListener("resize", handler);
+      window.visualViewport!.removeEventListener("scroll", handler);
+      window.removeEventListener("resize", handler);
+    };
+  }, []);
+
+  // カードプレビューへの長押し → 画像をモーダルで表示
+  const generateAndShowCardImage = async () => {
+    if (!cardRef.current) return;
+    try {
+      const images = cardRef.current.querySelectorAll("img");
+      await Promise.all(
+        Array.from(images).map((img) => {
+          if (img.complete) return Promise.resolve();
+          return new Promise<void>((resolve) => {
+            img.onload = () => resolve();
+            img.onerror = () => resolve();
+            setTimeout(() => resolve(), 5000);
+          });
+        })
+      );
+      const dataUrl = await toPng(cardRef.current, {
+        backgroundColor: "#F5F5F0",
+        quality: 1.0,
+        pixelRatio: 2,
+        cacheBust: true,
+        filter: (node) => !(node as HTMLElement).classList?.contains("hidden"),
+      });
+      setSavedImageUrl(dataUrl);
+      setIsImageModalOpen(true);
+      toast({
+        title: "画像を生成しました",
+        description: "画像を長押しして「写真に保存」を選択してください。",
+      });
+    } catch {
+      toast({
+        title: "保存に失敗しました",
+        description: "もう一度お試しください。",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleCardTouchStart = () => {
+    longPressTimerRef.current = setTimeout(() => {
+      longPressTimerRef.current = null;
+      generateAndShowCardImage();
+    }, 600);
+  };
+
+  const handleCardTouchCancel = () => {
+    if (longPressTimerRef.current) {
+      clearTimeout(longPressTimerRef.current);
+      longPressTimerRef.current = null;
+    }
+  };
+
   const form = useForm<InsertWineCard>({
     resolver: zodResolver(insertWineCardSchema),
     defaultValues: {
@@ -393,7 +468,7 @@ export default function Home() {
             className="space-y-8 order-2 lg:order-1"
           >
             <Card className="p-6 md:p-8 shadow-xl bg-white/80 backdrop-blur-sm border-white/50">
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+              <form id="wine-card-form" onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
 
                 {/* Wine Image Upload */}
                 <div className="space-y-2">
@@ -799,7 +874,7 @@ export default function Home() {
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -4 }}
                         transition={{ duration: 0.15 }}
-                        className="absolute z-50 w-full mt-1 bg-popover border border-border rounded-lg shadow-lg overflow-hidden"
+                        className="absolute z-50 w-full mt-1 bg-popover border border-border rounded-lg shadow-lg overflow-y-auto max-h-40"
                       >
                         {wineSuggestions.map((suggestion, index) => (
                           <button
@@ -899,7 +974,7 @@ export default function Home() {
                           animate={{ opacity: 1, y: 0 }}
                           exit={{ opacity: 0, y: -4 }}
                           transition={{ duration: 0.15 }}
-                          className="absolute z-50 w-full mt-1 bg-popover border border-border rounded-lg shadow-lg overflow-hidden"
+                          className="absolute z-50 w-full mt-1 bg-popover border border-border rounded-lg shadow-lg overflow-y-auto max-h-40"
                         >
                           {originSuggestions.map((suggestion, index) => (
                             <button
@@ -993,7 +1068,7 @@ export default function Home() {
                           animate={{ opacity: 1, y: 0 }}
                           exit={{ opacity: 0, y: -4 }}
                           transition={{ duration: 0.15 }}
-                          className="absolute z-50 w-full mt-1 bg-popover border border-border rounded-lg shadow-lg overflow-hidden"
+                          className="absolute z-50 w-full mt-1 bg-popover border border-border rounded-lg shadow-lg overflow-y-auto max-h-40"
                         >
                           {varietySuggestions.map((suggestion, index) => (
                             <button
@@ -1099,7 +1174,7 @@ export default function Home() {
                           animate={{ opacity: 1, y: 0 }}
                           exit={{ opacity: 0, y: -4 }}
                           transition={{ duration: 0.15 }}
-                          className="absolute z-50 w-full mt-1 bg-popover border border-border rounded-lg shadow-lg overflow-hidden"
+                          className="absolute z-50 w-full mt-1 bg-popover border border-border rounded-lg shadow-lg overflow-y-auto max-h-40"
                         >
                           {locationSuggestions.map((suggestion, index) => (
                             <button
@@ -1225,27 +1300,30 @@ export default function Home() {
                   )}
                 </div>
 
-                <div className="pt-4">
-                  <motion.div
-                    whileTap={{ scale: 0.8 }}
-                    transition={{ duration: 0.2, ease: "easeInOut" }}
-                  >
-                  <Button 
-                    type="submit" 
-                    disabled={createMutation.isPending}
-                      className="w-full h-12 font-display text-lg bg-[#2D2424] hover:bg-[#4A3B3B] text-[#F5F5F0] transition-all duration-300 shadow-lg hover:shadow-xl flex items-center justify-center gap-2"
-                  >
-                    {createMutation.isPending ? (
-                        <>
-                          <Loader2 className="w-5 h-5 animate-spin" />
-                          <span>作成中</span>
-                        </>
-                      ) : (
-                        "ワインカードを作成"
-                    )}
-                  </Button>
-                  </motion.div>
-                </div>
+                {!isMobile && (
+                  <div className="pt-4">
+                    <motion.div
+                      whileTap={{ scale: 0.8 }}
+                      transition={{ duration: 0.2, ease: "easeInOut" }}
+                    >
+                      <Button
+                        type="submit"
+                        disabled={createMutation.isPending}
+                        className="w-full h-12 font-display text-lg bg-[#2D2424] hover:bg-[#4A3B3B] text-[#F5F5F0] transition-all duration-300 shadow-lg hover:shadow-xl flex items-center justify-center gap-2"
+                      >
+                        {createMutation.isPending ? (
+                          <>
+                            <Loader2 className="w-5 h-5 animate-spin" />
+                            <span>作成中</span>
+                          </>
+                        ) : (
+                          "ワインカードを作成"
+                        )}
+                      </Button>
+                    </motion.div>
+                  </div>
+                )}
+                {isMobile && <div className="h-20" />}
 
               </form>
             </Card>
@@ -1259,7 +1337,13 @@ export default function Home() {
             className="order-1 lg:order-2 sticky top-8"
           >
             <div className="space-y-4 text-center">
-              <div className="perspective-1000" ref={cardRef}>
+              <div
+                className="perspective-1000 select-none"
+                ref={cardRef}
+                onTouchStart={handleCardTouchStart}
+                onTouchEnd={handleCardTouchCancel}
+                onTouchMove={handleCardTouchCancel}
+              >
                 <AnimatePresence mode="wait">
                   <motion.div
                     key={theme}
@@ -1268,19 +1352,51 @@ export default function Home() {
                     exit={{ rotateY: -90, opacity: 0 }}
                     transition={{ duration: 0.5, type: "spring" }}
                   >
-                    <WineCardPreview 
-                      data={{ ...watchedValues, themeColor: theme }} 
-                      theme={theme} 
+                    <WineCardPreview
+                      data={{ ...watchedValues, themeColor: theme }}
+                      theme={theme}
                       isTransparent={isTransparent}
                     />
                   </motion.div>
                 </AnimatePresence>
               </div>
+              {isMobile && (
+                <p className="text-xs text-gray-400 font-body">長押しで画像を保存</p>
+              )}
             </div>
           </motion.div>
 
         </div>
       </div>
+
+      {/* モバイル用固定送信ボタン */}
+      {isMobile && (
+        <div
+          className="fixed left-0 right-0 z-50 px-4 py-3 bg-[#F5F5F0]/95 backdrop-blur-sm border-t border-gray-200"
+          style={{ bottom: keyboardHeight }}
+        >
+          <motion.div
+            whileTap={{ scale: 0.8 }}
+            transition={{ duration: 0.2, ease: "easeInOut" }}
+          >
+            <Button
+              type="submit"
+              form="wine-card-form"
+              disabled={createMutation.isPending}
+              className="w-full h-12 font-display text-lg bg-[#2D2424] hover:bg-[#4A3B3B] text-[#F5F5F0] transition-all duration-300 shadow-lg flex items-center justify-center gap-2"
+            >
+              {createMutation.isPending ? (
+                <>
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                  <span>作成中</span>
+                </>
+              ) : (
+                "ワインカードを作成"
+              )}
+            </Button>
+          </motion.div>
+        </div>
+      )}
 
       {/* 画像保存モーダル（スマホ用） */}
       <Dialog open={isImageModalOpen} onOpenChange={setIsImageModalOpen}>

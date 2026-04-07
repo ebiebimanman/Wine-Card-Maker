@@ -1,0 +1,41 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git:*)",
+      "Bash(npm:*)",
+      "Bash(npx:*)",
+      "Bash(tsx:*)",
+      "Bash(node:*)",
+      "Bash(ls:*)",
+      "Bash(cat:*)",
+      "Bash(echo:*)",
+      "Bash(cp:*)",
+      "Bash(mv:*)",
+      "Bash(mkdir:*)",
+      "Bash(touch:*)",
+      "Bash(which:*)",
+      "Bash(jq:*)",
+      "Read",
+      "Edit",
+      "Write",
+      "Glob",
+      "Grep",
+      "mcp__pencil"
+    ]
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "agent",
+            "prompt": "Code was edited. If the change is observable in a browser (UI, styles, components, pages), call mcp__Claude_Preview__preview_start with name 'Wine Card Maker (figma-design)', then call mcp__Claude_Preview__preview_screenshot with the returned serverId to take a screenshot and verify the change looks correct. If there are obvious visual issues, report them. If the change is not browser-observable (config files, types, server logic), do nothing.",
+            "timeout": 30,
+            "statusMessage": "Verifying in browser..."
+          }
+        ]
+      }
+    ]
+  }
+}
