@@ -245,7 +245,14 @@ export const NameQuestionScreen: React.FC<NameQuestionScreenProps> = ({
   onNext,
 }) => {
   const [wineName, setWineName] = useState("");
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(() => {
+    try { return sessionStorage.getItem("wineSheetOpen") === "1"; } catch { return false; }
+  });
+
+  const openSheet = () => {
+    setIsOpen(true);
+    try { sessionStorage.setItem("wineSheetOpen", "1"); } catch {}
+  };
   const [activeIndex, setActiveIndex] = useState(0);
   const sheetInputRef = useRef<HTMLInputElement>(null);
 
@@ -355,7 +362,7 @@ export const NameQuestionScreen: React.FC<NameQuestionScreenProps> = ({
             setWineName(e.target.value);
             setActiveIndex(0);
           }}
-          onFocus={() => setIsOpen(true)}
+          onFocus={openSheet}
           onKeyDown={handleKeyDown}
           placeholder=""
           className="w-full bg-transparent text-center text-[16px] text-[#2c2c2c] outline-none"

@@ -19,7 +19,14 @@ export const LocationQuestionScreen: React.FC<
   onNext,
 }) => {
   const [locationInput, setLocationInput] = useState("");
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(() => {
+    try { return sessionStorage.getItem("wineSheetOpen") === "1"; } catch { return false; }
+  });
+
+  const openSheet = () => {
+    setIsOpen(true);
+    try { sessionStorage.setItem("wineSheetOpen", "1"); } catch {}
+  };
   const inputRef = useRef<HTMLInputElement>(null);
 
   const hasText = locationInput.trim().length > 0;
@@ -66,7 +73,7 @@ export const LocationQuestionScreen: React.FC<
           type="text"
           value={locationInput}
           onChange={(e) => setLocationInput(e.target.value)}
-          onFocus={() => setIsOpen(true)}
+          onFocus={openSheet}
           placeholder=""
           className="w-full bg-transparent text-center text-[16px] text-[#2c2c2c] outline-none placeholder:text-[#aca3a3]"
         />

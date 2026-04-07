@@ -19,7 +19,14 @@ export const VarietyQuestionScreen: React.FC<VarietyQuestionScreenProps> = ({
   onNext,
 }) => {
   const [varietyInput, setVarietyInput] = useState("");
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(() => {
+    try { return sessionStorage.getItem("wineSheetOpen") === "1"; } catch { return false; }
+  });
+
+  const openSheet = () => {
+    setIsOpen(true);
+    try { sessionStorage.setItem("wineSheetOpen", "1"); } catch {}
+  };
   const [activeIndex, setActiveIndex] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -101,7 +108,7 @@ export const VarietyQuestionScreen: React.FC<VarietyQuestionScreenProps> = ({
             setVarietyInput(e.target.value);
             setActiveIndex(0);
           }}
-          onFocus={() => setIsOpen(true)}
+          onFocus={openSheet}
           onKeyDown={handleKeyDown}
           placeholder=""
           className="w-full bg-transparent text-center text-[16px] text-[#2c2c2c] outline-none"

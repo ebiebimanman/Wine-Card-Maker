@@ -8,6 +8,9 @@ export default function ImageUploadPage() {
   const [, setLocation] = useLocation();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  // フロー開始時にシートの開閉フラグをリセット
+  try { sessionStorage.removeItem("wineSheetOpen"); } catch {}
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
