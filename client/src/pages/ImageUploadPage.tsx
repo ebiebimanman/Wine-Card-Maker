@@ -29,27 +29,32 @@ export default function ImageUploadPage() {
   };
 
   return (
-    <div className="min-h-screen w-full flex justify-center sm:py-6 sm:px-4 bg-[#f5f1e8]">
+    <div className="w-full flex justify-center sm:py-6 sm:px-4 bg-[#f5f1e8]" style={{ height: '100dvh' }}>
       <div
-        className="relative w-full h-screen bg-[#f5f1e8] overflow-hidden sm:max-w-[480px] sm:mx-auto sm:rounded-[24px] sm:shadow-2xl sm:max-h-[844px] sm:my-auto flex flex-col items-center justify-between py-16 px-6"
+        className="relative w-full bg-[#f5f1e8] overflow-hidden sm:max-w-[480px] sm:mx-auto sm:rounded-[24px] sm:shadow-2xl sm:max-h-[844px] sm:my-auto flex flex-col items-center justify-between px-6"
+        style={{ height: '100%', paddingTop: 'clamp(24px, 8dvh, 64px)', paddingBottom: 'clamp(24px, 8dvh, 64px)' }}
       >
         {/* WINE テキスト */}
         <h1
-          className="text-[40px] tracking-widest text-[#2c2c2c] text-center leading-none"
-          style={{ fontFamily: "'Goblin One', 'Playfair Display', serif" }}
+          className="tracking-widest text-[#2c2c2c] text-center leading-none"
+          style={{ fontFamily: "'Goblin One', 'Playfair Display', serif", fontSize: 'clamp(24px, 5dvh, 40px)' }}
         >
           WINE
         </h1>
 
         {/* ワイングラスイラスト */}
         <div className="flex items-center justify-center flex-1">
-          <img src="/wine-glass.png" alt="Wine glass" className="h-[220px] w-auto object-contain" />
+          <img
+            src="/wine-glass.png"
+            alt="Wine glass"
+            style={{ height: 'clamp(120px, 23dvh, 196px)', width: 'auto', objectFit: 'contain' }}
+          />
         </div>
 
         {/* DIARY テキスト */}
         <h2
-          className="text-[40px] tracking-widest text-[#2c2c2c] text-center leading-none mb-12"
-          style={{ fontFamily: "'Goblin One', 'Playfair Display', serif" }}
+          className="tracking-widest text-[#2c2c2c] text-center leading-none"
+          style={{ fontFamily: "'Goblin One', 'Playfair Display', serif", fontSize: 'clamp(24px, 5dvh, 40px)', marginBottom: 'clamp(16px, 4dvh, 48px)' }}
         >
           DIARY
         </h2>
