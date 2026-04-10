@@ -38,7 +38,7 @@ export const VarietyQuestionScreen: React.FC<VarietyQuestionScreenProps> = ({
 
   const suggestions = useMemo(() => {
     const q = varietyInput.trim().toLowerCase();
-    if (!q) return wineVarieties.slice(0, 12);
+    if (!q) return [];
     return wineVarieties
       .filter((name) => name.toLowerCase().includes(q))
       .slice(0, 12);
@@ -108,6 +108,11 @@ export const VarietyQuestionScreen: React.FC<VarietyQuestionScreenProps> = ({
             setVarietyInput(e.target.value);
             setActiveIndex(0);
           }}
+          onCompositionUpdate={() => {
+            const val = inputRef.current?.value ?? "";
+            setVarietyInput(val);
+            setActiveIndex(0);
+          }}
           onFocus={openSheet}
           onKeyDown={handleKeyDown}
           placeholder=""
@@ -130,14 +135,17 @@ export const VarietyQuestionScreen: React.FC<VarietyQuestionScreenProps> = ({
       {isOpen && suggestions.length > 0 && (
         <motion.div
           layout
-          className="w-full flex-1 min-h-0 flex flex-col self-stretch pb-4"
+          className="w-full self-stretch pb-4"
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 8 }}
           transition={{ duration: 0.25, ease: "easeOut" }}
         >
-          <div className="pt-2 flex flex-col flex-1 min-h-0">
-            <div className="flex-1 min-h-0 overflow-hidden rounded-2xl bg-[#fffbf1] ring-1 ring-[#e0d8c8]/50 shadow-[0_8px_24px_-8px_rgba(75,108,61,0.2)]">
+          <div className="pt-2">
+            <div
+              className="overflow-hidden rounded-2xl bg-[#fffbf1] ring-1 ring-[#e0d8c8]/50 shadow-[0_8px_24px_-8px_rgba(75,108,61,0.2)]"
+              style={{ height: Math.min(suggestions.length * 44 + 16, 236) + "px" }}
+            >
               <ScrollArea className="h-full w-full">
                 <ul
                   id="variety-suggestions-list"

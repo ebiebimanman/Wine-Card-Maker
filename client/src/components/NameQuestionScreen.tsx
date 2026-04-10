@@ -264,14 +264,10 @@ export const NameQuestionScreen: React.FC<NameQuestionScreenProps> = ({
 
   const suggestions = useMemo(() => {
     const raw = wineName.trim();
-    if (!raw) {
-      return popularWines.slice(0, 10);
-    }
+    if (!raw) return [];
 
     const query = normalizeForQuery(raw);
-    if (!query) {
-      return popularWines.slice(0, 10);
-    }
+    if (!query) return [];
 
     return popularWines
       .map((name) => {
@@ -362,6 +358,11 @@ export const NameQuestionScreen: React.FC<NameQuestionScreenProps> = ({
             setWineName(e.target.value);
             setActiveIndex(0);
           }}
+          onCompositionUpdate={() => {
+            const val = sheetInputRef.current?.value ?? "";
+            setWineName(val);
+            setActiveIndex(0);
+          }}
           onFocus={openSheet}
           onKeyDown={handleKeyDown}
           placeholder=""
@@ -384,14 +385,17 @@ export const NameQuestionScreen: React.FC<NameQuestionScreenProps> = ({
       {isOpen && suggestions.length > 0 && (
         <motion.div
           layout
-          className="w-full flex-1 min-h-0 flex flex-col self-stretch pb-4"
+          className="w-full self-stretch pb-4"
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 8 }}
           transition={{ duration: 0.25, ease: "easeOut" }}
         >
-          <div className="pt-2 flex flex-col flex-1 min-h-0">
-            <div className="flex-1 min-h-0 overflow-hidden rounded-2xl bg-[#fffbf1] ring-1 ring-[#e0d8c8]/50 shadow-[0_8px_24px_-8px_rgba(75,108,61,0.2)]">
+          <div className="pt-2">
+            <div
+              className="overflow-hidden rounded-2xl bg-[#fffbf1] ring-1 ring-[#e0d8c8]/50 shadow-[0_8px_24px_-8px_rgba(75,108,61,0.2)]"
+              style={{ height: Math.min(suggestions.length * 44 + 16, 236) + "px" }}
+            >
               <ScrollArea className="h-full w-full">
                 <ul
                   id="suggestions-list"

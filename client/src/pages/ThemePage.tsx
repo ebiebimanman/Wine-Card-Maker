@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { useLocation } from "wouter";
 import { Wine } from "lucide-react";
-import { QuestionScreenLayout } from "@/components/QuestionScreenLayout";
+import { BottomSheetQuestionLayout } from "@/components/BottomSheetQuestionLayout";
 import { useFlowParams, buildFlowQuery } from "@/hooks/useFlowParams";
 import { cn } from "@/lib/utils";
 import { getWineCardImage } from "@/hooks/useWineCardImage";
+import { motion } from "framer-motion";
 
-// Figmaデザインに合わせたテーマカラー
 const THEME_WINE_COLOR: Record<string, string> = {
   red: "#ad1e1e",
   white: "#c8a84b",
@@ -25,20 +25,12 @@ export default function ThemePage() {
     setLocation(`/origin${buildFlowQuery({ theme, name })}`);
   };
 
-  return (
-    <QuestionScreenLayout
-      stepIndex={3}
-      wineImageSrc={wineImageSrc ?? undefined}
-      onBack={() => {
-        if (window.history.length > 1) window.history.back();
-        else setLocation("/");
-      }}
-      title="種類は？"
-      onNext={handleNext}
-    >
-      {/* Figmaレイアウト: 赤・白は全幅、ロゼ・その他は半幅 */}
+  const header = (
+    <motion.div layout className="w-full shrink-0 flex flex-col items-center gap-8 pb-0">
+      <motion.p layout="position" className="text-center text-[20px] font-bold text-[#2c2c2c]">
+        種類は？
+      </motion.p>
       <div className="w-full flex flex-col gap-2">
-        {/* 赤ワイン（全幅） */}
         <button
           type="button"
           onClick={() => setTheme("red")}
@@ -55,8 +47,6 @@ export default function ThemePage() {
           />
           赤ワイン
         </button>
-
-        {/* 白ワイン（全幅） */}
         <button
           type="button"
           onClick={() => setTheme("white")}
@@ -73,8 +63,6 @@ export default function ThemePage() {
           />
           白ワイン
         </button>
-
-        {/* ロゼ・その他（半幅2列） */}
         <div className="grid grid-cols-2 gap-2">
           <button
             type="button"
@@ -109,8 +97,6 @@ export default function ThemePage() {
             その他
           </button>
         </div>
-
-        {/* スパークリングチェックボックス（Figmaデザイン） */}
         <button
           type="button"
           onClick={() => setIsSparkling((v) => !v)}
@@ -130,6 +116,20 @@ export default function ThemePage() {
           スパークリング
         </button>
       </div>
-    </QuestionScreenLayout>
+    </motion.div>
+  );
+
+  return (
+    <BottomSheetQuestionLayout
+      stepIndex={3}
+      wineImageSrc={wineImageSrc ?? undefined}
+      onBack={() => {
+        if (window.history.length > 1) window.history.back();
+        else setLocation("/");
+      }}
+      isOpen={true}
+      onNext={handleNext}
+      header={header}
+    />
   );
 }

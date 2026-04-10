@@ -185,6 +185,12 @@ export default function CardPage() {
   const wineImageSrc = getWineCardImage();
   const vp = useVisualViewport();
 
+  const [isLoading, setIsLoading] = useState(true);
+  useEffect(() => {
+    const t = setTimeout(() => setIsLoading(false), 2000);
+    return () => clearTimeout(t);
+  }, []);
+
   const cardRef = useRef<HTMLDivElement>(null);
   const longPressTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [savedImageUrl, setSavedImageUrl] = useState<string | null>(null);
@@ -247,6 +253,28 @@ export default function CardPage() {
     if (window.history.length > 1) window.history.back();
     else setLocation("/comment");
   };
+
+  if (isLoading) {
+    return (
+      <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-[#f5f1e8]">
+        <img
+          src="/wine-glass.png"
+          alt=""
+          className="w-16 h-auto object-contain"
+          style={{ animation: "pulse 1.5s ease-in-out infinite" }}
+        />
+        <div className="flex gap-2 mt-8">
+          {[0, 0.2, 0.4].map((delay, i) => (
+            <div
+              key={i}
+              className="w-2 h-2 rounded-full bg-[#4b6c3d]"
+              style={{ animation: `bounce 0.9s ease-in-out ${delay}s infinite alternate` }}
+            />
+          ))}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div
