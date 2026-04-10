@@ -29,6 +29,7 @@ export const OriginQuestionScreen: React.FC<OriginQuestionScreenProps> = ({
   };
   const [activeIndex, setActiveIndex] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
+  const compositionBaseRef = useRef("");
 
   const hasText = originInput.trim().length > 0;
 
@@ -108,7 +109,15 @@ export const OriginQuestionScreen: React.FC<OriginQuestionScreenProps> = ({
             setOriginInput(e.target.value);
             setActiveIndex(0);
           }}
-          onCompositionUpdate={() => {
+          onCompositionStart={() => {
+            compositionBaseRef.current = originInput;
+          }}
+          onCompositionUpdate={(e) => {
+            setOriginInput(compositionBaseRef.current + (e.data ?? ""));
+            setActiveIndex(0);
+          }}
+          onCompositionEnd={() => {
+            compositionBaseRef.current = "";
             const val = inputRef.current?.value ?? "";
             setOriginInput(val);
             setActiveIndex(0);

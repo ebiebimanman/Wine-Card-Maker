@@ -29,6 +29,7 @@ export const VarietyQuestionScreen: React.FC<VarietyQuestionScreenProps> = ({
   };
   const [activeIndex, setActiveIndex] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
+  const compositionBaseRef = useRef("");
 
   const hasText = varietyInput.trim().length > 0;
 
@@ -108,7 +109,15 @@ export const VarietyQuestionScreen: React.FC<VarietyQuestionScreenProps> = ({
             setVarietyInput(e.target.value);
             setActiveIndex(0);
           }}
-          onCompositionUpdate={() => {
+          onCompositionStart={() => {
+            compositionBaseRef.current = varietyInput;
+          }}
+          onCompositionUpdate={(e) => {
+            setVarietyInput(compositionBaseRef.current + (e.data ?? ""));
+            setActiveIndex(0);
+          }}
+          onCompositionEnd={() => {
+            compositionBaseRef.current = "";
             const val = inputRef.current?.value ?? "";
             setVarietyInput(val);
             setActiveIndex(0);

@@ -196,15 +196,36 @@ export const BottomSheetQuestionLayout: React.FC<
             )}
             transition={{ layout: { duration: 0.35, ease: "easeOut" } }}
           >
-            {/* シート内の戻るボタン（isOpen時のみ表示） */}
-            {isOpen && !hideBackButton && (
-              <button
-                onClick={onBack}
-                className="absolute top-3 left-4 text-[#4b6c3d] flex items-center justify-center p-1 transition-colors hover:opacity-70"
-                aria-label="戻る"
-              >
-                <ChevronLeft className="size-6" />
-              </button>
+            {/* シート内の戻るボタン + プログレスドット（isOpen時のみ表示） */}
+            {isOpen && (
+              <div className="absolute top-3 left-0 right-0 flex items-center justify-center px-4">
+                {!hideBackButton && (
+                  <button
+                    onClick={onBack}
+                    className="absolute left-4 text-[#4b6c3d] flex items-center justify-center p-1 transition-colors hover:opacity-70"
+                    aria-label="戻る"
+                  >
+                    <ChevronLeft className="size-6" />
+                  </button>
+                )}
+                <div className="flex items-center gap-1.5">
+                  {Array.from({ length: totalSteps }).map((_, index) => (
+                    <div key={index}>
+                      {index === currentDot ? (
+                        <div className="bg-[#4b6c3d] flex size-6 items-center justify-center rounded-full border-[2px] border-[#fffbf1] shadow-sm">
+                          <ActiveIcon className="text-[#fffbf1] size-3" />
+                        </div>
+                      ) : (
+                        <div
+                          className={`size-2 rounded-full ${
+                            index < currentDot ? "bg-[#4b6c3d]/40" : "bg-[#4b6c3d]/10"
+                          }`}
+                        />
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
             )}
             {header}
             {children}

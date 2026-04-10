@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useLocation } from "wouter";
 import { QuestionScreenLayout } from "@/components/QuestionScreenLayout";
 import { useFlowParams, buildFlowQuery } from "@/hooks/useFlowParams";
+import { getWineCardImage } from "@/hooks/useWineCardImage";
 
 const MIN = 500;
 const MAX = 15000;
@@ -12,6 +13,7 @@ export default function PricePage() {
   const [, setLocation] = useLocation();
   const { theme, name, variety, origin, location } = useFlowParams();
   const [price, setPrice] = useState(DEFAULT);
+  const wineImageSrc = getWineCardImage() ?? "/wine-glass.png";
 
   const pct = ((price - MIN) / (MAX - MIN)) * 100;
 
@@ -22,6 +24,7 @@ export default function PricePage() {
         if (window.history.length > 1) window.history.back();
         else setLocation("/");
       }}
+      wineImageSrc={wineImageSrc}
       title="値段は？"
       onNext={() => {
         setLocation(
