@@ -19,17 +19,11 @@ export const OriginQuestionScreen: React.FC<OriginQuestionScreenProps> = ({
   onNext,
 }) => {
   const [originInput, setOriginInput] = useState("");
-  const [isOpen, setIsOpen] = useState(() => {
-    try { return sessionStorage.getItem("wineSheetOpen") === "1"; } catch { return false; }
-  });
-
-  const openSheet = () => {
-    setIsOpen(true);
-    try { sessionStorage.setItem("wineSheetOpen", "1"); } catch {}
-  };
+  const [isOpen, setIsOpen] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
-  const compositionBaseRef = useRef("");
+  // サジェスト選択直後のIME確定イベントを無視するフラグ
+  const isSelectingRef = useRef(false);
 
   const hasText = originInput.trim().length > 0;
 
@@ -39,14 +33,22 @@ export const OriginQuestionScreen: React.FC<OriginQuestionScreenProps> = ({
 
   const suggestions = useMemo(() => {
     const q = originInput.trim().toLowerCase();
-    if (!q) return [];
+    if (!q) return wineOrigins.slice(0, 12);
     return wineOrigins
       .filter((name) => name.toLowerCase().includes(q))
       .slice(0, 12);
   }, [originInput]);
 
   const handleSelect = (value: string) => {
+    // IME確定イベントによるonChangeを無視するフラグをセット
+    isSelectingRef.current = true;
+    inputRef.current?.blur();
     setOriginInput(value);
+    setIsOpen(false);
+    // IMEのすべてのイベントが落ち着いた後にフラグをリセット
+    requestAnimationFrame(() => {
+      isSelectingRef.current = false;
+    });
   };
 
   const handleKeyDown: React.KeyboardEventHandler<HTMLInputElement> = (e) => {
@@ -106,23 +108,12 @@ export const OriginQuestionScreen: React.FC<OriginQuestionScreenProps> = ({
           type="text"
           value={originInput}
           onChange={(e) => {
+            if (isSelectingRef.current) return;
             setOriginInput(e.target.value);
             setActiveIndex(0);
           }}
-          onCompositionStart={() => {
-            compositionBaseRef.current = originInput;
-          }}
-          onCompositionUpdate={(e) => {
-            setOriginInput(compositionBaseRef.current + (e.data ?? ""));
-            setActiveIndex(0);
-          }}
-          onCompositionEnd={() => {
-            compositionBaseRef.current = "";
-            const val = inputRef.current?.value ?? "";
-            setOriginInput(val);
-            setActiveIndex(0);
-          }}
-          onFocus={openSheet}
+          onFocus={() => setIsOpen(true)}
+          onBlur={() => setTimeout(() => setIsOpen(false), 100)}
           onKeyDown={handleKeyDown}
           placeholder=""
           className="w-full bg-transparent text-center text-[16px] text-[#2c2c2c] outline-none"
@@ -138,24 +129,21 @@ export const OriginQuestionScreen: React.FC<OriginQuestionScreenProps> = ({
       isOpen={isOpen}
       wineImageSrc={wineImageSrc}
       onNext={handleNext}
-      nextDisabled={false}
+      nextDisabled={!originInput.trim()}
       header={header}
     >
       {isOpen && suggestions.length > 0 && (
         <motion.div
           layout
-          className="w-full self-stretch pb-4"
+          className="w-full flex-1 min-h-0 flex flex-col self-stretch pb-4"
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 8 }}
           transition={{ duration: 0.25, ease: "easeOut" }}
         >
           <div className="pt-2">
-            <div
-              className="overflow-hidden rounded-2xl bg-[#fffbf1] ring-1 ring-[#e0d8c8]/50 shadow-[0_8px_24px_-8px_rgba(75,108,61,0.2)]"
-              style={{ height: Math.min(suggestions.length * 44 + 16, 236) + "px" }}
-            >
-              <ScrollArea className="h-full w-full">
+            <div className="flex-1 min-h-0 overflow-hidden rounded-2xl bg-[#fffbf1] ring-1 ring-[#e0d8c8]/50 shadow-[0_8px_24px_-8px_rgba(75,108,61,0.2)]">
+              <ScrollArea className="flex-1 w-full">
                 <ul
                   id="origin-suggestions-list"
                   role="listbox"
