@@ -255,6 +255,8 @@ export const NameQuestionScreen: React.FC<NameQuestionScreenProps> = ({
   };
   const [activeIndex, setActiveIndex] = useState(0);
   const sheetInputRef = useRef<HTMLInputElement>(null);
+  // サジェスト選択直後のIME確定イベントを無視するフラグ
+  const isSelectingRef = useRef(false);
 
   const hasText = wineName.trim().length > 0;
 
@@ -282,7 +284,15 @@ export const NameQuestionScreen: React.FC<NameQuestionScreenProps> = ({
   }, [wineName]);
 
   const handleSelect = (name: string) => {
+    // IME確定イベントによるonChangeを無視するフラグをセット
+    isSelectingRef.current = true;
+    sheetInputRef.current?.blur();
     setWineName(name);
+    setIsOpen(false);
+    // IMEのすべてのイベントが落ち着いた後にフラグをリセット
+    requestAnimationFrame(() => {
+      isSelectingRef.current = false;
+    });
   };
 
   const handleKeyDown: React.KeyboardEventHandler<HTMLInputElement> = (e) => {
@@ -355,6 +365,7 @@ export const NameQuestionScreen: React.FC<NameQuestionScreenProps> = ({
           type="text"
           value={wineName}
           onChange={(e) => {
+            if (isSelectingRef.current) return;
             setWineName(e.target.value);
             setActiveIndex(0);
           }}
