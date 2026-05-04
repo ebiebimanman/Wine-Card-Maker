@@ -9,7 +9,7 @@ interface InputNameScreenProps {
 }
 
 export const InputNameScreen: React.FC<InputNameScreenProps> = ({
-  wineImageSrc = "/wine-bottle.png",
+  wineImageSrc = "/wine-glass.png",
   stepIndex = 1,
   onBack,
   onNext,

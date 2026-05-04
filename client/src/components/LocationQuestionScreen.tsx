@@ -14,18 +14,15 @@ export const LocationQuestionScreen: React.FC<
   LocationQuestionScreenProps
 > = ({
   stepIndex = 6,
-  wineImageSrc = "/wine-bottle.png",
+  wineImageSrc = "/wine-glass.png",
   onBack,
   onNext,
 }) => {
   const [locationInput, setLocationInput] = useState("");
-  const [isOpen, setIsOpen] = useState(() => {
-    try { return sessionStorage.getItem("wineSheetOpen") === "1"; } catch { return false; }
-  });
+  const [isOpen, setIsOpen] = useState(true);
 
   const openSheet = () => {
     setIsOpen(true);
-    try { sessionStorage.setItem("wineSheetOpen", "1"); } catch {}
   };
   const inputRef = useRef<HTMLInputElement>(null);
 

@@ -239,19 +239,16 @@ interface NameQuestionScreenProps {
 }
 
 export const NameQuestionScreen: React.FC<NameQuestionScreenProps> = ({
-  wineImageSrc = "/wine-bottle.png",
+  wineImageSrc = "/wine-glass.png",
   stepIndex = 2,
   onBack,
   onNext,
 }) => {
   const [wineName, setWineName] = useState("");
-  const [isOpen, setIsOpen] = useState(() => {
-    try { return sessionStorage.getItem("wineSheetOpen") === "1"; } catch { return false; }
-  });
+  const [isOpen, setIsOpen] = useState(true);
 
   const openSheet = () => {
     setIsOpen(true);
-    try { sessionStorage.setItem("wineSheetOpen", "1"); } catch {}
   };
   const [activeIndex, setActiveIndex] = useState(0);
   const sheetInputRef = useRef<HTMLInputElement>(null);

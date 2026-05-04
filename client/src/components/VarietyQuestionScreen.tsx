@@ -14,22 +14,19 @@ interface VarietyQuestionScreenProps {
 
 export const VarietyQuestionScreen: React.FC<VarietyQuestionScreenProps> = ({
   stepIndex = 5,
-  wineImageSrc = "/wine-bottle.png",
+  wineImageSrc = "/wine-glass.png",
   onBack,
   onNext,
 }) => {
   const [varietyInput, setVarietyInput] = useState("");
-  const [isOpen, setIsOpen] = useState(() => {
-    try { return sessionStorage.getItem("wineSheetOpen") === "1"; } catch { return false; }
-  });
+  const [isOpen, setIsOpen] = useState(true);
 
   const openSheet = () => {
     setIsOpen(true);
-    try { sessionStorage.setItem("wineSheetOpen", "1"); } catch {}
   };
   const [activeIndex, setActiveIndex] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
-  const compositionBaseRef = useRef("");
+  const isSelectingRef = useRef(false);
 
   const hasText = varietyInput.trim().length > 0;
 
@@ -46,7 +43,13 @@ export const VarietyQuestionScreen: React.FC<VarietyQuestionScreenProps> = ({
   }, [varietyInput]);
 
   const handleSelect = (value: string) => {
+    isSelectingRef.current = true;
+    inputRef.current?.blur();
     setVarietyInput(value);
+    setIsOpen(false);
+    requestAnimationFrame(() => {
+      isSelectingRef.current = false;
+    });
   };
 
   const handleKeyDown: React.KeyboardEventHandler<HTMLInputElement> = (e) => {
@@ -106,20 +109,8 @@ export const VarietyQuestionScreen: React.FC<VarietyQuestionScreenProps> = ({
           type="text"
           value={varietyInput}
           onChange={(e) => {
+            if (isSelectingRef.current) return;
             setVarietyInput(e.target.value);
-            setActiveIndex(0);
-          }}
-          onCompositionStart={() => {
-            compositionBaseRef.current = varietyInput;
-          }}
-          onCompositionUpdate={(e) => {
-            setVarietyInput(compositionBaseRef.current + (e.data ?? ""));
-            setActiveIndex(0);
-          }}
-          onCompositionEnd={() => {
-            compositionBaseRef.current = "";
-            const val = inputRef.current?.value ?? "";
-            setVarietyInput(val);
             setActiveIndex(0);
           }}
           onFocus={openSheet}

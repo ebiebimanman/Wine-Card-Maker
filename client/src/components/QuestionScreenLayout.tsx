@@ -99,7 +99,7 @@ export function QuestionScreenLayout({
   children,
   onNext,
   nextDisabled = false,
-  wineImageSrc = "/wine-bottle.png",
+  wineImageSrc = "/wine-glass.png",
 }: QuestionScreenLayoutProps) {
   const vp = useVisualViewport();
   const totalSteps = 9;
@@ -116,7 +116,7 @@ export function QuestionScreenLayout({
     >
       <div className="relative w-full h-full bg-[#f5f1e8] overflow-hidden sm:max-w-[480px] sm:mx-auto sm:rounded-[24px] sm:shadow-2xl sm:max-h-[844px] sm:my-auto">
         {/* 上部ナビゲーション（戻る + プログレスドット） */}
-        <div className="relative flex items-center justify-center pt-8 pb-1">
+        <div className="relative flex items-center justify-center pt-12 pb-1">
           {!hideBackButton && (
             <button
               onClick={onBack}
@@ -158,23 +158,11 @@ export function QuestionScreenLayout({
         {/* ワインボトル画像エリア */}
         <div className="pt-4 flex justify-center w-full">
           <div className="h-[340px] flex items-center justify-center w-full">
-            {wineImageSrc === "/wine-glass.png" ? (
-              <img
-                src={wineImageSrc}
-                alt="Wine glass"
-                className="h-[260px] w-auto object-contain"
-              />
-            ) : (
-              <div className="-rotate-[23deg]">
-                <div className="w-[110px] h-[300px] rounded-[32px] overflow-hidden shadow-xl flex items-center justify-center bg-[#1a1a2e]">
-                  <img
-                    src={wineImageSrc}
-                    alt="Wine bottle"
-                    className="h-full w-auto object-contain"
-                  />
-                </div>
-              </div>
-            )}
+            <img
+              src="/wine-glass.png"
+              alt="Wine glass"
+              className="h-[260px] w-auto object-contain"
+            />
           </div>
         </div>
 

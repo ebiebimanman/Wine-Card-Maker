@@ -83,7 +83,7 @@ export const BottomSheetQuestionLayout: React.FC<
   stepIndex,
   onBack,
   hideBackButton = false,
-  wineImageSrc = "/wine-bottle.png",
+  wineImageSrc = "/wine-glass.png",
   isOpen,
   header,
   children,
@@ -110,7 +110,7 @@ export const BottomSheetQuestionLayout: React.FC<
         {/* 上部ナビゲーション（戻る + プログレスドット） */}
         <motion.div
           layout
-          className="relative flex items-center justify-center pt-8 pb-1"
+          className="relative flex items-center justify-center pt-12 pb-1"
           initial={false}
           animate={{ opacity: isOpen ? 0 : 1 }}
           transition={{ duration: 0.25, ease: "easeOut" }}
@@ -156,25 +156,11 @@ export const BottomSheetQuestionLayout: React.FC<
           transition={{ duration: 0.25, ease: "easeOut" }}
         >
           <div className="h-[376px] flex items-center justify-center w-full">
-            {wineImageSrc === "/wine-glass.png" ? (
-              <img
-                src={wineImageSrc}
-                alt="Wine glass"
-                className="h-[280px] w-auto object-contain"
-              />
-            ) : (
-              <div className="w-[250px] h-[340px] flex items-center justify-center">
-                <div className="-rotate-[23deg]">
-                  <div className="w-[130px] h-[330px] bg-[#111827] rounded-[40px] overflow-hidden shadow-xl flex items-center justify-center">
-                    <img
-                      src={wineImageSrc}
-                      alt="Wine bottle"
-                      className="h-full w-auto object-contain"
-                    />
-                  </div>
-                </div>
-              </div>
-            )}
+            <img
+              src="/wine-glass.png"
+              alt="Wine glass"
+              className="h-[280px] w-auto object-contain"
+            />
           </div>
         </motion.div>
 
@@ -191,18 +177,18 @@ export const BottomSheetQuestionLayout: React.FC<
             layout
             layoutId="bottom-sheet-panel"
             className={cn(
-              "relative w-full rounded-none px-8 pt-12 pb-0 flex flex-col gap-2 items-center",
+              "relative w-full rounded-none px-8 pt-20 pb-0 flex flex-col gap-2 items-center",
               isOpen ? "flex-1 min-h-0" : "",
             )}
             transition={{ layout: { duration: 0.35, ease: "easeOut" } }}
           >
             {/* シート内の戻るボタン + プログレスドット（isOpen時のみ表示） */}
             {isOpen && (
-              <div className="absolute top-3 left-0 right-0 flex items-center justify-center px-4">
+              <div className="absolute top-8 left-0 right-0 flex items-center justify-center px-4">
                 {!hideBackButton && (
                   <button
                     onClick={onBack}
-                    className="absolute left-4 text-[#4b6c3d] flex items-center justify-center p-1 transition-colors hover:opacity-70"
+                    className="absolute left-8 text-[#4b6c3d] flex items-center justify-center p-1 transition-colors hover:opacity-70"
                     aria-label="戻る"
                   >
                     <ChevronLeft className="size-6" />

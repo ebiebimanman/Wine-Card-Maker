@@ -14,12 +14,12 @@ interface OriginQuestionScreenProps {
 
 export const OriginQuestionScreen: React.FC<OriginQuestionScreenProps> = ({
   stepIndex = 4,
-  wineImageSrc = "/wine-bottle.png",
+  wineImageSrc = "/wine-glass.png",
   onBack,
   onNext,
 }) => {
   const [originInput, setOriginInput] = useState("");
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(true);
   const [activeIndex, setActiveIndex] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
   // サジェスト選択直後のIME確定イベントを無視するフラグ
@@ -113,7 +113,6 @@ export const OriginQuestionScreen: React.FC<OriginQuestionScreenProps> = ({
             setActiveIndex(0);
           }}
           onFocus={() => setIsOpen(true)}
-          onBlur={() => setTimeout(() => setIsOpen(false), 100)}
           onKeyDown={handleKeyDown}
           placeholder=""
           className="w-full bg-transparent text-center text-[16px] text-[#2c2c2c] outline-none"
