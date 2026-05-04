@@ -44,8 +44,6 @@ interface QuestionScreenLayoutProps {
   onNext: () => void;
   /** つぎへを無効にするか（未入力時など） */
   nextDisabled?: boolean;
-  /** ワインボトル画像のパス */
-  wineImageSrc?: string;
 }
 
 interface NextFooterButtonProps {
@@ -99,7 +97,6 @@ export function QuestionScreenLayout({
   children,
   onNext,
   nextDisabled = false,
-  wineImageSrc = "/wine-glass.png",
 }: QuestionScreenLayoutProps) {
   const vp = useVisualViewport();
   const totalSteps = 9;

@@ -7,25 +7,19 @@ import { wineVarieties } from "@/data/wineVarieties";
 
 interface VarietyQuestionScreenProps {
   stepIndex?: number;
-  wineImageSrc?: string;
   onBack: () => void;
   onNext: (variety: string) => void;
 }
 
 export const VarietyQuestionScreen: React.FC<VarietyQuestionScreenProps> = ({
   stepIndex = 5,
-  wineImageSrc = "/wine-glass.png",
   onBack,
   onNext,
 }) => {
   const [varietyInput, setVarietyInput] = useState("");
-  const isOpen = true;
-
   const [activeIndex, setActiveIndex] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
   const isSelectingRef = useRef(false);
-
-  const hasText = varietyInput.trim().length > 0;
 
   useEffect(() => {
     inputRef.current?.focus();
@@ -72,29 +66,12 @@ export const VarietyQuestionScreen: React.FC<VarietyQuestionScreenProps> = ({
   };
 
   const header = (
-    <motion.div
-      className={cn(
-        "w-full shrink-0 flex flex-col items-center gap-8",
-        isOpen ? "pb-0" : "pb-12",
-      )}
-    >
-      <motion.p
-        className="text-center text-[20px] font-bold text-[#2c2c2c]"
-      >
+    <div className="w-full shrink-0 flex flex-col items-center gap-8 pb-0">
+      <p className="text-center text-[20px] font-bold text-[#2c2c2c]">
         品種は？
-      </motion.p>
-      <motion.div
-        className="relative w-full h-16 rounded-[16px] bg-[#f5f1e8] flex items-center justify-center px-4"
-      >
-        <label
-          className={cn(
-            "absolute left-1/2 -translate-x-1/2 text-center text-[#aca3a3] pointer-events-none transition-all duration-200 text-[14px] font-normal",
-            "origin-center",
-            hasText || isOpen
-              ? "top-1 text-[11px] tracking-wide"
-              : "top-1/2 -translate-y-1/2",
-          )}
-        >
+      </p>
+      <div className="relative w-full h-16 rounded-[16px] bg-[#f5f1e8] flex items-center justify-center px-4">
+        <label className="absolute left-1/2 -translate-x-1/2 top-1 text-[11px] tracking-wide text-center text-[#aca3a3] pointer-events-none font-normal origin-center">
           品種を入力または選択
         </label>
         <input
@@ -110,21 +87,18 @@ export const VarietyQuestionScreen: React.FC<VarietyQuestionScreenProps> = ({
           placeholder=""
           className="w-full bg-transparent text-center text-[16px] text-[#2c2c2c] outline-none"
         />
-      </motion.div>
-    </motion.div>
+      </div>
+    </div>
   );
 
   return (
     <BottomSheetQuestionLayout
       stepIndex={stepIndex}
       onBack={onBack}
-      isOpen={isOpen}
-      wineImageSrc={wineImageSrc}
       onNext={handleNext}
-      nextDisabled={false}
       header={header}
     >
-      {isOpen && suggestions.length > 0 && (
+      {suggestions.length > 0 && (
         <motion.div
           className="w-full self-stretch pb-4"
           initial={{ opacity: 0, y: 8 }}

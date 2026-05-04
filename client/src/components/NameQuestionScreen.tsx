@@ -228,8 +228,6 @@ const scoreMatch = (target: string, query: string): number => {
 };
 
 interface NameQuestionScreenProps {
-  /** ワインボトル画像のパス */
-  wineImageSrc?: string;
   /** 現在のステップ番号（1〜10） */
   stepIndex?: number;
   /** 戻るボタン押下時 */
@@ -239,20 +237,15 @@ interface NameQuestionScreenProps {
 }
 
 export const NameQuestionScreen: React.FC<NameQuestionScreenProps> = ({
-  wineImageSrc = "/wine-glass.png",
   stepIndex = 2,
   onBack,
   onNext,
 }) => {
   const [wineName, setWineName] = useState("");
-  const isOpen = true;
-
   const [activeIndex, setActiveIndex] = useState(0);
   const sheetInputRef = useRef<HTMLInputElement>(null);
   // サジェスト選択直後のIME確定イベントを無視するフラグ
   const isSelectingRef = useRef(false);
-
-  const hasText = wineName.trim().length > 0;
 
   useEffect(() => {
     sheetInputRef.current?.focus();
@@ -325,28 +318,13 @@ export const NameQuestionScreen: React.FC<NameQuestionScreenProps> = ({
     stepIndex != null ? Math.max(0, Math.min(totalSteps - 1, stepIndex - 1)) : 0;
 
   const header = (
-    <motion.div
-      className={cn(
-        "w-full shrink-0 flex flex-col items-center gap-8",
-        isOpen ? "pb-0" : "pb-12",
-      )}
-    >
-      <motion.p
-        className="text-center text-[20px] font-bold text-[#2c2c2c]"
-      >
+    <div className="w-full shrink-0 flex flex-col items-center gap-8 pb-0">
+      <p className="text-center text-[20px] font-bold text-[#2c2c2c]">
         このワインの名前は？
-      </motion.p>
-      <motion.div
-        className="relative w-full h-16 rounded-[16px] bg-[#f5f1e8] flex items-center justify-center px-4"
-      >
+      </p>
+      <div className="relative w-full h-16 rounded-[16px] bg-[#f5f1e8] flex items-center justify-center px-4">
         <label
-          className={cn(
-            "absolute left-1/2 -translate-x-1/2 text-center text-[#aca3a3] pointer-events-none transition-all duration-200 text-[14px] font-normal",
-            "origin-center",
-            hasText || isOpen
-              ? "top-1 text-[11px] tracking-wide"
-              : "top-1/2 -translate-y-1/2",
-          )}
+          className="absolute left-1/2 -translate-x-1/2 top-1 text-[11px] tracking-wide text-center text-[#aca3a3] pointer-events-none font-normal origin-center"
         >
           ワイン名を入力
         </label>
@@ -368,21 +346,19 @@ export const NameQuestionScreen: React.FC<NameQuestionScreenProps> = ({
           placeholder=""
           className="w-full bg-transparent text-center text-[16px] text-[#2c2c2c] outline-none"
         />
-      </motion.div>
-    </motion.div>
+      </div>
+    </div>
   );
 
   return (
     <BottomSheetQuestionLayout
       stepIndex={currentStep + 1}
       onBack={handleBack}
-      isOpen={isOpen}
-      wineImageSrc={wineImageSrc}
       onNext={handleNext}
       header={header}
     >
       {/* 可変コンテンツ（サジェスト） */}
-      {isOpen && suggestions.length > 0 && (
+      {suggestions.length > 0 && (
         <motion.div
           className="w-full self-stretch pb-4"
           initial={{ opacity: 0, y: 8 }}

@@ -3,13 +3,11 @@ import { useLocation } from "wouter";
 import { QuestionScreenLayout } from "@/components/QuestionScreenLayout";
 import { RatingInput } from "@/components/RatingInput";
 import { useFlowParams, buildFlowQuery } from "@/hooks/useFlowParams";
-import { getWineCardImage } from "@/hooks/useWineCardImage";
 
 export default function RatingPage() {
   const [, setLocation] = useLocation();
   const { theme, name, variety, origin, location, price } = useFlowParams();
   const [rating, setRating] = useState(3);
-  const wineImageSrc = getWineCardImage() ?? "/wine-glass.png";
 
   return (
     <QuestionScreenLayout
@@ -18,7 +16,6 @@ export default function RatingPage() {
         if (window.history.length > 1) window.history.back();
         else setLocation("/");
       }}
-      wineImageSrc={wineImageSrc}
       title="このワインの評価は？"
       onNext={() => {
         setLocation(

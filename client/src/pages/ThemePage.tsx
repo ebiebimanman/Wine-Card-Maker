@@ -4,8 +4,6 @@ import { Wine } from "lucide-react";
 import { BottomSheetQuestionLayout } from "@/components/BottomSheetQuestionLayout";
 import { useFlowParams, buildFlowQuery } from "@/hooks/useFlowParams";
 import { cn } from "@/lib/utils";
-import { getWineCardImage } from "@/hooks/useWineCardImage";
-import { motion } from "framer-motion";
 
 const THEME_WINE_COLOR: Record<string, string> = {
   red: "#ad1e1e",
@@ -19,17 +17,16 @@ export default function ThemePage() {
   const { name } = useFlowParams();
   const [theme, setTheme] = useState<string>("");
   const [isSparkling, setIsSparkling] = useState(false);
-  const wineImageSrc = getWineCardImage();
 
   const handleNext = () => {
     setLocation(`/origin${buildFlowQuery({ theme, name })}`);
   };
 
   const header = (
-    <motion.div className="w-full shrink-0 flex flex-col items-center gap-8 pb-0">
-      <motion.p className="text-center text-[20px] font-bold text-[#2c2c2c]">
+    <div className="w-full shrink-0 flex flex-col items-center gap-8 pb-0">
+      <p className="text-center text-[20px] font-bold text-[#2c2c2c]">
         種類は？
-      </motion.p>
+      </p>
       <div className="w-full flex flex-col gap-2">
         <button
           type="button"
@@ -116,18 +113,16 @@ export default function ThemePage() {
           スパークリング
         </button>
       </div>
-    </motion.div>
+    </div>
   );
 
   return (
     <BottomSheetQuestionLayout
       stepIndex={3}
-      wineImageSrc={wineImageSrc ?? undefined}
       onBack={() => {
         if (window.history.length > 1) window.history.back();
         else setLocation("/");
       }}
-      isOpen={true}
       onNext={handleNext}
       header={header}
     />

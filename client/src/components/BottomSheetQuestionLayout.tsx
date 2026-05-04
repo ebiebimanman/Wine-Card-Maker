@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { motion } from "framer-motion";
 import {
   ChevronLeft,
   Wine,
@@ -13,7 +12,6 @@ import {
   Camera,
   type LucideIcon,
 } from "lucide-react";
-import { cn } from "@/lib/utils";
 import { NextFooterButton } from "@/components/QuestionScreenLayout";
 
 const STEP_ICONS: Record<number, LucideIcon> = {
@@ -36,10 +34,6 @@ interface BottomSheetQuestionLayoutProps {
   onBack: () => void;
   /** 1ページ目など戻るボタンを非表示にする */
   hideBackButton?: boolean;
-  /** ワインボトル画像のパス */
-  wineImageSrc?: string;
-  /** シートを開いているか（フォーカス中など） */
-  isOpen: boolean;
   /** 下部シート内の固定ヘッダー（タイトル + TextInput など） */
   header: React.ReactNode;
   /** 下部シート内の可変コンテンツ（サジェストなど） */
@@ -83,8 +77,6 @@ export const BottomSheetQuestionLayout: React.FC<
   stepIndex,
   onBack,
   hideBackButton = false,
-  wineImageSrc = "/wine-glass.png",
-  isOpen,
   header,
   children,
   onNext,
@@ -97,23 +89,13 @@ export const BottomSheetQuestionLayout: React.FC<
   const ActiveIcon = STEP_ICONS[stepIndex] ?? Wine;
 
   return (
-    /*
-     * position: fixed + visualViewport による top/height 指定で、
-     * iOS Safari のキーボード表示時にも正確にビューポートを埋める。
-     * sm: ブレークポイント以上は中央揃え・最大幅でデスクトップ表示。
-     */
     <div
       className="fixed left-0 right-0 w-full flex justify-center sm:py-6 sm:px-4 bg-[#f5f1e8]"
       style={{ top: vp.top, height: vp.height }}
     >
-      <div className="relative w-full bg-[#f5f1e8] overflow-hidden sm:max-w-[480px] sm:mx-auto sm:rounded-[24px] sm:shadow-2xl sm:max-h-[844px] sm:my-auto h-full">
-        {/* 上部ナビゲーション（戻る + プログレスドット） */}
-        <motion.div
-          className="relative flex items-center justify-center pt-12 pb-1"
-          initial={false}
-          animate={{ opacity: isOpen ? 0 : 1 }}
-          transition={{ duration: 0.25, ease: "easeOut" }}
-        >
+      <div className="relative w-full bg-[#fffbf1] overflow-hidden sm:max-w-[480px] sm:mx-auto sm:rounded-[24px] sm:shadow-2xl sm:max-h-[844px] sm:my-auto h-full flex flex-col">
+        {/* 戻るボタン + プログレスドット */}
+        <div className="relative flex items-center justify-center pt-12 pb-1">
           {!hideBackButton && (
             <button
               onClick={onBack}
@@ -123,14 +105,12 @@ export const BottomSheetQuestionLayout: React.FC<
               <ChevronLeft className="size-6" />
             </button>
           )}
-
-          {/* Centered progress dots */}
           <div className="flex items-center gap-1.5">
             {Array.from({ length: totalSteps }).map((_, index) => (
               <div key={index}>
                 {index === currentDot ? (
-                  <div className="bg-[#4b6c3d] flex size-8 items-center justify-center rounded-full border-[3px] border-[#f5f1e8] shadow-sm">
-                    <ActiveIcon className="text-[#f5f1e8] size-4" />
+                  <div className="bg-[#4b6c3d] flex size-8 items-center justify-center rounded-full border-[3px] border-[#fffbf1] shadow-sm">
+                    <ActiveIcon className="text-[#fffbf1] size-4" />
                   </div>
                 ) : (
                   <div
@@ -144,75 +124,15 @@ export const BottomSheetQuestionLayout: React.FC<
               </div>
             ))}
           </div>
-        </motion.div>
-
-        {/* ワインボトル画像エリア */}
-        <motion.div
-          className="pt-4 flex justify-center w-full"
-          initial={false}
-          animate={{ opacity: isOpen ? 0 : 1 }}
-          transition={{ duration: 0.25, ease: "easeOut" }}
-        >
-          <div className="h-[376px] flex items-center justify-center w-full">
-            <img
-              src="/wine-glass.png"
-              alt="Wine glass"
-              className="h-[280px] w-auto object-contain"
-            />
-          </div>
-        </motion.div>
-
-        {/* 下部パネル（カード + つぎへボタン） */}
-        <div
-          className={cn(
-            "absolute left-0 right-0 w-full overflow-hidden rounded-t-[32px] px-0 flex flex-col bg-[#fffbf1] shadow-[0_8px_24px_-8px_rgba(75,108,61,0.2)]",
-            isOpen ? "top-0 bottom-0" : "bottom-0 h-fit",
-          )}
-        >
-          <div
-            className={cn(
-              "relative w-full rounded-none px-8 pt-20 pb-0 flex flex-col gap-2 items-center",
-              isOpen ? "flex-1 min-h-0" : "",
-            )}
-          >
-            {/* シート内の戻るボタン + プログレスドット（isOpen時のみ表示） */}
-            {isOpen && (
-              <div className="absolute top-8 left-0 right-0 flex items-center justify-center px-4">
-                {!hideBackButton && (
-                  <button
-                    onClick={onBack}
-                    className="absolute left-8 text-[#4b6c3d] flex items-center justify-center p-1 transition-colors hover:opacity-70"
-                    aria-label="戻る"
-                  >
-                    <ChevronLeft className="size-6" />
-                  </button>
-                )}
-                <div className="flex items-center gap-1.5">
-                  {Array.from({ length: totalSteps }).map((_, index) => (
-                    <div key={index}>
-                      {index === currentDot ? (
-                        <div className="bg-[#4b6c3d] flex size-6 items-center justify-center rounded-full border-[2px] border-[#fffbf1] shadow-sm">
-                          <ActiveIcon className="text-[#fffbf1] size-3" />
-                        </div>
-                      ) : (
-                        <div
-                          className={`size-2 rounded-full ${
-                            index < currentDot ? "bg-[#4b6c3d]/40" : "bg-[#4b6c3d]/10"
-                          }`}
-                        />
-                      )}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-            {header}
-            {children}
-          </div>
-          <div className="relative z-10">
-            <NextFooterButton onNext={onNext} />
-          </div>
         </div>
+
+        {/* ヘッダー + サジェストなど */}
+        <div className="relative w-full px-8 pt-12 pb-0 flex flex-col gap-2 items-center flex-1 min-h-0">
+          {header}
+          {children}
+        </div>
+
+        <NextFooterButton onNext={onNext} disabled={nextDisabled} />
       </div>
     </div>
   );
