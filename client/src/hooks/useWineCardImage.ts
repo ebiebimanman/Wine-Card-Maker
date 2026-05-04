@@ -16,3 +16,15 @@ export function setWineCardImage(dataUrl: string | null): void {
     sessionStorage.setItem(STORAGE_KEY, dataUrl);
   }
 }
+
+// バックグラウンドで実行中の背景除去処理を追跡する。
+// SPA 内のメモリにのみ保持されるため、ページリロード時はリセットされる。
+let bgRemovalPromise: Promise<void> | null = null;
+
+export function setBgRemovalPromise(p: Promise<void> | null): void {
+  bgRemovalPromise = p;
+}
+
+export function getBgRemovalPromise(): Promise<void> | null {
+  return bgRemovalPromise;
+}

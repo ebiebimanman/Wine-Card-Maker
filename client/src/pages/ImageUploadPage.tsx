@@ -1,48 +1,54 @@
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import { useLocation } from "wouter";
 import { Camera, ArrowRight } from "lucide-react";
-import { setWineCardImage } from "@/hooks/useWineCardImage";
+import { setWineCardImage, setBgRemovalPromise } from "@/hooks/useWineCardImage";
 
 
 export default function ImageUploadPage() {
   const [, setLocation] = useLocation();
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [isProcessing, setIsProcessing] = useState(false);
 
   // フロー開始時にシートの開閉フラグをリセット
   try { sessionStorage.removeItem("wineSheetOpen"); } catch {}
+
+  const readAsDataUrl = (file: Blob) =>
+    new Promise<string>((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = () => reject(reader.error);
+      reader.readAsDataURL(file);
+    });
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
     if (!file.type.startsWith("image/")) return;
-    setIsProcessing(true);
-    try {
-      const { removeBackground } = await import("@imgly/background-removal");
-      const blob = await removeBackground(file);
-      const dataUrl = await new Promise<string>((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = () => resolve(reader.result as string);
-        reader.onerror = () => reject(reader.error);
-        reader.readAsDataURL(blob);
-      });
-      setWineCardImage(dataUrl);
-      setLocation("/name");
-    } catch (err) {
-      console.error("Background removal failed, using original:", err);
-      const reader = new FileReader();
-      reader.onload = () => {
-        setWineCardImage(reader.result as string);
-        setLocation("/name");
-      };
-      reader.readAsDataURL(file);
-    } finally {
-      setIsProcessing(false);
-    }
+
+    // 元画像を即保存して入力フローへ進める
+    const originalDataUrl = await readAsDataUrl(file);
+    setWineCardImage(originalDataUrl);
+    setLocation("/name");
+
+    // 背景除去はバックグラウンドで実行。CardPage がこの Promise を待つ
+    const promise = (async () => {
+      try {
+        const { removeBackground } = await import("@imgly/background-removal");
+        const blob = await removeBackground(file);
+        const processedDataUrl = await readAsDataUrl(blob);
+        setWineCardImage(processedDataUrl);
+      } catch (err) {
+        console.error("Background removal failed, keeping original:", err);
+      }
+    })();
+    setBgRemovalPromise(promise);
+    promise.finally(() => {
+      setBgRemovalPromise(null);
+    });
   };
 
   const handleSkip = () => {
     setWineCardImage("/wine-glass.png");
+    setBgRemovalPromise(null);
     setLocation("/name");
   };
 
@@ -80,19 +86,18 @@ export default function ImageUploadPage() {
         {/* ボタンエリア */}
         <div className="w-full flex flex-col gap-4 items-center">
           {/* ワインの写真を撮るボタン */}
-          <label className={`w-full ${isProcessing ? "pointer-events-none opacity-60" : "cursor-pointer"}`}>
+          <label className="w-full cursor-pointer">
             <input
               ref={fileInputRef}
               type="file"
               accept="image/*"
               onChange={handleFileChange}
-              disabled={isProcessing}
               className="sr-only"
               aria-label="ワインの画像を選択"
             />
             <span className="w-full flex items-center justify-center gap-3 py-5 px-6 rounded-[64px] bg-[#4b6c3d] text-[#f5f1e8] text-[16px] font-bold hover:opacity-90 transition-opacity">
               <Camera className="w-5 h-5 flex-shrink-0" />
-              {isProcessing ? "処理中..." : "ワインの写真を撮る"}
+              ワインの写真を撮る
             </span>
           </label>
 
@@ -100,8 +105,7 @@ export default function ImageUploadPage() {
           <button
             type="button"
             onClick={handleSkip}
-            disabled={isProcessing}
-            className="flex items-center gap-2 py-3 px-4 text-[14px] font-bold text-[#2c2c2c] hover:opacity-70 transition-opacity disabled:opacity-40"
+            className="flex items-center gap-2 py-3 px-4 text-[14px] font-bold text-[#2c2c2c] hover:opacity-70 transition-opacity"
           >
             写真はないよ
             <ArrowRight className="w-4 h-4" />

@@ -3,7 +3,7 @@ import { useLocation } from "wouter";
 import { MapPin, Grape, ShoppingCart, JapaneseYen, MessageSquare, Star, Wine } from "lucide-react";
 import { toPng } from "html-to-image";
 import { useFlowParams } from "@/hooks/useFlowParams";
-import { getWineCardImage } from "@/hooks/useWineCardImage";
+import { getWineCardImage, getBgRemovalPromise } from "@/hooks/useWineCardImage";
 import { NextFooterButton } from "@/components/QuestionScreenLayout";
 import {
   Dialog,
@@ -182,13 +182,22 @@ function useVisualViewport() {
 export default function CardPage() {
   const [, setLocation] = useLocation();
   const params = useFlowParams();
-  const wineImageSrc = getWineCardImage();
+  const [wineImageSrc, setWineImageSrc] = useState(() => getWineCardImage());
   const vp = useVisualViewport();
 
   const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
-    const t = setTimeout(() => setIsLoading(false), 2000);
-    return () => clearTimeout(t);
+    let cancelled = false;
+    const minWait = new Promise<void>((resolve) => setTimeout(resolve, 2000));
+    const bgRemoval = getBgRemovalPromise() ?? Promise.resolve();
+    Promise.all([minWait, bgRemoval.catch(() => {})]).then(() => {
+      if (cancelled) return;
+      setWineImageSrc(getWineCardImage());
+      setIsLoading(false);
+    });
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   const cardRef = useRef<HTMLDivElement>(null);
