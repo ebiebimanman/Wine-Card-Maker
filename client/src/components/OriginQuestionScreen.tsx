@@ -76,20 +76,17 @@ export const OriginQuestionScreen: React.FC<OriginQuestionScreenProps> = ({
 
   const header = (
     <motion.div
-      layout
       className={cn(
         "w-full shrink-0 flex flex-col items-center gap-8",
         isOpen ? "pb-0" : "pb-12",
       )}
     >
       <motion.p
-        layout="position"
         className="text-center text-[20px] font-bold text-[#2c2c2c]"
       >
         産地は？
       </motion.p>
       <motion.div
-        layout
         className="relative w-full h-16 rounded-[16px] bg-[#f5f1e8] flex items-center justify-center px-4"
       >
         <label
@@ -133,7 +130,6 @@ export const OriginQuestionScreen: React.FC<OriginQuestionScreenProps> = ({
     >
       {isOpen && suggestions.length > 0 && (
         <motion.div
-          layout
           className="w-full flex-1 min-h-0 flex flex-col self-stretch pb-4"
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}

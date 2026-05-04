@@ -26,8 +26,8 @@ export default function ThemePage() {
   };
 
   const header = (
-    <motion.div layout className="w-full shrink-0 flex flex-col items-center gap-8 pb-0">
-      <motion.p layout="position" className="text-center text-[20px] font-bold text-[#2c2c2c]">
+    <motion.div className="w-full shrink-0 flex flex-col items-center gap-8 pb-0">
+      <motion.p className="text-center text-[20px] font-bold text-[#2c2c2c]">
         種類は？
       </motion.p>
       <div className="w-full flex flex-col gap-2">

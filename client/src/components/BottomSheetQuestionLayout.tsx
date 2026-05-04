@@ -109,7 +109,6 @@ export const BottomSheetQuestionLayout: React.FC<
       <div className="relative w-full bg-[#f5f1e8] overflow-hidden sm:max-w-[480px] sm:mx-auto sm:rounded-[24px] sm:shadow-2xl sm:max-h-[844px] sm:my-auto h-full">
         {/* 上部ナビゲーション（戻る + プログレスドット） */}
         <motion.div
-          layout
           className="relative flex items-center justify-center pt-12 pb-1"
           initial={false}
           animate={{ opacity: isOpen ? 0 : 1 }}
@@ -149,7 +148,6 @@ export const BottomSheetQuestionLayout: React.FC<
 
         {/* ワインボトル画像エリア */}
         <motion.div
-          layout
           className="pt-4 flex justify-center w-full"
           initial={false}
           animate={{ opacity: isOpen ? 0 : 1 }}
@@ -165,22 +163,17 @@ export const BottomSheetQuestionLayout: React.FC<
         </motion.div>
 
         {/* 下部パネル（カード + つぎへボタン） */}
-        <motion.div
-          layout
+        <div
           className={cn(
             "absolute left-0 right-0 w-full overflow-hidden rounded-t-[32px] px-0 flex flex-col bg-[#fffbf1] shadow-[0_8px_24px_-8px_rgba(75,108,61,0.2)]",
             isOpen ? "top-0 bottom-0" : "bottom-0 h-fit",
           )}
-          transition={{ layout: { duration: 0.4, ease: "easeOut" } }}
         >
-          <motion.div
-            layout
-            layoutId="bottom-sheet-panel"
+          <div
             className={cn(
               "relative w-full rounded-none px-8 pt-20 pb-0 flex flex-col gap-2 items-center",
               isOpen ? "flex-1 min-h-0" : "",
             )}
-            transition={{ layout: { duration: 0.35, ease: "easeOut" } }}
           >
             {/* シート内の戻るボタン + プログレスドット（isOpen時のみ表示） */}
             {isOpen && (
@@ -215,11 +208,11 @@ export const BottomSheetQuestionLayout: React.FC<
             )}
             {header}
             {children}
-          </motion.div>
-          <motion.div layout="position" className="relative z-10">
+          </div>
+          <div className="relative z-10">
             <NextFooterButton onNext={onNext} />
-          </motion.div>
-        </motion.div>
+          </div>
+        </div>
       </div>
     </div>
   );
