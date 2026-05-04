@@ -4,6 +4,11 @@ import { cn } from "@/lib/utils";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { BottomSheetQuestionLayout } from "@/components/BottomSheetQuestionLayout";
 import { wineOrigins } from "@/data/wineOrigins";
+import {
+  normalizeForName,
+  normalizeForQuery,
+  scoreMatch,
+} from "@/lib/textNormalize";
 
 interface OriginQuestionScreenProps {
   stepIndex?: number;
@@ -28,11 +33,18 @@ export const OriginQuestionScreen: React.FC<OriginQuestionScreenProps> = ({
   }, []);
 
   const suggestions = useMemo(() => {
-    const q = originInput.trim().toLowerCase();
-    if (!q) return wineOrigins.slice(0, 12);
+    const raw = originInput.trim();
+    if (!raw) return wineOrigins.slice(0, 12);
+
+    const query = normalizeForQuery(raw);
+    if (!query) return wineOrigins.slice(0, 12);
+
     return wineOrigins
-      .filter((name) => name.toLowerCase().includes(q))
-      .slice(0, 12);
+      .map((name) => ({ name, score: scoreMatch(normalizeForName(name), query) }))
+      .filter((item) => item.score > 0)
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 12)
+      .map((item) => item.name);
   }, [originInput]);
 
   const handleSelect = (value: string) => {
@@ -90,6 +102,12 @@ export const OriginQuestionScreen: React.FC<OriginQuestionScreenProps> = ({
           onChange={(e) => {
             if (isSelectingRef.current) return;
             setOriginInput(e.target.value);
+            setActiveIndex(0);
+            setHideSuggestions(false);
+          }}
+          onCompositionUpdate={() => {
+            const val = inputRef.current?.value ?? "";
+            setOriginInput(val);
             setActiveIndex(0);
             setHideSuggestions(false);
           }}

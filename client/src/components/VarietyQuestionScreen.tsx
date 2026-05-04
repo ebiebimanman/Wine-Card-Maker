@@ -4,6 +4,11 @@ import { cn } from "@/lib/utils";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { BottomSheetQuestionLayout } from "@/components/BottomSheetQuestionLayout";
 import { wineVarieties } from "@/data/wineVarieties";
+import {
+  normalizeForName,
+  normalizeForQuery,
+  scoreMatch,
+} from "@/lib/textNormalize";
 
 interface VarietyQuestionScreenProps {
   stepIndex?: number;
@@ -27,11 +32,18 @@ export const VarietyQuestionScreen: React.FC<VarietyQuestionScreenProps> = ({
   }, []);
 
   const suggestions = useMemo(() => {
-    const q = varietyInput.trim().toLowerCase();
-    if (!q) return [];
+    const raw = varietyInput.trim();
+    if (!raw) return [];
+
+    const query = normalizeForQuery(raw);
+    if (!query) return [];
+
     return wineVarieties
-      .filter((name) => name.toLowerCase().includes(q))
-      .slice(0, 12);
+      .map((name) => ({ name, score: scoreMatch(normalizeForName(name), query) }))
+      .filter((item) => item.score > 0)
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 12)
+      .map((item) => item.name);
   }, [varietyInput]);
 
   const handleSelect = (value: string) => {
@@ -87,6 +99,12 @@ export const VarietyQuestionScreen: React.FC<VarietyQuestionScreenProps> = ({
           onChange={(e) => {
             if (isSelectingRef.current) return;
             setVarietyInput(e.target.value);
+            setActiveIndex(0);
+            setHideSuggestions(false);
+          }}
+          onCompositionUpdate={() => {
+            const val = inputRef.current?.value ?? "";
+            setVarietyInput(val);
             setActiveIndex(0);
             setHideSuggestions(false);
           }}
