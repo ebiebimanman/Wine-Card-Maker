@@ -245,11 +245,8 @@ export const NameQuestionScreen: React.FC<NameQuestionScreenProps> = ({
   onNext,
 }) => {
   const [wineName, setWineName] = useState("");
-  const [isOpen, setIsOpen] = useState(true);
+  const isOpen = true;
 
-  const openSheet = () => {
-    setIsOpen(true);
-  };
   const [activeIndex, setActiveIndex] = useState(0);
   const sheetInputRef = useRef<HTMLInputElement>(null);
   // サジェスト選択直後のIME確定イベントを無視するフラグ
@@ -258,8 +255,8 @@ export const NameQuestionScreen: React.FC<NameQuestionScreenProps> = ({
   const hasText = wineName.trim().length > 0;
 
   useEffect(() => {
-    if (isOpen) sheetInputRef.current?.focus();
-  }, [isOpen]);
+    sheetInputRef.current?.focus();
+  }, []);
 
   const suggestions = useMemo(() => {
     const raw = wineName.trim();
@@ -285,7 +282,6 @@ export const NameQuestionScreen: React.FC<NameQuestionScreenProps> = ({
     isSelectingRef.current = true;
     sheetInputRef.current?.blur();
     setWineName(name);
-    setIsOpen(false);
     // IMEのすべてのイベントが落ち着いた後にフラグをリセット
     requestAnimationFrame(() => {
       isSelectingRef.current = false;
@@ -368,7 +364,6 @@ export const NameQuestionScreen: React.FC<NameQuestionScreenProps> = ({
             setWineName(val);
             setActiveIndex(0);
           }}
-          onFocus={openSheet}
           onKeyDown={handleKeyDown}
           placeholder=""
           className="w-full bg-transparent text-center text-[16px] text-[#2c2c2c] outline-none"

@@ -19,11 +19,8 @@ export const VarietyQuestionScreen: React.FC<VarietyQuestionScreenProps> = ({
   onNext,
 }) => {
   const [varietyInput, setVarietyInput] = useState("");
-  const [isOpen, setIsOpen] = useState(true);
+  const isOpen = true;
 
-  const openSheet = () => {
-    setIsOpen(true);
-  };
   const [activeIndex, setActiveIndex] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
   const isSelectingRef = useRef(false);
@@ -31,8 +28,8 @@ export const VarietyQuestionScreen: React.FC<VarietyQuestionScreenProps> = ({
   const hasText = varietyInput.trim().length > 0;
 
   useEffect(() => {
-    if (isOpen) inputRef.current?.focus();
-  }, [isOpen]);
+    inputRef.current?.focus();
+  }, []);
 
   const suggestions = useMemo(() => {
     const q = varietyInput.trim().toLowerCase();
@@ -46,7 +43,6 @@ export const VarietyQuestionScreen: React.FC<VarietyQuestionScreenProps> = ({
     isSelectingRef.current = true;
     inputRef.current?.blur();
     setVarietyInput(value);
-    setIsOpen(false);
     requestAnimationFrame(() => {
       isSelectingRef.current = false;
     });
@@ -110,7 +106,6 @@ export const VarietyQuestionScreen: React.FC<VarietyQuestionScreenProps> = ({
             setVarietyInput(e.target.value);
             setActiveIndex(0);
           }}
-          onFocus={openSheet}
           onKeyDown={handleKeyDown}
           placeholder=""
           className="w-full bg-transparent text-center text-[16px] text-[#2c2c2c] outline-none"

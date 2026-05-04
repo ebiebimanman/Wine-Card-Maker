@@ -19,7 +19,7 @@ export const OriginQuestionScreen: React.FC<OriginQuestionScreenProps> = ({
   onNext,
 }) => {
   const [originInput, setOriginInput] = useState("");
-  const [isOpen, setIsOpen] = useState(true);
+  const isOpen = true;
   const [activeIndex, setActiveIndex] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
   // サジェスト選択直後のIME確定イベントを無視するフラグ
@@ -28,8 +28,8 @@ export const OriginQuestionScreen: React.FC<OriginQuestionScreenProps> = ({
   const hasText = originInput.trim().length > 0;
 
   useEffect(() => {
-    if (isOpen) inputRef.current?.focus();
-  }, [isOpen]);
+    inputRef.current?.focus();
+  }, []);
 
   const suggestions = useMemo(() => {
     const q = originInput.trim().toLowerCase();
@@ -44,7 +44,6 @@ export const OriginQuestionScreen: React.FC<OriginQuestionScreenProps> = ({
     isSelectingRef.current = true;
     inputRef.current?.blur();
     setOriginInput(value);
-    setIsOpen(false);
     // IMEのすべてのイベントが落ち着いた後にフラグをリセット
     requestAnimationFrame(() => {
       isSelectingRef.current = false;
@@ -109,7 +108,6 @@ export const OriginQuestionScreen: React.FC<OriginQuestionScreenProps> = ({
             setOriginInput(e.target.value);
             setActiveIndex(0);
           }}
-          onFocus={() => setIsOpen(true)}
           onKeyDown={handleKeyDown}
           placeholder=""
           className="w-full bg-transparent text-center text-[16px] text-[#2c2c2c] outline-none"
