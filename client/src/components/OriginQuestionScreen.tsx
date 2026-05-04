@@ -18,6 +18,7 @@ export const OriginQuestionScreen: React.FC<OriginQuestionScreenProps> = ({
 }) => {
   const [originInput, setOriginInput] = useState("");
   const [activeIndex, setActiveIndex] = useState(0);
+  const [hideSuggestions, setHideSuggestions] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   // サジェスト選択直後のIME確定イベントを無視するフラグ
   const isSelectingRef = useRef(false);
@@ -39,6 +40,7 @@ export const OriginQuestionScreen: React.FC<OriginQuestionScreenProps> = ({
     isSelectingRef.current = true;
     inputRef.current?.blur();
     setOriginInput(value);
+    setHideSuggestions(true);
     // IMEのすべてのイベントが落ち着いた後にフラグをリセット
     requestAnimationFrame(() => {
       isSelectingRef.current = false;
@@ -46,21 +48,25 @@ export const OriginQuestionScreen: React.FC<OriginQuestionScreenProps> = ({
   };
 
   const handleKeyDown: React.KeyboardEventHandler<HTMLInputElement> = (e) => {
-    if (!suggestions.length) return;
-
-    if (e.key === "ArrowDown") {
+    const showingSuggestions = !hideSuggestions && suggestions.length > 0;
+    if (e.key === "ArrowDown" && showingSuggestions) {
       e.preventDefault();
       setActiveIndex((prev) =>
         prev + 1 < suggestions.length ? prev + 1 : 0,
       );
-    } else if (e.key === "ArrowUp") {
+    } else if (e.key === "ArrowUp" && showingSuggestions) {
       e.preventDefault();
       setActiveIndex((prev) =>
         prev - 1 >= 0 ? prev - 1 : suggestions.length - 1,
       );
     } else if (e.key === "Enter") {
+      if (e.nativeEvent.isComposing) return;
       e.preventDefault();
-      handleSelect(suggestions[activeIndex]);
+      if (showingSuggestions) {
+        handleSelect(suggestions[activeIndex]);
+      } else if (originInput.trim()) {
+        handleNext();
+      }
     }
   };
 
@@ -85,8 +91,10 @@ export const OriginQuestionScreen: React.FC<OriginQuestionScreenProps> = ({
             if (isSelectingRef.current) return;
             setOriginInput(e.target.value);
             setActiveIndex(0);
+            setHideSuggestions(false);
           }}
           onKeyDown={handleKeyDown}
+          enterKeyHint="next"
           placeholder=""
           className="w-full bg-transparent text-center text-[16px] text-[#2c2c2c] outline-none"
         />
@@ -98,51 +106,48 @@ export const OriginQuestionScreen: React.FC<OriginQuestionScreenProps> = ({
     <BottomSheetQuestionLayout
       stepIndex={stepIndex}
       onBack={onBack}
-      onNext={handleNext}
-      nextDisabled={!originInput.trim()}
       header={header}
+      hideNextButton
     >
-      {suggestions.length > 0 && (
+      {!hideSuggestions && suggestions.length > 0 && (
         <motion.div
-          className="w-full flex-1 min-h-0 flex flex-col self-stretch pb-4"
+          className="w-full flex-1 min-h-0 flex flex-col self-stretch pt-2 pb-4"
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 8 }}
           transition={{ duration: 0.25, ease: "easeOut" }}
         >
-          <div className="pt-2">
-            <div className="flex-1 min-h-0 overflow-hidden rounded-2xl bg-[#fffbf1] ring-1 ring-[#e0d8c8]/50 shadow-[0_8px_24px_-8px_rgba(75,108,61,0.2)]">
-              <ScrollArea className="flex-1 w-full">
-                <ul
-                  id="origin-suggestions-list"
-                  role="listbox"
-                  className="flex flex-col py-2"
-                >
-                  {suggestions.map((name, index) => (
-                    <li
-                      key={`${name}-${index}`}
-                      role="option"
-                      aria-selected={index === activeIndex}
+          <div className="flex-1 min-h-0 overflow-hidden rounded-2xl bg-[#fffbf1] ring-1 ring-[#e0d8c8]/50 shadow-[0_8px_24px_-8px_rgba(75,108,61,0.2)]">
+            <ScrollArea className="h-full w-full">
+              <ul
+                id="origin-suggestions-list"
+                role="listbox"
+                className="flex flex-col py-2"
+              >
+                {suggestions.map((name, index) => (
+                  <li
+                    key={`${name}-${index}`}
+                    role="option"
+                    aria-selected={index === activeIndex}
+                  >
+                    <button
+                      type="button"
+                      onMouseDown={(e) => e.preventDefault()}
+                      onClick={() => handleSelect(name)}
+                      onMouseEnter={() => setActiveIndex(index)}
+                      className={cn(
+                        "w-full min-h-[36px] flex items-center justify-center px-6 py-2 text-sm transition-colors duration-150",
+                        index === activeIndex
+                          ? "bg-[#f5f1e8] text-[#2c2c2c] rounded-xl mx-2 w-[calc(100%-16px)]"
+                          : "text-[#5c5246] hover:bg-[#f5f1e8]/50"
+                      )}
                     >
-                      <button
-                        type="button"
-                        onMouseDown={(e) => e.preventDefault()}
-                        onClick={() => handleSelect(name)}
-                        onMouseEnter={() => setActiveIndex(index)}
-                        className={cn(
-                          "w-full min-h-[44px] flex items-center justify-center px-6 py-4 text-base transition-colors duration-150",
-                          index === activeIndex
-                            ? "bg-[#f5f1e8] text-[#2c2c2c] rounded-xl mx-2 w-[calc(100%-16px)]"
-                            : "text-[#5c5246] hover:bg-[#f5f1e8]/50"
-                        )}
-                      >
-                        {name}
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-              </ScrollArea>
-            </div>
+                      {name}
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </ScrollArea>
           </div>
         </motion.div>
       )}

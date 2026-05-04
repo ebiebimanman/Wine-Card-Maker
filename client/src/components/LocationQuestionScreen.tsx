@@ -39,6 +39,14 @@ export const LocationQuestionScreen: React.FC<
           type="text"
           value={locationInput}
           onChange={(e) => setLocationInput(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              if (e.nativeEvent.isComposing) return;
+              e.preventDefault();
+              handleNext();
+            }
+          }}
+          enterKeyHint="next"
           placeholder=""
           className="w-full bg-transparent text-center text-[16px] text-[#2c2c2c] outline-none placeholder:text-[#aca3a3]"
         />
@@ -50,8 +58,8 @@ export const LocationQuestionScreen: React.FC<
     <BottomSheetQuestionLayout
       stepIndex={stepIndex}
       onBack={onBack}
-      onNext={handleNext}
       header={header}
+      hideNextButton
     />
   );
 };

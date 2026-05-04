@@ -38,10 +38,12 @@ interface BottomSheetQuestionLayoutProps {
   header: React.ReactNode;
   /** 下部シート内の可変コンテンツ（サジェストなど） */
   children?: React.ReactNode;
-  /** つぎへ押下時 */
-  onNext: () => void;
+  /** つぎへ押下時（hideNextButton 時は不要） */
+  onNext?: () => void;
   /** つぎへを無効にするか（未入力時など） */
   nextDisabled?: boolean;
+  /** Enter キーで進む画面では「次へ」ボタンを非表示にする */
+  hideNextButton?: boolean;
 }
 
 /** visualViewport を追跡して、キーボード表示時でも正確なビューポート位置・高さを返す */
@@ -81,6 +83,7 @@ export const BottomSheetQuestionLayout: React.FC<
   children,
   onNext,
   nextDisabled = false,
+  hideNextButton = false,
 }) => {
   const vp = useVisualViewport();
 
@@ -127,12 +130,14 @@ export const BottomSheetQuestionLayout: React.FC<
         </div>
 
         {/* ヘッダー + サジェストなど */}
-        <div className="relative w-full px-8 pt-12 pb-0 flex flex-col gap-2 items-center flex-1 min-h-0">
+        <div className="relative w-full px-8 pt-12 pb-0 flex flex-col gap-2 items-center flex-1 min-h-0 overflow-hidden">
           {header}
           {children}
         </div>
 
-        <NextFooterButton onNext={onNext} disabled={nextDisabled} />
+        {!hideNextButton && onNext && (
+          <NextFooterButton onNext={onNext} disabled={nextDisabled} />
+        )}
       </div>
     </div>
   );
