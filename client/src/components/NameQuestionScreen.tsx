@@ -351,6 +351,18 @@ export const NameQuestionScreen: React.FC<NameQuestionScreenProps> = ({
             setHideSuggestions(false);
           }}
           onKeyDown={handleKeyDown}
+          onBlur={(e) => {
+            // 戻るボタン等への意図的なフォーカス遷移は除外
+            const related = e.relatedTarget as HTMLElement | null;
+            if (related && (related.tagName === "BUTTON" || related.tagName === "A")) {
+              return;
+            }
+            // 状態反映後にチェックして遷移
+            setTimeout(() => {
+              if (!sheetInputRef.current?.isConnected) return;
+              if (wineName.trim()) handleNext();
+            }, 50);
+          }}
           enterKeyHint="next"
           placeholder=""
           className="w-full bg-transparent text-center text-[16px] text-[#2c2c2c] outline-none"

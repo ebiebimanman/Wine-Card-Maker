@@ -94,6 +94,16 @@ export const OriginQuestionScreen: React.FC<OriginQuestionScreenProps> = ({
             setHideSuggestions(false);
           }}
           onKeyDown={handleKeyDown}
+          onBlur={(e) => {
+            const related = e.relatedTarget as HTMLElement | null;
+            if (related && (related.tagName === "BUTTON" || related.tagName === "A")) {
+              return;
+            }
+            setTimeout(() => {
+              if (!inputRef.current?.isConnected) return;
+              if (originInput.trim()) handleNext();
+            }, 50);
+          }}
           enterKeyHint="next"
           placeholder=""
           className="w-full bg-transparent text-center text-[16px] text-[#2c2c2c] outline-none"
